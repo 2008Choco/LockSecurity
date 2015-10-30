@@ -1,0 +1,46 @@
+LockSecurity - Copyright 2015 - Parker "2008Choco" Hawke
+
+This is the writeup to determine the main idea for the plugin before initial commitment of any code
+Original idea from Parker "2008Choco" Hawke
+
+General Idea:
+- Right clicking on a chest or door with a key (Tripwire Hook) will bind that object to the key
+- Tripwire hook will then commence to glow and have a unique ID in the lore
+- Information about the right clicked block (XYZ coordinates, KeyID, BlockType, Owner of Block, Player UUID) is sent to the keys.yml file
+- When right clicking on a locked object, you are not able to open it unless the key for the object is in your inventory
+- LockSmithing: Putting a key in a crafting table with another unbinded key will duplicate the key to give to a friend
+
+New Items:
+- Unsmithed Key
+- Key (With unique identifier)
+
+Configuration:
+- RequiresKeyInHand: true - The key must be in your HAND instead of just in your inventory
+- OwnerRequiresKey: true - The owner of the locked block still requires a key to open the container
+
+Permissions:
+- locksecurity.lock - Allow the ability to lock an item (default: true)
+- locksecurity.unlock - Allow access to the unlock command (default: true)
+- locksecurity.ignorelocks - Allow access to the /ignorelocks command
+
+Commands:
+- /locksecurity - The administrative command for LockSecurity
+    - locksecurity reload - Reload the configuration file for LockSecurity
+    - locksecurity version - View general version information and information about the plugin
+- /unlock - Unlock the block corresponding to the key in your hand
+- /lock - Lock the block you are looking at (administrative command)
+- /ignorelocks - Ignore all locks (meant for administrative purposes)
+
+Custom Events:
+- PlayerLockBlockEvent:
+    - When a player locks a block, this event is fired
+    - Methods:
+        - getPlayer();
+        - getBlock();
+        - getLockId();
+- PlayerUnlockBlockEvent:
+    - When a player runs the /unlock command, this event is fired
+    - Methods:
+        - getPlayer();
+        - getBlock();
+        - getLockId();

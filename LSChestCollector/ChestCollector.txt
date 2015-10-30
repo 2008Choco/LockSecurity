@@ -1,0 +1,39 @@
+DISCLAIMER:
+This is an add-on for LockSecurity, and will ONLY function when LockSecurity is installed on the server
+
+NAME: LS-ChestCollector (ChestCollector)
+
+New Commands:
+	* /collects <item_stack>,<item_stack>,<item_stack> ... etc.
+	- When run, it will act much like the /unlock command. It will put you in a mode until you right click a block
+	- Running this command will store the parameters of item stacks you've specified.
+	- In this mode, right clicking on a LOCKED CHEST owned by the player, will store the item stacks and bind it to that chest
+	- That specific chest now has a specific function, similar to a hopper.
+	- When a player picks up an item that was specified in the command (and now binded to the chest), the item will be pulled out of the player's
+	  inventory, then automatically stored in the chest those items are binded to
+	
+Common Mistakes - Fixes:
+	- When an item is picked up, check if there is room left in the chest! If there isn't any room left, keep it in the player's inventory and
+	  send them a message letting them know it is full
+	- If there are multiple chests with the same item binded to them, grab the first chest. If it's full, move on to the second chest, if it's
+	  full, move on to the third chest, etc.. If all chests are full, refer to common mistakes 1
+	  
+Configuration Options:
+	- HoppersCanExtractChests: true/false
+		|-> Whether hoppers are able to pull an item from that locked chest or not
+	- Maximum items: 5 (default)
+		|-> The maximum amount of different items that are allowed to be binded to one chest
+	- AutoSort?: true/false
+		|-> Whether the chest should sort the items that are added in the chest or not
+	- Cost: 100 (default)
+		|-> If Vault is installed on the server, set a cost to create a Collection Chest
+
+Requirements to Create a Collection Chest:
+	- Implement Vault optionally. If Vault is installed, create a configuration option to determine how much it costs to create one
+	- The chest MUST be a locked chest from LockSecurity
+	- The chest MUST be owned by the player that wants to create the collection chest
+
+Notes:
+	- This will be created off of the LockSecurity API that will be created some time in the next couple of versions. We will see how much 
+	  time I have to create more of an external API. This plugin will REQUIRE to have LockSecurity on the server, otherwise the plugin will 
+	  not enable.

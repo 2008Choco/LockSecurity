@@ -1,0 +1,76 @@
+name: LockSecurity
+main: me.choco.locks.LockSecurity
+version: 1.5.0
+description: Lockable blocks only accessable by keys
+author: 2008Choco
+commands:
+    locksecurity:
+        description: The main administrative command for LockSecurity
+        usage: /<command> <version|reload>
+        aliases: [ls]
+    givekey:
+        description: Give an unsmithed key to the specified player
+        usage: /<command> [player] [count]
+        aliases: [givekeys]
+    ignorelocks:
+        description: Ignore all locks on the server
+        usage: /<command>
+        aliases: [ignorelock, il]
+    locklist:
+        description: Get the list of locks that you own
+        usage: /<command>
+        aliases: [lockslist]
+    locklistother:
+        description: Get the list of locks that another player owns
+        usage: /<command> <player>
+        aliases: [lockslistother, otherlocklist, otherlockslist]
+    forgekey:
+        description: Forge a locked key with the specified ID
+        usage: /<command> <id>
+    lockinspect:
+        description: Inspect and gather information about a locked block
+        usage: /<command> [id]
+        aliases: [inspectlock, inspectlocks]
+    unlock:
+        description: Unlock the block you right click
+        usage: /<command> [id]
+permissions:
+    locks.lock:
+        description: Allow the ability to lock a block
+        default: true
+    locks.givekey:
+        description: Allow access to the /givekey command
+        default: op
+    locks.ignorelocks:
+        description: Allow access to the /ignorelocks command
+        default: op
+    locks.locklist:
+        description: Allow access to the /locklist command
+        default: true
+    locks.locklistother:
+        description: Allow access to the /locklistother command
+        default: op
+    locks.forgekey:
+        description: Allow access to the /forgekey command
+        default: op
+    locks.reload:
+        description: Allow access to the /locksecurity reload command
+        default: op
+    locks.lockinspect:
+        description: Allow access to the /lockinspect command
+        default: op
+    locks.unlock.*:
+        description: Allow access to the /unlock command
+        children:
+        - locks.unlock.id: true
+        - locks.unlock.self: true
+        - locks.unlock.admin: true
+    locks.unlock.self:
+        description: Allow access to unlock your OWN blocks with /unlock
+        default: true
+    locks.unlock.id:
+        description: Alllow access to /unlock <id>
+        default: op
+    locks.adminunlock:
+        description: Allow the ability to unlock any block, even if you are not the owner
+        default: op

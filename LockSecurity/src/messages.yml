@@ -1,0 +1,39 @@
+Commands:
+  ForgeKey:
+    NoIDSpecified: "Please specify the ID you would like to forge"
+    GivenKey: "Given forged key with ID %ID%"
+  GiveKey:
+    ReceivedUnsmithedKey: "You have received an unsmithed key"
+    TargetPlayerReceivedKey: "You have received %count% unsmithed key(s) from %player%"
+    PlayerSentKey: "You have given %targetPlayer% %count% unsmithed key(s)"
+  IgnoreLocks:
+    IgnoringLocks: "You are now ignoring all locks"
+    NoLongerIgnoringLocks: "You are no longer ignoring locks"
+  LockInspect:
+    LockInspectEnabled: "Lock inspect has been &aenabled"
+    LockInspectDisabled: "Lock inspect has been &cdisabled"
+    BlockNotLocked: "This block is not locked"
+  LockList:
+    ListIdentifier: "Lock list for all worlds (player %player%)"
+  LockSecurity:
+    SuccessfullyReloaded: "&aReloaded all configuration files"
+  Unlock:
+    UnlockModeEnabled: "Unlock mode enabled. Right click the block you'd like to unlock"
+    UnlockModeDisabled: "Unlock mode disabled"
+    BlockUnlocked: "Lock ID %lockID% has been unlocked"
+    NotOwner: "You are not the owner of this block"
+    BlockNotLocked: "Lock ID %lockID% is not valid (Is that ID even registered?)"
+  General:
+    OnlyPlayers: "Only players may use this command"
+    NoPermission: "You do not have the sufficient permissions to do this"
+    PlayerOffline: "%targetPlayer% is not currently online"
+    MustSpecifyPlayer: "You must specify a player to run this command"
+    InvalidInteger: "%param% is not a number. Please specify an ID"
+Events:
+  BlockUnregistered: "%type% Lock ID %id% unregistered"
+  CannotOpen: "This %type% is locked by %player%. You cannot open this"
+  SuccessfullyLockedBlock: "You have locked this block with LockID %lockID% (KeyID: %keyID%)"
+  NoPermissionToLock: "You do not have the sufficient permissions to lock %type%"
+  NoKey: "You do not have the key to open this"
+  LockPickAttempt: "You attempt to pick the lock, but it doesn't work"
+  CannotBreak: "This %type% is locked by %player%. You cannot break this"

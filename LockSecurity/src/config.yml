@@ -1,0 +1,26 @@
+MetricsEnabled: true
+
+Griefing:
+  PreventLockedExplosions: true
+  IgnorelocksCanBreakLocks: true
+  OwnerRequiresKey: true
+
+Aesthetics:
+  DisplayLockedSmokeParticle: true
+  DisplayNameChangeNotice: true
+  
+LockableBlocks:
+- CHEST
+- TRAPPED_CHEST
+- TRAP_DOOR
+- FURNACE
+- DISPENSER
+- DROPPER
+- HOPPER
+- WOODEN_DOOR
+- ACACIA_DOOR
+- BIRCH_DOOR
+- DARK_OAK_DOOR
+- JUNGLE_DOOR
+- SPRUCE_DOOR
+- FENCE_GATE
