@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
@@ -13,6 +14,8 @@ import org.bukkit.event.inventory.PrepareItemCraftEvent;
 import org.bukkit.inventory.ItemStack;
 
 import me.choco.locks.LockSecurity;
+import me.choco.locks.api.PlayerCombineKeyEvent;
+import me.choco.locks.api.PlayerDuplicateKeyEvent;
 import me.choco.locks.utils.Keys;
 import me.choco.locks.utils.LockedBlockAccessor;
 
@@ -31,6 +34,9 @@ public class CombineKeyID implements Listener{
 	@EventHandler
 	public void onAttemptKeyCombine(PrepareItemCraftEvent event){
 		boolean combination = true;
+		ItemStack unsmithedKey = null;
+		ItemStack smithedKey1 = null;
+		ItemStack smithedKey2 = null;
 		if (event.getInventory().getResult().equals(keys.createUnsmithedKey(1))){
 			newIDs.clear();
 			for (ItemStack item : event.getInventory().getMatrix()){
@@ -39,18 +45,28 @@ public class CombineKeyID implements Listener{
 					for (int id : itemIDs){
 						newIDs.add(id);
 					}
+					if (smithedKey1 != null){
+						smithedKey1 = item;
+					}else{
+						smithedKey2 = item;
+					}
 				}else if (isUnsmithedKey(item)){
 					List<Integer> itemIDs = lockedAccessor.getKeyIDs(item);
 					for (int id : itemIDs){
 						newIDs.add(id);
 					}
 					combination = false;
+					unsmithedKey = item;
 				}
 			}
 			newIDs = removeDuplicates(newIDs);
 			if (combination){
+				PlayerCombineKeyEvent combineEvent = new PlayerCombineKeyEvent(plugin, newIDs, smithedKey1, smithedKey2);
+				Bukkit.getPluginManager().callEvent(combineEvent);
 				event.getInventory().setResult(keys.createLockedKey(1, newIDs));
 			}else{
+				PlayerDuplicateKeyEvent duplicateEvent = new PlayerDuplicateKeyEvent(newIDs, unsmithedKey, smithedKey1);
+				Bukkit.getPluginManager().callEvent(duplicateEvent);
 				event.getInventory().setResult(keys.createLockedKey(2, newIDs));
 			}
 		}

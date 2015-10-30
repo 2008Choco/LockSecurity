@@ -10,10 +10,10 @@ This is where you will find the official changelog of all releases of *LockSecur
 - - - - - - - - - -
 
 ### Release 1.5.0 ###
-* Started development on an external event API, and fully documented the API [here](TODO: LINK TO WIKI PAGE ON BITBUCKET)
+* Started development on an external event API, fully documented the API, as well as uploaded the source code to LockSecurity and the future add-on in development to a private online repository. [Click here](http://www.bitbucket.org/2008Choco/lock-security)
 * Created 4 new Player oriented events:
-* |-> PlayerLockBlockEvent - Fired when a player successfully locks a block. Is cancellable
-* |-> PlayerUnlockBlockEvent - Fired when a player successfully unlocks a block. Is cancellable
+* |-> PlayerLockBlockEvent - Fired before a player successfully locks a block. Is cancellable
+* |-> PlayerUnlockBlockEvent - Fired before a player successfully unlocks a block. Is cancellable
 * |-> PlayerCombineKeyEvent - Fired when a player combines two keys in a crafting table. Is not cancellable
 * |-> PlayerDuplicateKeyEvent - Fired when a player duplicates a key in a crafting table. Is not cancellable
 
