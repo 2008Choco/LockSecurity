@@ -45,7 +45,7 @@ public class CombineKeyID implements Listener{
 					for (int id : itemIDs){
 						newIDs.add(id);
 					}
-					if (smithedKey1 != null){
+					if (smithedKey1 == null){
 						smithedKey1 = item;
 					}else{
 						smithedKey2 = item;

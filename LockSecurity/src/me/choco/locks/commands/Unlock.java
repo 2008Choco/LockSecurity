@@ -1,5 +1,6 @@
 package me.choco.locks.commands;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.command.Command;
@@ -8,6 +9,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import me.choco.locks.LockSecurity;
+import me.choco.locks.api.PlayerUnlockBlockEvent;
 import me.choco.locks.utils.LockStorageHandler;
 import me.choco.locks.utils.LockedBlockAccessor;
 
@@ -52,9 +54,13 @@ public class Unlock implements CommandExecutor{
 					
 					Location lockLocation = ram.getLocationFromLockID(ID);
 					if (ram.isStored(lockLocation)){
-						lockedAccessor.setUnlocked(lockLocation.getBlock());
-						plugin.sendPathMessage(player, plugin.messages.getConfig().getString("Commands.Unlock.BlockUnlocked").replaceAll("%lockID%", String.valueOf(ID)));
-						player.playSound(lockLocation, Sound.DOOR_OPEN, 1, 2);
+						PlayerUnlockBlockEvent unlockEvent = new PlayerUnlockBlockEvent(plugin, player, lockLocation.getBlock());
+						Bukkit.getPluginManager().callEvent(unlockEvent);
+						if (!unlockEvent.isCancelled()){
+							lockedAccessor.setUnlocked(lockLocation.getBlock());
+							plugin.sendPathMessage(player, plugin.messages.getConfig().getString("Commands.Unlock.BlockUnlocked").replaceAll("%lockID%", String.valueOf(ID)));
+							player.playSound(lockLocation, Sound.DOOR_OPEN, 1, 2);
+						}
 					}else{
 						plugin.sendPathMessage(player, plugin.messages.getConfig().getString("Commands.Unlock.BlockNotLocked").replaceAll("%lockID%", String.valueOf(ID)));
 					}

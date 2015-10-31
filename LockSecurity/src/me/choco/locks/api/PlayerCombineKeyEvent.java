@@ -43,14 +43,14 @@ public class PlayerCombineKeyEvent extends Event{
 	/** Get the first smithed key from the crafting recipe
 	 * @return ItemStack - The first key component to the recipe
 	 */
-	public ItemStack getUnsmithedKey(){
+	public ItemStack getSmithedKey1(){
 		return smithedKey1;
 	}
 	
 	/** Get the second smithed key from the crafting recipe
 	 * @return ItemStack - The second key component to the recipe
 	 */
-	public ItemStack getSmithedKey(){
+	public ItemStack getSmithedKey2(){
 		return smithedKey2;
 	}
 }

@@ -16,6 +16,9 @@ This is where you will find the official changelog of all releases of *LockSecur
 * |-> PlayerUnlockBlockEvent - Fired before a player successfully unlocks a block. Is cancellable
 * |-> PlayerCombineKeyEvent - Fired when a player combines two keys in a crafting table. Is not cancellable
 * |-> PlayerDuplicateKeyEvent - Fired when a player duplicates a key in a crafting table. Is not cancellable
+* (These events and all their methods have all been tested, and work 100% :D)
+* Added a @see tag to link developers for "LockSecurity.isLockable()" on the "getLockedState()" method
+* Added an "apiversion" variable in the plugin.yml to keep track of the API version
 
 ### Release 1.4.2 ###
 * Added an optional parameter to the /lockinspect command to wirelessly inspect a lock when a LockID is specified

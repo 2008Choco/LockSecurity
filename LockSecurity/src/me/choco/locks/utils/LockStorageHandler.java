@@ -11,17 +11,17 @@ public class LockStorageHandler {
 	}
 	
 	public void removeLock(Location location){
-		plugin.lockedStringIDs.remove(location);
+		plugin.lockedLockIDs.remove(location);
 		plugin.lockedKeyIDs.remove(location);
 	}
 	
 	public void addLockInformation(Location location, int id, int keyID){
-		plugin.lockedStringIDs.put(location, id);
+		plugin.lockedLockIDs.put(location, id);
 		plugin.lockedKeyIDs.put(location, keyID);
 	}
 	
 	public int getLockID(Location location){
-		return plugin.lockedStringIDs.get(location);
+		return plugin.lockedLockIDs.get(location);
 	}
 	
 	public int getKeyID(Location location){
@@ -39,7 +39,7 @@ public class LockStorageHandler {
 	
 	public Location getLocationFromLockID(int lockID){
 		for (Location location : plugin.lockedKeyIDs.keySet()){
-			if (plugin.lockedStringIDs.get(location) == lockID){
+			if (plugin.lockedLockIDs.get(location) == lockID){
 				return location;
 			}
 		}
@@ -47,13 +47,13 @@ public class LockStorageHandler {
 	}
 	
 	public boolean isStored(Location location){
-		if (plugin.lockedStringIDs.containsKey(location))
+		if (plugin.lockedLockIDs.containsKey(location))
 			return true;
 		return false;
 	}
 	
 	public void clearLocks(){
-		plugin.lockedStringIDs.clear();
+		plugin.lockedLockIDs.clear();
 		plugin.lockedKeyIDs.clear();
 	}
 }

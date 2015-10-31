@@ -44,7 +44,7 @@ public class LockSecurity extends JavaPlugin{
 	public ConfigAccessor locked;
 	public ConfigAccessor messages;
 
-	public HashMap<Location, Integer> lockedStringIDs = new HashMap<Location, Integer>();
+	public HashMap<Location, Integer> lockedLockIDs = new HashMap<Location, Integer>();
 	public HashMap<Location, Integer> lockedKeyIDs = new HashMap<Location, Integer>();
 	public ArrayList<String> ignoresLocks = new ArrayList<String>();
 	public ArrayList<String> inspectLockMode = new ArrayList<String>();
@@ -171,6 +171,10 @@ public class LockSecurity extends JavaPlugin{
 		unlockMode.clear();
 	}
 	
+	/** Check whether the specified block is a lockable or not
+	 * @param block - The block to check
+	 * @return boolean - Whether the block is lockable or not
+	 */
 	public boolean isLockable(Block block){
 		/*   Chest, trapped chest, trapdoor, furnace, dispenser, dropper, hopper, (oak, acacia, birch, dark oak, jungle, spruce) doors, all fence gates   */
 		Material type = block.getType();
@@ -223,9 +227,8 @@ public class LockSecurity extends JavaPlugin{
  *         -> You MUST be the owner of the keys to merge or duplicate them
  * -------------------------------------------------------------------------------------------------------------------------
  * TODO Next Version:
- * Event API
- * Document the API (above) on BitBucket. Be sure to also document the LockedBlockAccessor class, and examples of how to use some of the API to make amazing extensions
+ * Document the API on BitBucket. Be sure to also document the LockedBlockAccessor class, and examples of how to use some of the API to make amazing extensions
  */
 
 /* Version 1.4.2: 88.5KiB*/
-/* Version 1.5.0: 93.4KiB*/
+/* Version 1.5.0: 93.6KiB*/

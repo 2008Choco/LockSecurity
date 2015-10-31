@@ -28,10 +28,9 @@ public class LockedBlockAccessor {
 	}
 	
 	/** This will return whether the block is locked or not.
-	 * WARNING: Check if isLockable(block) before running this method
-	 * @see {@link #me.choco.locks.LockSecurity.isLockable()} method first TODO
+	 * @see {@link LockSecurity#isLockable} method first
 	 * @param block - The block to receive the state of
-	 * @return LockState
+	 * @return LockState - The state of the block
 	 */
 	public LockState getLockedState(Block block){
 		Location location = block.getLocation();
@@ -227,7 +226,7 @@ public class LockedBlockAccessor {
 		return ids;
 	}
 	
-	public void dualComponentBlockHandler(Block block, Player owner){
+	private void dualComponentBlockHandler(Block block, Player owner){
 		String blockType = block.getType().toString();
 		String playerUUID = owner.getUniqueId().toString(); String playerName = owner.getName();
 		
@@ -262,13 +261,6 @@ public class LockedBlockAccessor {
 		}
 	}
 	
-	/** Store information about a lock in the locked.yml file
-	 * @param playerUUID - The lock owner's UUID
-	 * @param playerName - The lock owner's username
-	 * @param keyID - The Key ID that the lock will be binded to
-	 * @param blockType - The string variation of the material the block is in
-	 * @param location - The location of the block
-	 */
 	private void addLockedYMLInformation(String playerUUID, String playerName, int keyID, String blockType, Location location){
 		plugin.locked.getConfig().set(getNextLockID() + ".OwnerUUID", playerUUID);
 		plugin.locked.getConfig().set(getNextLockID() + ".PlayerName", playerName);
