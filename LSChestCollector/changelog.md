@@ -10,4 +10,5 @@ This is where you will find the official changelog of all releases of *LS-ChestC
 - - - - - - - - - -
 
 ### Release 1.0.0 ###
+* This is the initial release to Bukkit.org, and the first ever version. There is bugs to be expected, and a lack of features. Here is the current list of features:
 * 

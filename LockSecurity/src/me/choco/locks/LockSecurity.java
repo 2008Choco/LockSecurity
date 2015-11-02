@@ -215,6 +215,7 @@ public class LockSecurity extends JavaPlugin{
  *     /locknotify <on|off> - Toggle the visibility of administrative lock displays (Displays all lock information to administrators)
  *     /transferlock <player> - Right click on a locked block, and it will be transfered to the player specified in the command
  *     /adminlock - Convert the unbinded key in the player's hand to an AdminKey, which will lock any block under an administrative name
+ *     Add an alias to /locklist, (/locks)
  * 
  * General:
  *     Create a WorldGuard flag, "locks", to determine whether players can lock chests or not
