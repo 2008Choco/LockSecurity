@@ -1,0 +1,14 @@
+name: LS-ChestCollector
+main: me.choco.LSaddon.ChestCollector
+version: 1.0.0
+description: Create a chest that automatically pulls specified items from your inventory
+author: 2008Choco
+depend: [LockSecurity]
+commands:
+    collects:
+        description: Create a collector with the specified items
+        usage: /<command> <ItemStack,ItemStack,ItemStack...>
+permissions:
+    collector.command:
+        description: Allow access to the /collects command
+        default: true

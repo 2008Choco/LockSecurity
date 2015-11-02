@@ -1,0 +1,56 @@
+package me.choco.LSaddon.events;
+
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.block.Chest;
+import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerPickupItemEvent;
+import org.bukkit.inventory.ItemStack;
+
+import me.choco.LSaddon.ChestCollector;
+import me.choco.LSaddon.utils.CollectorHandler;
+
+public class PickupCollectorItem implements Listener{
+	ChestCollector plugin;
+	CollectorHandler collectorHandler;
+	public PickupCollectorItem(ChestCollector plugin){
+		this.plugin = plugin;
+		this.collectorHandler = new CollectorHandler(plugin);
+	}
+	
+	@EventHandler
+	public void onCollectionPickup(PlayerPickupItemEvent event){
+		boolean found = false;
+		ItemStack pickedUpItem = event.getItem().getItemStack();
+		String itemType = pickedUpItem.getType().toString();
+		Player player = event.getPlayer();
+		
+		if (collectorHandler.getAllCollectors(player) == null)return;
+		
+		for (int id : collectorHandler.getAllCollectors(player)){
+			String worldName = plugin.collectors.getConfig().getString(id + ".Location.World");
+			int x = plugin.collectors.getConfig().getInt(id + ".Location.X");
+			int y = plugin.collectors.getConfig().getInt(id + ".Location.Y");
+			int z = plugin.collectors.getConfig().getInt(id + ".Location.Z");
+			
+			Location collectorLocation = new Location(Bukkit.getWorld(worldName), x, y, z);
+			for (String item : collectorHandler.getCollectorItems(collectorLocation.getBlock())){
+				if (item.toUpperCase().equals(itemType.toUpperCase())){
+					if (collectorLocation.getBlock().getType().equals(Material.CHEST)
+							|| collectorLocation.getBlock().getType().equals(Material.TRAPPED_CHEST)){
+						Chest chest = (Chest) collectorLocation.getBlock().getState();
+						if (chest.getInventory().getContents().length < chest.getInventory().getSize()){
+							chest.getInventory().addItem(pickedUpItem);
+							found = true;
+						}
+						break;
+					}
+				}
+			}
+			if (found)break;
+		}
+	}
+}

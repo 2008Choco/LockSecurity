@@ -1,0 +1,48 @@
+package me.choco.LSaddon.events;
+
+import org.bukkit.ChatColor;
+import org.bukkit.Material;
+import org.bukkit.block.Block;
+import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerInteractEvent;
+
+import me.choco.LSaddon.ChestCollector;
+import me.choco.LSaddon.utils.CollectorHandler;
+import me.choco.locks.utils.LockState;
+import me.choco.locks.utils.LockedBlockAccessor;
+
+public class ClickLockedChest implements Listener{
+	ChestCollector plugin;
+	LockedBlockAccessor lockedAccessor;
+	CollectorHandler collectorHandler;
+	public ClickLockedChest(ChestCollector plugin){
+		this.plugin = plugin;
+		this.lockedAccessor = plugin.lockedAccessor;
+		this.collectorHandler = new CollectorHandler(plugin);
+	}
+	
+	@EventHandler
+	public void onClickLockedChest(PlayerInteractEvent event){
+		Block block = event.getClickedBlock();
+		Player player = event.getPlayer();
+		if (block.getType().equals(Material.CHEST)){
+			if (lockedAccessor.getLockedState(block).equals(LockState.LOCKED)){
+				if (lockedAccessor.getBlockOwnerUUID(block).equals(player.getUniqueId().toString())){
+					if (plugin.collectCreationMode.contains(player.getName())){
+						String[] items = plugin.getCommandItems(player.getName());
+						collectorHandler.addCollector(player, items, block.getLocation());
+						player.sendMessage(ChatColor.GOLD + "[" + ChatColor.AQUA + "Collector" + ChatColor.GOLD + "] " + ChatColor.GRAY + 
+								"Chest collector created. The following items will be collected:");
+						player.sendMessage(ChatColor.GRAY + items.toString());
+						plugin.collectCreationMode.remove(player.getName());
+					}
+				}else{
+					player.sendMessage(ChatColor.GOLD + "[" + ChatColor.AQUA + "Collector" + ChatColor.GOLD + "] " + ChatColor.GRAY + 
+							"You do not own this chest");
+				}
+			}
+		}
+	}
+}
