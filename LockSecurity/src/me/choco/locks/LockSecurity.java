@@ -41,6 +41,9 @@ public class LockSecurity extends JavaPlugin{
 	
 	LockStorageHandler ram = new LockStorageHandler(this);
 	
+	private static LockSecurity instance;
+	public static final LockSecurity getPlugin() {return instance;}
+	
 	public ConfigAccessor locked;
 	public ConfigAccessor messages;
 
@@ -52,6 +55,7 @@ public class LockSecurity extends JavaPlugin{
 	
 	@Override
 	public void onEnable(){
+		instance = this;
 		Keys keysClass = new Keys(this);
 		
 		//LockSecurity default config file

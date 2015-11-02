@@ -12,8 +12,10 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 
 import me.choco.locks.LockSecurity;
+import me.choco.locks.api.PlayerInteractLockedBlockEvent;
 import me.choco.locks.api.PlayerLockBlockEvent;
 import me.choco.locks.api.PlayerUnlockBlockEvent;
+import me.choco.locks.api.utils.InteractResult;
 import me.choco.locks.utils.Keys;
 import me.choco.locks.utils.LockState;
 import me.choco.locks.utils.LockedBlockAccessor;
@@ -62,18 +64,31 @@ public class InteractWithBlock implements Listener{
 							if (lockedAccessor.playerHasCorrectKey(block, player) || plugin.ignoresLocks.contains(player.getName())
 									|| (player.isSneaking() && !player.getItemInHand().getType().equals(Material.AIR))
 									|| (lockedAccessor.getBlockOwnerUUID(block).equals(player.getUniqueId().toString()) && !plugin.getConfig().getBoolean("Griefing.OwnerRequiresKey"))){
-								return;
+								PlayerInteractLockedBlockEvent interactLockedBlockEvent = new PlayerInteractLockedBlockEvent(plugin, player, block, InteractResult.SUCCESS);
+								Bukkit.getPluginManager().callEvent(interactLockedBlockEvent);
+								if (!interactLockedBlockEvent.isCancelled()){
+									return;
+								}else event.setCancelled(true);
 							}else{
 								event.setCancelled(true);
-								if (plugin.getConfig().getBoolean("Aesthetics.DisplayLockedSmokeParticle"))
-									ParticleEffect.SMOKE_NORMAL.display(0.1F, 0.2F, 0.1F, 0.01F, 5, block.getLocation().add(0.5, 1.2, 0.5), player);
-								
 								if (!player.getItemInHand().getType().equals(Material.TRIPWIRE_HOOK)){
-									plugin.sendPathMessage(player, plugin.messages.getConfig().getString("Events.NoKey"));
-									player.playSound(player.getLocation(), Sound.DOOR_CLOSE, 1, 0);
+									PlayerInteractLockedBlockEvent interactLockedBlockEvent = new PlayerInteractLockedBlockEvent(plugin, player, block, InteractResult.NO_KEY);
+									Bukkit.getPluginManager().callEvent(interactLockedBlockEvent);
+									if (!interactLockedBlockEvent.isCancelled()){
+										if (plugin.getConfig().getBoolean("Aesthetics.DisplayLockedSmokeParticle"))
+											ParticleEffect.SMOKE_NORMAL.display(0.1F, 0.2F, 0.1F, 0.01F, 5, block.getLocation().add(0.5, 1.2, 0.5), player);
+										plugin.sendPathMessage(player, plugin.messages.getConfig().getString("Events.NoKey"));
+										player.playSound(player.getLocation(), Sound.DOOR_CLOSE, 1, 0);
+									}
 								}else{
-									plugin.sendPathMessage(player, plugin.messages.getConfig().getString("Events.LockPickAttempt"));
-									player.playSound(player.getLocation(), Sound.CLICK, 1, 2);
+									PlayerInteractLockedBlockEvent interactLockedBlockEvent = new PlayerInteractLockedBlockEvent(plugin, player, block, InteractResult.NOT_RIGHT_KEY);
+									Bukkit.getPluginManager().callEvent(interactLockedBlockEvent);
+									if (!interactLockedBlockEvent.isCancelled()){
+										if (plugin.getConfig().getBoolean("Aesthetics.DisplayLockedSmokeParticle"))
+											ParticleEffect.SMOKE_NORMAL.display(0.1F, 0.2F, 0.1F, 0.01F, 5, block.getLocation().add(0.5, 1.2, 0.5), player);
+										plugin.sendPathMessage(player, plugin.messages.getConfig().getString("Events.LockPickAttempt"));
+										player.playSound(player.getLocation(), Sound.CLICK, 1, 2);
+									}
 								}
 							}
 						}else if (plugin.inspectLockMode.contains(player.getName())){ /*Inspect Lock Mode*/
