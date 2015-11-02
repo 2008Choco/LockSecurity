@@ -25,6 +25,8 @@ public class ClickLockedChest implements Listener{
 	
 	@EventHandler
 	public void onClickLockedChest(PlayerInteractEvent event){
+		if (event.getClickedBlock() == null)return;
+		
 		Block block = event.getClickedBlock();
 		Player player = event.getPlayer();
 		if (block.getType().equals(Material.CHEST)){
@@ -33,9 +35,9 @@ public class ClickLockedChest implements Listener{
 					if (plugin.collectCreationMode.contains(player.getName())){
 						String[] items = plugin.getCommandItems(player.getName());
 						collectorHandler.addCollector(player, items, block.getLocation());
+						String itemList = ""; for (String item : items){itemList = itemList + ", " + item;}
 						player.sendMessage(ChatColor.GOLD + "[" + ChatColor.AQUA + "Collector" + ChatColor.GOLD + "] " + ChatColor.GRAY + 
-								"Chest collector created. The following items will be collected:");
-						player.sendMessage(ChatColor.GRAY + items.toString());
+								"Chest collector created. The following items will be collected: " + itemList);
 						plugin.collectCreationMode.remove(player.getName());
 					}
 				}else{

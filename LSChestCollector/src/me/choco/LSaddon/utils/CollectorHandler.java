@@ -29,7 +29,7 @@ public class CollectorHandler {
 		plugin.collectors.getConfig().set(getNextID() + ".Location.X", location.getBlockX());
 		plugin.collectors.getConfig().set(getNextID() + ".Location.Y", location.getBlockY());
 		plugin.collectors.getConfig().set(getNextID() + ".Location.Z", location.getBlockZ());
-		plugin.collectors.getConfig().set(getNextID() + ".Location.World", location.getWorld());
+		plugin.collectors.getConfig().set(getNextID() + ".Location.World", location.getWorld().getName());
 		plugin.collectors.saveConfig();
 		plugin.collectors.reloadConfig();
 		plugin.collectorBlocks.put(location, getNextID());
@@ -86,7 +86,8 @@ public class CollectorHandler {
 	 */
 	public String[] getCollectorItems(Block block){
 		String temp = plugin.collectors.getConfig().getString(plugin.collectorBlocks.get(block.getLocation()) + ".Items");
-		return temp.split(",");
+		temp = temp.replace("[", "").replace("]", "");
+		return temp.split(", ");
 	}
 	
 	/** Get all the stored collectors that the specified player owns
@@ -99,9 +100,8 @@ public class CollectorHandler {
 		keys.remove("NextCollectorID");
 		for (String key : keys){
 			try{
-				int id = Integer.parseInt(key);
-				if (plugin.collectors.getConfig().getString(id + ".OwnerUUID").equals(player.getUniqueId().toString()))
-					ids.add(id);
+				if (plugin.collectors.getConfig().getString(key + ".OwnerUUID").equals(player.getUniqueId().toString()))
+					ids.add(Integer.parseInt(key));
 			}catch(NumberFormatException e){
 				continue;
 			}
@@ -121,17 +121,6 @@ public class CollectorHandler {
 	}
 	
 	private void setNextID(){
-		plugin.collectors.getConfig().set(String.valueOf(getNextID()), String.valueOf(getNextID() + 1));
+		plugin.collectors.getConfig().set("NextCollectorID", getNextID() + 1);
 	}
-	
-	/* CollectorID:
-	 *     OwnerUUID: 
-	 *     OwnerName: 
-	 *     Items: 
-	 *     Location:
-	 *         x: 
-	 *         y: 
-	 *         z: 
-	 *         world: 
-	 */
 }

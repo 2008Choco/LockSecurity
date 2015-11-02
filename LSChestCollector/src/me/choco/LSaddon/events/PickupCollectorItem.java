@@ -3,11 +3,13 @@ package me.choco.LSaddon.events;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.block.Chest;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerPickupItemEvent;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import me.choco.LSaddon.ChestCollector;
@@ -28,23 +30,25 @@ public class PickupCollectorItem implements Listener{
 		String itemType = pickedUpItem.getType().toString();
 		Player player = event.getPlayer();
 		
-		if (collectorHandler.getAllCollectors(player) == null)return;
-		
 		for (int id : collectorHandler.getAllCollectors(player)){
 			String worldName = plugin.collectors.getConfig().getString(id + ".Location.World");
 			int x = plugin.collectors.getConfig().getInt(id + ".Location.X");
 			int y = plugin.collectors.getConfig().getInt(id + ".Location.Y");
 			int z = plugin.collectors.getConfig().getInt(id + ".Location.Z");
-			
 			Location collectorLocation = new Location(Bukkit.getWorld(worldName), x, y, z);
+			
 			for (String item : collectorHandler.getCollectorItems(collectorLocation.getBlock())){
 				if (item.toUpperCase().equals(itemType.toUpperCase())){
 					if (collectorLocation.getBlock().getType().equals(Material.CHEST)
 							|| collectorLocation.getBlock().getType().equals(Material.TRAPPED_CHEST)){
 						Chest chest = (Chest) collectorLocation.getBlock().getState();
-						if (chest.getInventory().getContents().length < chest.getInventory().getSize()){
+						if (hasOpenSlot(chest.getInventory())){
 							chest.getInventory().addItem(pickedUpItem);
 							found = true;
+							
+							event.setCancelled(true);
+							event.getItem().remove();
+							player.playSound(player.getLocation(), Sound.ENDERMAN_TELEPORT, 1, 0);
 						}
 						break;
 					}
@@ -52,5 +56,13 @@ public class PickupCollectorItem implements Listener{
 			}
 			if (found)break;
 		}
+	}
+	
+	private boolean hasOpenSlot(Inventory inventory){
+		for (ItemStack item : inventory.getContents()){
+			if (item == null)
+				return true;
+		}
+		return false;
 	}
 }

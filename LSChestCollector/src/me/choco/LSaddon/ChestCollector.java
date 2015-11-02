@@ -32,6 +32,7 @@ public class ChestCollector extends JavaPlugin{
 	 
 	@Override
 	public void onEnable(){
+		lockSecurity = LockSecurity.getPlugin();
 		lockedAccessor = new LockedBlockAccessor(lockSecurity);
 		
 		//LSChestCollector collectors.yml
