@@ -9,6 +9,6 @@ commands:
         description: Create a collector with the specified items
         usage: /<command> <ItemStack,ItemStack,ItemStack...>
 permissions:
-    collector.command:
+    collectors.command:
         description: Allow access to the /collects command
         default: true

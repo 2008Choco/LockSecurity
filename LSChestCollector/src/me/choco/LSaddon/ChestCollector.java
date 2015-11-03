@@ -34,15 +34,18 @@ public class ChestCollector extends JavaPlugin{
 	public void onEnable(){
 		lockSecurity = LockSecurity.getPlugin();
 		lockedAccessor = new LockedBlockAccessor(lockSecurity);
+		this.getLogger().info("Successfully hooked into LockSecurity.");
 		
 		//LSChestCollector collectors.yml
 		collectors = new ConfigAccessor(this, "collectors.yml");
 		collectors.loadConfig();
 		
 		//Register commands
+		this.getLogger().info("Registering commands");
 		this.getCommand("collects").setExecutor(new CollectsCmd(this));
 		
 		//Register events
+		this.getLogger().info("Registering events");
 		Bukkit.getPluginManager().registerEvents(new ClickLockedChest(this), this);
 		Bukkit.getPluginManager().registerEvents(new PickupCollectorItem(this), this);
 		Bukkit.getPluginManager().registerEvents(new UnlockBlock(this), this);
@@ -62,6 +65,7 @@ public class ChestCollector extends JavaPlugin{
 		}
 		
 		//Add RAM information
+		this.getLogger().info("Storing all Chest Collectors' information in the server RAM");
 		int errors = 0;
 		Set<String> keys = collectors.getConfig().getKeys(false);
 		keys.remove("NextCollectorID");
@@ -103,6 +107,7 @@ public class ChestCollector extends JavaPlugin{
 	
 	@Override
 	public void onDisable(){
+		this.getLogger().info("Clearing all local RAM storage");
 		collectCreationMode.clear();
 		collectorBlocks.clear();
 		collectsCommandTempInfo.clear();

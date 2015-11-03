@@ -9,6 +9,17 @@ This is where you will find the official changelog of all releases of *LockSecur
 ## Official Releases ##
 - - - - - - - - - -
 
+### Release 1.5.2 ###
+* Fixed Unsmithed Keys not being craftable
+* Fixed NullPointerException with /lockinspect <id> when specifying an invalid ID
+* Fixed NullPointerException with /unlock <id> when specifying an invalid ID
+
+### Release 1.5.1 ###
+* Added new PlayerInteractLockedBlockEvent that fires before a player interacts with a locked block
+* Added "InteractResult" enumeration in the API to determine the result of the PlayerInteractLockedBlockEvent.
+* |-> Possible enumerations: SUCCESS, NO\_KEY, and NOT\_RIGHT\_KEY
+* Added static "getPlugin()" method in the main LockSecurity class to get an instance of the plugin (API reasons). Note to developers, when creating a new LockSecurity instance, use LockSecurity.getPlugin(). Ex: """LockSecurity ls = LockSecurity.getPlugin();"""
+
 ### Release 1.5.0 ###
 * Started development on an external event API, fully documented the API, as well as uploaded the source code to LockSecurity and the future add-on in development to a private online repository. [Click here](http://www.bitbucket.org/2008Choco/lock-security)
 * Created 4 new Player oriented events:

@@ -18,18 +18,20 @@ public class CollectsCmd implements CommandExecutor{
 	public boolean onCommand(CommandSender sender, Command cmd, String cmdLabel, String[] args) {
 		if (sender instanceof Player){
 			Player player = (Player) sender;
-			if (args.length == 1){
-				String playerName = player.getName();
-				String[] items = args[0].split(",");
-				for (int i = 0; i < items.length; i++){items[i] = items[i].toUpperCase();}
-				
-				plugin.addCommandItems(playerName, items);
-				plugin.collectCreationMode.add(playerName);
-				player.sendMessage(ChatColor.GOLD + "[" + ChatColor.AQUA + "Collector" + ChatColor.GOLD + "] " + ChatColor.GRAY + 
-						"Click on the chest you would like to make a converter");
-			}else{
-				player.sendMessage(ChatColor.GOLD + "[" + ChatColor.AQUA + "Collector" + ChatColor.GOLD + "] " + ChatColor.GRAY + 
-						"Please specify which items you would like your chest to collect");
+			if (player.hasPermission("collectors.command")){
+				if (args.length == 1){
+					String playerName = player.getName();
+					String[] items = args[0].split(",");
+					for (int i = 0; i < items.length; i++){items[i] = items[i].toUpperCase();}
+					
+					plugin.addCommandItems(playerName, items);
+					plugin.collectCreationMode.add(playerName);
+					player.sendMessage(ChatColor.GOLD + "[" + ChatColor.AQUA + "Collector" + ChatColor.GOLD + "] " + ChatColor.GRAY + 
+							"Click on the chest you would like to make a converter");
+				}else{
+					player.sendMessage(ChatColor.GOLD + "[" + ChatColor.AQUA + "Collector" + ChatColor.GOLD + "] " + ChatColor.GRAY + 
+							"Please specify which items you would like your chest to collect");
+				}
 			}
 			return true;
 		}else{

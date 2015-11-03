@@ -46,6 +46,7 @@ public class LockSecurity extends JavaPlugin{
 	
 	public ConfigAccessor locked;
 	public ConfigAccessor messages;
+	Keys keysClass = new Keys(this);
 
 	public HashMap<Location, Integer> lockedLockIDs = new HashMap<Location, Integer>();
 	public HashMap<Location, Integer> lockedKeyIDs = new HashMap<Location, Integer>();
@@ -53,10 +54,11 @@ public class LockSecurity extends JavaPlugin{
 	public ArrayList<String> inspectLockMode = new ArrayList<String>();
 	public ArrayList<String> unlockMode = new ArrayList<String>();
 	
+	public ShapelessRecipe combinationRecipe = new ShapelessRecipe(keysClass.createUnsmithedKey(1)).addIngredient(2, Material.TRIPWIRE_HOOK);
+	
 	@Override
 	public void onEnable(){
 		instance = this;
-		Keys keysClass = new Keys(this);
 		
 		//LockSecurity default config file
 		getConfig().options().copyDefaults(true);
@@ -99,7 +101,7 @@ public class LockSecurity extends JavaPlugin{
 		Bukkit.getServer().addRecipe(new ShapedRecipe(unsmithedKey).shape(" P ", " I ", " B ").setIngredient('B', Material.IRON_FENCE).setIngredient('I', Material.IRON_INGOT).setIngredient('P', Material.WOOD));
 		Bukkit.getServer().addRecipe(new ShapedRecipe(unsmithedKey).shape("P  ", " I ", "  B").setIngredient('B', Material.IRON_FENCE).setIngredient('I', Material.IRON_INGOT).setIngredient('P', Material.WOOD));
 		Bukkit.getServer().addRecipe(new ShapedRecipe(unsmithedKey).shape("   ", "BIP", "   ").setIngredient('B', Material.IRON_FENCE).setIngredient('I', Material.IRON_INGOT).setIngredient('P', Material.WOOD));
-		Bukkit.getServer().addRecipe(new ShapelessRecipe(unsmithedKey).addIngredient(2, Material.TRIPWIRE_HOOK));
+		Bukkit.getServer().addRecipe(combinationRecipe);
 		
 		//Load Metrics
 		if (getConfig().getBoolean("MetricsEnabled") == true){
@@ -216,15 +218,11 @@ public class LockSecurity extends JavaPlugin{
 
 /* TODO Upcoming Versions
  * Commands-Related:
- *     /locknotify <on|off> - Toggle the visibility of administrative lock displays (Displays all lock information to administrators)
- *     /transferlock <player> - Right click on a locked block, and it will be transfered to the player specified in the command
  *     /adminlock - Convert the unbinded key in the player's hand to an AdminKey, which will lock any block under an administrative name
  *     Add an alias to /locklist, (/locks)
  * 
  * General:
  *     Create a WorldGuard flag, "locks", to determine whether players can lock chests or not
- *     Add a limit to how many items the player can lock?
- *         -> Add a config option to determine how many they can lock (MaxLockableBlocks: <int>). -1 being infinite
  *     Add the location of the chest on the keys
  *         -> Make it a configuration option to display or not?
  *     Add faction support. Lock a block under your faction name rather than your own name
@@ -232,8 +230,11 @@ public class LockSecurity extends JavaPlugin{
  *         -> You MUST be the owner of the keys to merge or duplicate them
  * -------------------------------------------------------------------------------------------------------------------------
  * TODO Next Version:
- * Document the API on BitBucket. Be sure to also document the LockedBlockAccessor class, and examples of how to use some of the API to make amazing extensions
+ * /locknotify <on|off> - Toggle the visibility of administrative lock displays (Displays all lock information to administrators)
+ * /transferlock <player> - Right click on a locked block, and it will be transfered to the player specified in the command
+ * Add a limit to how many items the player can lock?
+ *     -> Add a config option to determine how many they can lock (MaxLockableBlocks: <int>). -1 being infinite
  */
 
-/* Version 1.4.2: 88.5KiB*/
-/* Version 1.5.0: 93.6KiB*/
+/* Version 1.5.0: 93.6KiB */
+/* Version 1.5.1/2: 96:0KiB */

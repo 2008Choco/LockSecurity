@@ -37,7 +37,7 @@ public class CombineKeyID implements Listener{
 		ItemStack unsmithedKey = null;
 		ItemStack smithedKey1 = null;
 		ItemStack smithedKey2 = null;
-		if (event.getInventory().getResult().equals(keys.createUnsmithedKey(1))){
+		if (event.getRecipe().equals(plugin.combinationRecipe)){
 			newIDs.clear();
 			for (ItemStack item : event.getInventory().getMatrix()){
 				if (isLockedKey(item)){

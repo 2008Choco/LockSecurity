@@ -48,8 +48,8 @@ public class LockInspect implements CommandExecutor{
 						return true;
 					}
 					
-					Block block = ram.getLocationFromLockID(ID).getBlock();
 					if (ram.isStored(ram.getLocationFromLockID(ID))){
+						Block block = ram.getLocationFromLockID(ID).getBlock();
 						player.sendMessage(ChatColor.GOLD + "- - - - - - " + ChatColor.DARK_AQUA + "Lock information " + ChatColor.GOLD + "- - - - - -");
 						player.sendMessage(ChatColor.GOLD + "Lock ID: " + ChatColor.AQUA + lockedAccessor.getBlockLockID(block));
 						player.sendMessage(ChatColor.GOLD + "Key ID: " + ChatColor.AQUA + lockedAccessor.getBlockKeyID(block));

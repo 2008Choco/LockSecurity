@@ -52,8 +52,8 @@ public class Unlock implements CommandExecutor{
 						return true;
 					}
 					
-					Location lockLocation = ram.getLocationFromLockID(ID);
-					if (ram.isStored(lockLocation)){
+					if (ram.isStored(ram.getLocationFromLockID(ID))){
+						Location lockLocation = ram.getLocationFromLockID(ID);
 						PlayerUnlockBlockEvent unlockEvent = new PlayerUnlockBlockEvent(plugin, player, lockLocation.getBlock());
 						Bukkit.getPluginManager().callEvent(unlockEvent);
 						if (!unlockEvent.isCancelled()){
