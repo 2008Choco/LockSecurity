@@ -100,6 +100,19 @@ public class LockedBlockAccessor {
 		plugin.locked.reloadConfig();
 	}
 	
+	/** Transfer a locked block to another player
+	 * @param block - The block to transfer
+	 * @param player - The player to transfer the block to
+	 */
+	public void transferLock(Block block, OfflinePlayer player){
+		int id = getBlockLockID(block);
+		plugin.locked.getConfig().set(id + "OwnerUUID", player.getUniqueId().toString());
+		plugin.locked.getConfig().set(id + ".PlayerName", player.getName().toString());
+		
+		plugin.locked.saveConfig();
+		plugin.locked.reloadConfig();
+	}
+	
 	/** A boolean method to determine whether the Key ID matches the Block Lock ID
 	 * @param block - The block to reference an ID from
 	 * @param player - The player that is right clicking the locked block

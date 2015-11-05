@@ -8,6 +8,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import me.choco.locks.LockSecurity;
+import me.choco.locks.api.utils.LSMode;
 import me.choco.locks.utils.LockStorageHandler;
 import me.choco.locks.utils.LockedBlockAccessor;
 
@@ -27,11 +28,11 @@ public class LockInspect implements CommandExecutor{
 			Player player = (Player) sender;
 			if (args.length == 0){
 				if (player.hasPermission("locks.lockinspect")){
-					if (plugin.inspectLockMode.contains(player.getName())){
-						plugin.inspectLockMode.remove(player.getName());
+					if (LSMode.getMode(player).equals(LSMode.INSPECT_LOCKS)){
+						LSMode.setMode(player, LSMode.DEFAULT);
 						plugin.sendPathMessage(player, plugin.messages.getConfig().getString("Commands.LockInspect.LockInspectDisabled"));
 					}else{
-						plugin.inspectLockMode.add(player.getName());
+						LSMode.setMode(player, LSMode.INSPECT_LOCKS);
 						plugin.sendPathMessage(player, plugin.messages.getConfig().getString("Commands.LockInspect.LockInspectEnabled"));
 					}
 				}else{

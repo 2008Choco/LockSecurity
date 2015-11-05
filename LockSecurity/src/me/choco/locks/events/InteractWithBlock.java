@@ -16,6 +16,7 @@ import me.choco.locks.api.PlayerInteractLockedBlockEvent;
 import me.choco.locks.api.PlayerLockBlockEvent;
 import me.choco.locks.api.PlayerUnlockBlockEvent;
 import me.choco.locks.api.utils.InteractResult;
+import me.choco.locks.api.utils.LSMode;
 import me.choco.locks.utils.Keys;
 import me.choco.locks.utils.LockState;
 import me.choco.locks.utils.LockedBlockAccessor;
@@ -40,7 +41,7 @@ public class InteractWithBlock implements Listener{
 			if (event.getAction().equals(Action.RIGHT_CLICK_BLOCK)){
 				if (plugin.isLockable(block)){
 					if (lockedAccessor.getLockedState(block).equals(LockState.UNLOCKED)){
-						if (!plugin.inspectLockMode.contains(player.getName())){
+						if (!LSMode.getMode(player).equals(LSMode.INSPECT_LOCKS)){
 							if (keys.playerHasUnsmithedKey(player)){
 								event.setCancelled(true);
 								if (player.hasPermission("locks.lock")){
@@ -60,8 +61,8 @@ public class InteractWithBlock implements Listener{
 						}
 					}
 					else if (lockedAccessor.getLockedState(block).equals(LockState.LOCKED)){
-						if (!plugin.inspectLockMode.contains(player.getName()) && !plugin.unlockMode.contains(player.getName())){
-							if (lockedAccessor.playerHasCorrectKey(block, player) || plugin.ignoresLocks.contains(player.getName())
+						if (LSMode.getMode(player).equals(LSMode.DEFAULT) || LSMode.getMode(player).equals(LSMode.IGNORE_LOCKS)){
+							if (lockedAccessor.playerHasCorrectKey(block, player) || LSMode.getMode(player).equals(LSMode.IGNORE_LOCKS)
 									|| (player.isSneaking() && !player.getItemInHand().getType().equals(Material.AIR))
 									|| (lockedAccessor.getBlockOwnerUUID(block).equals(player.getUniqueId().toString()) && !plugin.getConfig().getBoolean("Griefing.OwnerRequiresKey"))){
 								PlayerInteractLockedBlockEvent interactLockedBlockEvent = new PlayerInteractLockedBlockEvent(plugin, player, block, InteractResult.SUCCESS);
@@ -91,10 +92,10 @@ public class InteractWithBlock implements Listener{
 									}
 								}
 							}
-						}else if (plugin.inspectLockMode.contains(player.getName())){ /*Inspect Lock Mode*/
+						}else if (LSMode.getMode(player).equals(LSMode.INSPECT_LOCKS)){ /*Inspect Lock Mode*/
 							event.setCancelled(true);
 							displayBlockInfo(player, block);
-						}else if (plugin.unlockMode.contains(player.getName())){ /*Unlock Mode*/
+						}else if (LSMode.getMode(player).equals(LSMode.UNLOCK)){ /*Unlock Mode*/
 							event.setCancelled(true);
 							if (lockedAccessor.getBlockOwnerUUID(block).equals(player.getUniqueId().toString())
 									|| player.hasPermission("locks.adminunlock")){
@@ -104,22 +105,24 @@ public class InteractWithBlock implements Listener{
 									plugin.sendPathMessage(player, plugin.messages.getConfig().getString("Commands.Unlock.BlockUnlocked").replaceAll("%lockID%", String.valueOf(lockedAccessor.getBlockLockID(block))));
 									lockedAccessor.setUnlocked(block);
 									player.playSound(block.getLocation(), Sound.DOOR_OPEN, 1, 2);
-									plugin.unlockMode.remove(player.getName());
+									LSMode.getMode(player).equals(LSMode.DEFAULT);
 								}
 							}else{
 								plugin.sendPathMessage(player, plugin.messages.getConfig().getString("Commands.Unlock.NotOwner"));
 							}
+						}else if (LSMode.getMode(player).equals(LSMode.TRANSFER_LOCK)){ /*Transfer Lock Mode*/
+							event.setCancelled(true);
+							lockedAccessor.transferLock(block, Bukkit.getOfflinePlayer(plugin.transferTo.get(player.getName())));
 						}
 					}
 				}
 			}else if (event.getAction().equals(Action.LEFT_CLICK_BLOCK)){
-				if (plugin.inspectLockMode.contains(player.getName())){ /*Inspect Lock Mode*/
+				if (LSMode.getMode(player).equals(LSMode.INSPECT_LOCKS)){ /*Inspect Lock Mode*/
 					if (plugin.isLockable(block)){
+						event.setCancelled(true);
 						if (lockedAccessor.getLockedState(block).equals(LockState.LOCKED)){
-							event.setCancelled(true);
 							displayBlockInfo(player, block);	
 						}else{
-							event.setCancelled(true);
 							plugin.sendPathMessage(player, plugin.messages.getConfig().getString("Commands.LockInspect.BlockNotLocked"));
 						}
 					}

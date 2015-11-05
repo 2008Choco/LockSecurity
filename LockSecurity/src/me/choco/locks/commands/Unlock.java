@@ -10,6 +10,7 @@ import org.bukkit.entity.Player;
 
 import me.choco.locks.LockSecurity;
 import me.choco.locks.api.PlayerUnlockBlockEvent;
+import me.choco.locks.api.utils.LSMode;
 import me.choco.locks.utils.LockStorageHandler;
 import me.choco.locks.utils.LockedBlockAccessor;
 
@@ -28,12 +29,12 @@ public class Unlock implements CommandExecutor{
 			Player player = (Player) sender;
 			if (args.length == 0){
 				if (player.hasPermission("locks.unlock.self")){
-					if (!plugin.unlockMode.contains(player.getName())){
-						plugin.unlockMode.add(player.getName());
+					if (!LSMode.getMode(player).equals(LSMode.UNLOCK)){
+						LSMode.setMode(player, LSMode.UNLOCK);
 						plugin.sendPathMessage(player, plugin.messages.getConfig().getString("Commands.Unlock.UnlockModeEnabled"));
 						return true;
 					}else{
-						plugin.unlockMode.remove(player.getName());
+						LSMode.setMode(player, LSMode.DEFAULT);
 						plugin.sendPathMessage(player, plugin.messages.getConfig().getString("Commands.Unlock.UnlockModeDisabled"));
 						return true;
 					}

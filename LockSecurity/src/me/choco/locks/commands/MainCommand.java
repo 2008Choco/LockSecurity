@@ -1,14 +1,18 @@
 package me.choco.locks.commands;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.TabCompleter;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import me.choco.locks.LockSecurity;
 
-public class MainCommand implements CommandExecutor{
+public class MainCommand implements CommandExecutor, TabCompleter{
 	LockSecurity plugin;
 	public MainCommand(LockSecurity plugin){
 		this.plugin = plugin;
@@ -43,5 +47,17 @@ public class MainCommand implements CommandExecutor{
 			}
 		}
 		return false;
+	}
+
+	@Override
+	public List<String> onTabComplete(CommandSender sender, Command cmd, String commandLabel, String[] args) {
+		List<String> possibleArgs = new ArrayList<String>();
+		if (args.length == 0){
+			if (sender.hasPermission("locks.reload"))
+				possibleArgs.add("reload");
+			possibleArgs.add("version");
+			return possibleArgs;
+		}
+		return null;
 	}
 }

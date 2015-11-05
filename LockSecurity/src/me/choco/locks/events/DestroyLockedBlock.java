@@ -9,6 +9,7 @@ import org.bukkit.event.block.BlockBreakEvent;
 
 import me.choco.locks.LockSecurity;
 import me.choco.locks.api.PlayerUnlockBlockEvent;
+import me.choco.locks.api.utils.LSMode;
 import me.choco.locks.utils.LockState;
 import me.choco.locks.utils.LockedBlockAccessor;
 
@@ -30,7 +31,7 @@ public class DestroyLockedBlock implements Listener{
 			if (lockedAccessor.getLockedState(block).equals(LockState.LOCKED)){
 				String id = String.valueOf(lockedAccessor.getBlockLockID(block));
 				if (plugin.locked.getConfig().get(id + ".OwnerUUID").equals(player.getUniqueId().toString()) 
-						|| (plugin.ignoresLocks.contains(player.getName()) && plugin.getConfig().getBoolean("Griefing.IgnorelocksCanBreakLocks"))){
+						|| (LSMode.getMode(player).equals(LSMode.IGNORE_LOCKS) && plugin.getConfig().getBoolean("Griefing.IgnorelocksCanBreakLocks"))){
 					PlayerUnlockBlockEvent unlockEvent = new PlayerUnlockBlockEvent(plugin, player, block);
 					Bukkit.getPluginManager().callEvent(unlockEvent);
 					if (!unlockEvent.isCancelled()){

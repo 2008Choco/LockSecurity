@@ -1,7 +1,6 @@
 package me.choco.locks;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
@@ -18,6 +17,7 @@ import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.inventory.ShapelessRecipe;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import me.choco.locks.api.utils.LSMode;
 import me.choco.locks.commands.ForgeKey;
 import me.choco.locks.commands.GiveKey;
 import me.choco.locks.commands.IgnoreLocks;
@@ -50,10 +50,8 @@ public class LockSecurity extends JavaPlugin{
 
 	public HashMap<Location, Integer> lockedLockIDs = new HashMap<Location, Integer>();
 	public HashMap<Location, Integer> lockedKeyIDs = new HashMap<Location, Integer>();
-	public ArrayList<String> ignoresLocks = new ArrayList<String>();
-	public ArrayList<String> inspectLockMode = new ArrayList<String>();
-	public ArrayList<String> unlockMode = new ArrayList<String>();
-	
+	public HashMap<String, String> transferTo = new HashMap<String, String>();
+
 	public ShapelessRecipe combinationRecipe = new ShapelessRecipe(keysClass.createUnsmithedKey(1)).addIngredient(2, Material.TRIPWIRE_HOOK);
 	
 	@Override
@@ -87,7 +85,7 @@ public class LockSecurity extends JavaPlugin{
 		this.getCommand("locklist").setExecutor(new LockList(this));
 		this.getCommand("locklistother").setExecutor(new LockList(this));
 		this.getCommand("forgekey").setExecutor(new ForgeKey(this));
-		this.getCommand("locksecurity").setExecutor(new MainCommand(this));
+		this.getCommand("locksecurity").setExecutor(new MainCommand(this)); this.getCommand("locksecurity").setTabCompleter(new MainCommand(this));
 		this.getCommand("lockinspect").setExecutor(new LockInspect(this));
 		this.getCommand("unlock").setExecutor(new Unlock(this));
 		
@@ -109,13 +107,13 @@ public class LockSecurity extends JavaPlugin{
 		    try{
 		        Metrics metrics = new Metrics(this);
 		        metrics.start();
-		    }//Close an attempt to start metrics
+		    }
 		    catch (IOException e){
 		    	e.printStackTrace();
 		        getLogger().warning("Could not enable Plugin Metrics. If issues continue, please put in a ticket on the "
 		        	+ "Lock Security development page");
-		    }//Close if an IOException occurs
-		}//Close if pluginmetrics is enabled in config
+		    }
+		}
 		
 		//Load blocks into RAM (HashMap)
 		int errors = 0;
@@ -137,7 +135,8 @@ public class LockSecurity extends JavaPlugin{
 				if (location.getBlock().getType().toString().equals(locked.getConfig().getString(key + ".BlockType"))){
 					ram.addLockInformation(location, lockID, keyID);
 				}else{
-					this.getLogger().info("Lock ID " + key + " (Location: " + formatLocation(location) + ", Owner: " + locked.getConfig().getString(key + ".PlayerName") + ") removed due to not being identical as the save. Was it removed?");
+					this.getLogger().info("Lock ID " + key + " (Location: " + formatLocation(location) + ", Owner: " 
+							+ locked.getConfig().getString(key + ".PlayerName") + ") removed due to not being identical as the save. Was it removed?");
 					locked.getConfig().set(key, null);
 					locked.saveConfig();
 					locked.reloadConfig();
@@ -172,9 +171,8 @@ public class LockSecurity extends JavaPlugin{
 		this.getLogger().info("Removing stored data from the plugin, and saving it in locked.yml");
 		ram.clearLocks();
 		this.getLogger().info("Removing temporary information");
-		ignoresLocks.clear();
-		inspectLockMode.clear();
-		unlockMode.clear();
+		LSMode.modeHandler.clear();
+		transferTo.clear();
 	}
 	
 	/** Check whether the specified block is a lockable or not
@@ -219,7 +217,7 @@ public class LockSecurity extends JavaPlugin{
 /* TODO Upcoming Versions
  * Commands-Related:
  *     /adminlock - Convert the unbinded key in the player's hand to an AdminKey, which will lock any block under an administrative name
- *     Add an alias to /locklist, (/locks)
+ *     Allow 3 parameters in the /transferlock command to transfer a specific ID wirelessly to a player (/transferlock <player> <lockid>)
  * 
  * General:
  *     Create a WorldGuard flag, "locks", to determine whether players can lock chests or not
@@ -228,13 +226,13 @@ public class LockSecurity extends JavaPlugin{
  *     Add faction support. Lock a block under your faction name rather than your own name
  *     Add a new configuration option: OnlyDuplicateOwnKeys: true/false
  *         -> You MUST be the owner of the keys to merge or duplicate them
+ *     Add IRON_DOOR / IRON_TRAPDOOR support. Right clicking on a locked IRON_DOOR / IRON_TRAPDOOR will open it like a wooden door
  * -------------------------------------------------------------------------------------------------------------------------
  * TODO Next Version:
  * /locknotify <on|off> - Toggle the visibility of administrative lock displays (Displays all lock information to administrators)
- * /transferlock <player> - Right click on a locked block, and it will be transfered to the player specified in the command
  * Add a limit to how many items the player can lock?
  *     -> Add a config option to determine how many they can lock (MaxLockableBlocks: <int>). -1 being infinite
  */
 
-/* Version 1.5.0: 93.6KiB */
 /* Version 1.5.1/2: 96:0KiB */
+/* Version 1.6.0: 99.4KiB */

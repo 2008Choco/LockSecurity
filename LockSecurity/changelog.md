@@ -9,6 +9,16 @@ This is where you will find the official changelog of all releases of *LockSecur
 ## Official Releases ##
 - - - - - - - - - -
 
+### Release 1.6.0 ###
+* Added a tabcompleter for the /locksecurity command arguments (reload, and version)
+* Added an alias for locklist: /locks
+* Added new transferLock(Block, Player) method in the LockedBlockAccessor class
+* Added new /transferlock command to transfer the clicked block to a specified player. /transferlock <player_to_transfer_to>
+* Changed the way player modes (Unlock mode, Ignore Locks Mode, Transfer Lock Mode, etc.) are handled
+* |-> They are now handled through an Enumeration in the me.choco.locks.api.utils class: LSMode
+* |-> Added 2 new static methods under LSMode: getMode(Player), setMode(Player, LSMode).
+* Fixed being able to lock a new block in Unlock mode
+
 ### Release 1.5.2 ###
 * Fixed Unsmithed Keys not being craftable
 * Fixed NullPointerException with /lockinspect <id> when specifying an invalid ID

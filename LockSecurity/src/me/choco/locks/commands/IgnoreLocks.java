@@ -6,6 +6,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import me.choco.locks.LockSecurity;
+import me.choco.locks.api.utils.LSMode;
 
 public class IgnoreLocks implements CommandExecutor{
 	LockSecurity plugin;
@@ -18,11 +19,11 @@ public class IgnoreLocks implements CommandExecutor{
 		if (sender instanceof Player){
 			Player player = (Player) sender;
 			if (player.hasPermission("locks.ignorelocks")){
-				if (plugin.ignoresLocks.contains(player.getName())){
-					plugin.ignoresLocks.remove(player.getName());
+				if (LSMode.getMode(player).equals(LSMode.IGNORE_LOCKS)){
+					LSMode.setMode(player, LSMode.DEFAULT);
 					plugin.sendPathMessage(player, plugin.messages.getConfig().getString("Commands.IgnoreLocks.NoLongerIgnoringLocks"));
 				}else{
-					plugin.ignoresLocks.add(player.getName());
+					LSMode.setMode(player, LSMode.IGNORE_LOCKS);
 					plugin.sendPathMessage(player, plugin.messages.getConfig().getString("Commands.IgnoreLocks.IgnoringLocks"));
 				}
 			}
