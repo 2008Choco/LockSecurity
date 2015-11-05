@@ -109,6 +109,10 @@ public class CollectorHandler {
 		return ids;
 	}
 	
+	/** Check whether a block is a collector or not
+	 * @param block - The block to gather information from
+	 * @return boolean - True: Collector, False: Not-Collector
+	 */
 	public boolean isCollector(Block block){
 		return plugin.collectors.getConfig().getKeys(false).contains(String.valueOf(plugin.collectorBlocks.get(block.getLocation())));
 	}

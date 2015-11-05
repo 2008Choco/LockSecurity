@@ -9,10 +9,8 @@ import me.choco.LSaddon.utils.CollectorHandler;
 import me.choco.locks.api.PlayerUnlockBlockEvent;
 
 public class UnlockBlock implements Listener{
-	ChestCollector plugin;
 	CollectorHandler collectorHandler;
 	public UnlockBlock(ChestCollector plugin){
-		this.plugin = plugin;
 		this.collectorHandler = new CollectorHandler(plugin);
 	}
 	

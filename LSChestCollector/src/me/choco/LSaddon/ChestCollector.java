@@ -26,7 +26,7 @@ public class ChestCollector extends JavaPlugin{
 	 public LockedBlockAccessor lockedAccessor;
 	 public ConfigAccessor collectors;
 	 
-	 public ArrayList<String> collectCreationMode = new ArrayList<String>();
+	 public ArrayList<String> collectorCreationMode = new ArrayList<String>();
 	 public HashMap<Location, Integer> collectorBlocks = new HashMap<Location, Integer>();
 	 private HashMap<String, String[]> collectsCommandTempInfo = new HashMap<String, String[]>();
 	 
@@ -36,6 +36,9 @@ public class ChestCollector extends JavaPlugin{
 		lockedAccessor = new LockedBlockAccessor(lockSecurity);
 		this.getLogger().info("Successfully hooked into LockSecurity.");
 		
+		//LSChestCollector default config
+		getConfig().options().copyDefaults(true);
+	    saveConfig();
 		//LSChestCollector collectors.yml
 		collectors = new ConfigAccessor(this, "collectors.yml");
 		collectors.loadConfig();
@@ -108,12 +111,12 @@ public class ChestCollector extends JavaPlugin{
 	@Override
 	public void onDisable(){
 		this.getLogger().info("Clearing all local RAM storage");
-		collectCreationMode.clear();
+		collectorCreationMode.clear();
 		collectorBlocks.clear();
 		collectsCommandTempInfo.clear();
 	}
 	
-	public void addCommandItems(String playerName, String[] items){
+	public void setCommandItems(String playerName, String[] items){
 		collectsCommandTempInfo.put(playerName, items);
 	}
 	

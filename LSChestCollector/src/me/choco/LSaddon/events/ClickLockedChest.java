@@ -26,20 +26,27 @@ public class ClickLockedChest implements Listener{
 	public void onClickLockedChest(PlayerInteractLockedBlockEvent event){
 		Block block = event.getBlock();
 		Player player = event.getPlayer();
-		if (block.getType().equals(Material.CHEST)){
-			if (lockedAccessor.getBlockOwnerUUID(block).equals(player.getUniqueId().toString())){
-				if (plugin.collectCreationMode.contains(player.getName())){
+		if (plugin.collectorCreationMode.contains(player.getName())){
+			if (block.getType().equals(Material.CHEST)){
+				if (lockedAccessor.getBlockOwnerUUID(block).equals(player.getUniqueId().toString())){
 					event.setCancelled(true);
-					String[] items = plugin.getCommandItems(player.getName());
-					collectorHandler.addCollector(player, items, block.getLocation());
-					String itemList = ""; for (String item : items){itemList = itemList + ", " + item;}
+					if (!collectorHandler.isCollector(block)){
+						String[] items = plugin.getCommandItems(player.getName());
+						collectorHandler.addCollector(player, items, block.getLocation());
+						String itemList = ""; for (String item : items){itemList = itemList + ", " + item;}
+						player.sendMessage(ChatColor.GOLD + "[" + ChatColor.AQUA + "Collector" + ChatColor.GOLD + "] " + ChatColor.GRAY + 
+								"Chest collector created. The following items will be collected: " + itemList);
+						plugin.collectorCreationMode.remove(player.getName());
+					}else{
+						player.sendMessage(ChatColor.GOLD + "[" + ChatColor.AQUA + "Collector" + ChatColor.GOLD + "] " + ChatColor.GRAY + 
+								"This is already a collector");
+						plugin.collectorCreationMode.remove(player.getName());
+					}
+				}else{
 					player.sendMessage(ChatColor.GOLD + "[" + ChatColor.AQUA + "Collector" + ChatColor.GOLD + "] " + ChatColor.GRAY + 
-							"Chest collector created. The following items will be collected: " + itemList);
-					plugin.collectCreationMode.remove(player.getName());
+							"You do not own this chest");
+					plugin.collectorCreationMode.remove(player.getName());
 				}
-			}else{
-				player.sendMessage(ChatColor.GOLD + "[" + ChatColor.AQUA + "Collector" + ChatColor.GOLD + "] " + ChatColor.GRAY + 
-						"You do not own this chest");
 			}
 		}
 	}
