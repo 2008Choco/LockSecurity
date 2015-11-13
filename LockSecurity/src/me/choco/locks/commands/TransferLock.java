@@ -26,22 +26,25 @@ public class TransferLock implements CommandExecutor{
 						if (Bukkit.getOfflinePlayer(args[0]).hasPlayedBefore()){
 							LSMode.setMode(player, LSMode.TRANSFER_LOCK);
 							plugin.transferTo.put(player.getName(), args[0]);
-							plugin.sendPathMessage(player, "Commands.TransferLock.TransferModeEnabled");
+							plugin.sendPathMessage(player, plugin.messages.getConfig().getString("Commands.TransferLock.TransferModeEnabled"));
 						}else{
-							plugin.sendPathMessage(player, "Commands.General.PlayerNeverPlayedBefore");
+							plugin.sendPathMessage(player, plugin.messages.getConfig().getString("Commands.General.PlayerNeverPlayedBefore"));
 						}
+						return true;
 					}else if (args.length == 2){
 						//TODO /transferlock <player> <LockID>
 					}
 				}else{
 					LSMode.setMode(player, LSMode.DEFAULT);
 					plugin.transferTo.remove(player.getName());
-					plugin.sendPathMessage(player, "Commands.TransferLock.TransferModeDisabled");
+					plugin.sendPathMessage(player, plugin.messages.getConfig().getString("Commands.TransferLock.TransferModeDisabled"));
+					return true;
 				}
 			}
 		}else{
 			plugin.sendPathMessage(sender, plugin.messages.getConfig().getString("Commands.General.OnlyPlayers"));
+			return true;
 		}
-		return true;
+		return false;
 	}
 }

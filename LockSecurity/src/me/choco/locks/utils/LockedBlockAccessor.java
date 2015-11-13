@@ -106,7 +106,7 @@ public class LockedBlockAccessor {
 	 */
 	public void transferLock(Block block, OfflinePlayer player){
 		int id = getBlockLockID(block);
-		plugin.locked.getConfig().set(id + "OwnerUUID", player.getUniqueId().toString());
+		plugin.locked.getConfig().set(id + ".OwnerUUID", player.getUniqueId().toString());
 		plugin.locked.getConfig().set(id + ".PlayerName", player.getName().toString());
 		
 		plugin.locked.saveConfig();

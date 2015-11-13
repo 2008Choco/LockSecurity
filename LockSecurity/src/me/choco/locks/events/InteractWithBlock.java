@@ -113,6 +113,10 @@ public class InteractWithBlock implements Listener{
 						}else if (LSMode.getMode(player).equals(LSMode.TRANSFER_LOCK)){ /*Transfer Lock Mode*/
 							event.setCancelled(true);
 							lockedAccessor.transferLock(block, Bukkit.getOfflinePlayer(plugin.transferTo.get(player.getName())));
+							plugin.sendPathMessage(player, plugin.messages.getConfig().getString("Commands.TransferLock.TransferredBlock")
+								.replaceAll("%type%", block.getType().toString()).replaceAll("%player%", plugin.transferTo.get(player.getName()))
+								.replaceAll("%keyID%", String.valueOf(lockedAccessor.getBlockKeyID(block))).replaceAll("%lockID%", String.valueOf(lockedAccessor.getBlockLockID(block))));
+							LSMode.setMode(player, LSMode.DEFAULT);
 						}
 					}
 				}

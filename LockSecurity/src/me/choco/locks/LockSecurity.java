@@ -24,6 +24,7 @@ import me.choco.locks.commands.IgnoreLocks;
 import me.choco.locks.commands.LockInspect;
 import me.choco.locks.commands.LockList;
 import me.choco.locks.commands.MainCommand;
+import me.choco.locks.commands.TransferLock;
 import me.choco.locks.commands.Unlock;
 import me.choco.locks.events.AttemptKeyPlace;
 import me.choco.locks.events.CombineKeyID;
@@ -88,6 +89,7 @@ public class LockSecurity extends JavaPlugin{
 		this.getCommand("locksecurity").setExecutor(new MainCommand(this)); this.getCommand("locksecurity").setTabCompleter(new MainCommand(this));
 		this.getCommand("lockinspect").setExecutor(new LockInspect(this));
 		this.getCommand("unlock").setExecutor(new Unlock(this));
+		this.getCommand("transferlock").setExecutor(new TransferLock(this));
 		
 		//Generate key recipe. RECIPE: IronBars (top left), IronIngot (middle), WoodenPlank (bottom right)
 		ItemStack unsmithedKey = keysClass.createUnsmithedKey(1);

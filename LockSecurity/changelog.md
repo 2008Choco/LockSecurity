@@ -17,7 +17,9 @@ This is where you will find the official changelog of all releases of *LockSecur
 * Changed the way player modes (Unlock mode, Ignore Locks Mode, Transfer Lock Mode, etc.) are handled
 * |-> They are now handled through an Enumeration in the me.choco.locks.api.utils class: LSMode
 * |-> Added 2 new static methods under LSMode: getMode(Player), setMode(Player, LSMode).
+* |-> The LSMode class will be replaced in the future, though deprecation will not be necessary. Just be weary, developers
 * Fixed being able to lock a new block in Unlock mode
+* Fixed a tiny NullPointerException with the "/locksecurity version" command
 
 ### Release 1.5.2 ###
 * Fixed Unsmithed Keys not being craftable

@@ -14,7 +14,11 @@ public enum LSMode {
 	 * @param player - The player to check
 	 * @return LSMode - The mode the player is in
 	 */
-	public static LSMode getMode(Player player){return modeHandler.get(player.getName());}
+	public static LSMode getMode(Player player){
+		if (modeHandler.get(player.getName()) == null)
+			modeHandler.put(player.getName(), LSMode.DEFAULT);
+		return modeHandler.get(player.getName());
+	}
 	
 	/** Set the Player's mode
 	 * @param player - The player to change modes

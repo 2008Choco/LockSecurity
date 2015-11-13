@@ -20,8 +20,6 @@ public class MainCommand implements CommandExecutor, TabCompleter{
 	
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args){
-		@SuppressWarnings("deprecation")
-		YamlConfiguration pluginFile = YamlConfiguration.loadConfiguration(getClass().getResourceAsStream("/plugin.yml"));
 		if (args.length == 1){
 			if (args[0].equalsIgnoreCase("reload")){
 				if (sender.hasPermission("locks.reload")){
@@ -35,6 +33,8 @@ public class MainCommand implements CommandExecutor, TabCompleter{
 				return true;
 			}
 			if (args[0].equalsIgnoreCase("version")){
+				@SuppressWarnings("deprecation")
+				YamlConfiguration pluginFile = YamlConfiguration.loadConfiguration(getClass().getResourceAsStream("/plugin.yml"));
 				sender.sendMessage(ChatColor.GOLD + "--------------------------------------------");
 				sender.sendMessage(ChatColor.DARK_AQUA + "" + ChatColor.BOLD + "Version: " + ChatColor.RESET + ChatColor.GRAY  + plugin.getDescription().getVersion());
 				sender.sendMessage(ChatColor.DARK_AQUA + "" + ChatColor.BOLD + "API Version: " + ChatColor.RESET + ChatColor.GRAY + pluginFile.getString("apiversion"));
@@ -52,7 +52,7 @@ public class MainCommand implements CommandExecutor, TabCompleter{
 	@Override
 	public List<String> onTabComplete(CommandSender sender, Command cmd, String commandLabel, String[] args) {
 		List<String> possibleArgs = new ArrayList<String>();
-		if (args.length == 0){
+		if (args.length == 1){
 			if (sender.hasPermission("locks.reload"))
 				possibleArgs.add("reload");
 			possibleArgs.add("version");
