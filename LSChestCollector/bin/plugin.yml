@@ -1,6 +1,6 @@
 name: LSChestCollector
 main: me.choco.LSaddon.ChestCollector
-version: 1.0
+version: 1.1
 description: Create a chest that automatically pulls specified items from your inventory
 author: 2008Choco
 depend: [LockSecurity]

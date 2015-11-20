@@ -15,6 +15,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.inventory.ShapelessRecipe;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import me.choco.locks.api.utils.LSMode;
@@ -43,7 +44,15 @@ public class LockSecurity extends JavaPlugin{
 	LockStorageHandler ram = new LockStorageHandler(this);
 	
 	private static LockSecurity instance;
-	public static final LockSecurity getPlugin() {return instance;}
+	public static final LockSecurity getPlugin(Plugin plugin) {
+		System.out.println("Add-On Detected: " + plugin.getDescription().getName() + "v" + plugin.getDescription().getVersion()); 
+		return instance;
+	}
+	@Deprecated
+	public static final LockSecurity getPlugin(){
+		System.out.println("Add-On Detected. No information provided");
+		return instance;
+	}
 	
 	public ConfigAccessor locked;
 	public ConfigAccessor messages;
@@ -238,6 +247,7 @@ public class LockSecurity extends JavaPlugin{
  *         -> You MUST be the owner of the keys to merge or duplicate them
  *     Add IRON_DOOR / IRON_TRAPDOOR support. Right clicking on a locked IRON_DOOR / IRON_TRAPDOOR will open it like a wooden door
  *     Create a list for "MaximumBlocks" to allow for exceptions to the list
+ *     Automatically set configuration lists for each and every world on the server onEnable
  * -------------------------------------------------------------------------------------------------------------------------
  * TODO Next Version:
  * /locknotify <on|off> - Toggle the visibility of administrative lock displays (Displays all lock information to administrators)

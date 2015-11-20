@@ -11,11 +11,10 @@ public class AttemptKeyPlace implements Listener{
 	
 	@EventHandler
 	public void onBlockPlace(BlockPlaceEvent event){
-		ItemStack item;
-		if (event.getItemInHand() != null){
-			item = event.getItemInHand();
-			if (item.hasItemMeta()){
-				ItemMeta itemMeta = item.getItemMeta();
+		ItemStack item = event.getItemInHand();
+		if (item.hasItemMeta()){
+			ItemMeta itemMeta = item.getItemMeta();
+			if (itemMeta.hasDisplayName()){
 				if (itemMeta.getDisplayName().equals(ChatColor.GRAY + "Key") || itemMeta.getDisplayName().equals(ChatColor.GRAY + "Unsmithed Key")){
 					event.setCancelled(true);
 				}

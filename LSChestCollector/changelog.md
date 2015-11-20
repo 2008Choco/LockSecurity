@@ -9,7 +9,11 @@ This is where you will find the official changelog of all releases of *LS-ChestC
 ## Official Releases ##
 - - - - - - - - - -
 
-### Release 1.0.0 ###
+### Release 1.1 ###
+* Updated LockSecurity API to latest release (1.8.8-LS0.4)
+* Added new configuration option: DisplayOnLockMsg, which displays a message informing players about chest collectors the first time they lock a chest
+
+### Release 1.0 ###
 * Added a /collects <ItemStack,ItemStack,ItemStack...> command to set the player in collector creation mode
 * |-> Requires the "collections.command" permission node. Default: true (All players)
 * |-> You can have as many item stacks as your chat lets you. Example: "/collects IRON\_INGOT,GOLD\_INGOT,DIAMOND,REDSTONE,COAL"

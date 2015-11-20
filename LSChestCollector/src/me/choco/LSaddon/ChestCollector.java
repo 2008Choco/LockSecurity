@@ -32,7 +32,7 @@ public class ChestCollector extends JavaPlugin{
 	 
 	@Override
 	public void onEnable(){
-		lockSecurity = LockSecurity.getPlugin();
+		lockSecurity = LockSecurity.getPlugin(this);
 		lockedAccessor = new LockedBlockAccessor(lockSecurity);
 		this.getLogger().info("Successfully hooked into LockSecurity.");
 		

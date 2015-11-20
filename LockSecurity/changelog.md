@@ -14,6 +14,10 @@ This is where you will find the official changelog of all releases of *LockSecur
 * Added a new configuration option, "MaximumLocks", to specify how many locks a player can have per world
 * |-> To use, list your world (like the example), then put the maximum amount of locks. (-1 is no limit/infinite)
 * |-> Players with permission "locks.ignorelocks" or oped players may override the block limit (Will change in the future)
+* API changes:
+* |-> Added a getPlugin method in LockSecurity class with a parameter of your plugin instance
+* |-> Deprecated the getPlugin() method without a parameter (Please use "this" in your getPlugin() method parameters)
+* Fixed NullPointerException when placing a block (Again). This is officially fixed now. Tested 100%
 
 ### Release 1.6.1 ###
 * Fixed NullPoinerException when placing a block
