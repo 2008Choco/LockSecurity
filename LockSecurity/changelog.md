@@ -9,6 +9,18 @@ This is where you will find the official changelog of all releases of *LockSecur
 ## Official Releases ##
 - - - - - - - - - -
 
+### Release 1.6.2 ###
+* Added a new getLockCount(OfflinePlayer) method to check how many locks a player has
+* Added a new configuration option, "MaximumLocks", to specify how many locks a player can have per world
+* |-> To use, list your world (like the example), then put the maximum amount of locks. (-1 is no limit/infinite)
+* |-> Players with permission "locks.ignorelocks" or oped players may override the block limit (Will change in the future)
+
+### Release 1.6.1 ###
+* Fixed NullPoinerException when placing a block
+* Fixed a typo on a permission node description
+* Made all recipes public absolute variables in the LockSecurity main class
+* Added new permission node to allow the crafting of an unsmithed key. "locks.craft", default: All Players
+
 ### Release 1.6.0 ###
 * Added a tabcompleter for the /locksecurity command arguments (reload, and version)
 * Added an alias for locklist: /locks

@@ -1,6 +1,6 @@
 name: LockSecurity
 main: me.choco.locks.LockSecurity
-version: 1.6.0
+version: 1.6.1
 apiversion: 1.8.8-LS0.3
 description: Lockable blocks only accessable by keys
 author: 2008Choco
@@ -79,5 +79,8 @@ permissions:
         description: Allow the ability to unlock any block, even if you are not the owner
         default: op
     locks.transferlock:
-        description: ALlow access to the /transferlock command
+        description: Allow access to the /transferlock command
         default: op
+    locks.craft:
+        description: Allow the ability to craft an unsmithed key
+        default: true

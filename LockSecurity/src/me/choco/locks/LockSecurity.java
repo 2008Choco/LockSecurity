@@ -53,6 +53,15 @@ public class LockSecurity extends JavaPlugin{
 	public HashMap<Location, Integer> lockedKeyIDs = new HashMap<Location, Integer>();
 	public HashMap<String, String> transferTo = new HashMap<String, String>();
 
+	ItemStack unsmithedKey = keysClass.createUnsmithedKey(1);
+	public ShapedRecipe keyRecipe1 = new ShapedRecipe(unsmithedKey).shape("B  ", " I ", "  P").setIngredient('B', Material.IRON_FENCE).setIngredient('I', Material.IRON_INGOT).setIngredient('P', Material.WOOD);
+	public ShapedRecipe keyRecipe2 = new ShapedRecipe(unsmithedKey).shape(" B ", " I ", " P ").setIngredient('B', Material.IRON_FENCE).setIngredient('I', Material.IRON_INGOT).setIngredient('P', Material.WOOD);
+	public ShapedRecipe keyRecipe3 = new ShapedRecipe(unsmithedKey).shape("  B", " I ", "P  ").setIngredient('B', Material.IRON_FENCE).setIngredient('I', Material.IRON_INGOT).setIngredient('P', Material.WOOD);
+	public ShapedRecipe keyRecipe4 = new ShapedRecipe(unsmithedKey).shape("   ", "PIB", "   ").setIngredient('B', Material.IRON_FENCE).setIngredient('I', Material.IRON_INGOT).setIngredient('P', Material.WOOD);
+	public ShapedRecipe keyRecipe5 = new ShapedRecipe(unsmithedKey).shape("  P", " I ", "B  ").setIngredient('B', Material.IRON_FENCE).setIngredient('I', Material.IRON_INGOT).setIngredient('P', Material.WOOD);
+	public ShapedRecipe keyRecipe6 = new ShapedRecipe(unsmithedKey).shape(" P ", " I ", " B ").setIngredient('B', Material.IRON_FENCE).setIngredient('I', Material.IRON_INGOT).setIngredient('P', Material.WOOD);
+	public ShapedRecipe keyRecipe7 = new ShapedRecipe(unsmithedKey).shape("P  ", " I ", "  B").setIngredient('B', Material.IRON_FENCE).setIngredient('I', Material.IRON_INGOT).setIngredient('P', Material.WOOD);
+	public ShapedRecipe keyRecipe8 = new ShapedRecipe(unsmithedKey).shape("   ", "BIP", "   ").setIngredient('B', Material.IRON_FENCE).setIngredient('I', Material.IRON_INGOT).setIngredient('P', Material.WOOD);
 	public ShapelessRecipe combinationRecipe = new ShapelessRecipe(keysClass.createUnsmithedKey(1)).addIngredient(2, Material.TRIPWIRE_HOOK);
 	
 	@Override
@@ -91,16 +100,15 @@ public class LockSecurity extends JavaPlugin{
 		this.getCommand("unlock").setExecutor(new Unlock(this));
 		this.getCommand("transferlock").setExecutor(new TransferLock(this));
 		
-		//Generate key recipe. RECIPE: IronBars (top left), IronIngot (middle), WoodenPlank (bottom right)
-		ItemStack unsmithedKey = keysClass.createUnsmithedKey(1);
-		Bukkit.getServer().addRecipe(new ShapedRecipe(unsmithedKey).shape("B  ", " I ", "  P").setIngredient('B', Material.IRON_FENCE).setIngredient('I', Material.IRON_INGOT).setIngredient('P', Material.WOOD));
-		Bukkit.getServer().addRecipe(new ShapedRecipe(unsmithedKey).shape(" B ", " I ", " P ").setIngredient('B', Material.IRON_FENCE).setIngredient('I', Material.IRON_INGOT).setIngredient('P', Material.WOOD));
-		Bukkit.getServer().addRecipe(new ShapedRecipe(unsmithedKey).shape("  B", " I ", "P  ").setIngredient('B', Material.IRON_FENCE).setIngredient('I', Material.IRON_INGOT).setIngredient('P', Material.WOOD));
-		Bukkit.getServer().addRecipe(new ShapedRecipe(unsmithedKey).shape("   ", "PIB", "   ").setIngredient('B', Material.IRON_FENCE).setIngredient('I', Material.IRON_INGOT).setIngredient('P', Material.WOOD));
-		Bukkit.getServer().addRecipe(new ShapedRecipe(unsmithedKey).shape("  P", " I ", "B  ").setIngredient('B', Material.IRON_FENCE).setIngredient('I', Material.IRON_INGOT).setIngredient('P', Material.WOOD));
-		Bukkit.getServer().addRecipe(new ShapedRecipe(unsmithedKey).shape(" P ", " I ", " B ").setIngredient('B', Material.IRON_FENCE).setIngredient('I', Material.IRON_INGOT).setIngredient('P', Material.WOOD));
-		Bukkit.getServer().addRecipe(new ShapedRecipe(unsmithedKey).shape("P  ", " I ", "  B").setIngredient('B', Material.IRON_FENCE).setIngredient('I', Material.IRON_INGOT).setIngredient('P', Material.WOOD));
-		Bukkit.getServer().addRecipe(new ShapedRecipe(unsmithedKey).shape("   ", "BIP", "   ").setIngredient('B', Material.IRON_FENCE).setIngredient('I', Material.IRON_INGOT).setIngredient('P', Material.WOOD));
+		//Generate key recipes
+		Bukkit.getServer().addRecipe(keyRecipe1);
+		Bukkit.getServer().addRecipe(keyRecipe2);
+		Bukkit.getServer().addRecipe(keyRecipe3);
+		Bukkit.getServer().addRecipe(keyRecipe4);
+		Bukkit.getServer().addRecipe(keyRecipe5);
+		Bukkit.getServer().addRecipe(keyRecipe6);
+		Bukkit.getServer().addRecipe(keyRecipe7);
+		Bukkit.getServer().addRecipe(keyRecipe8);
 		Bukkit.getServer().addRecipe(combinationRecipe);
 		
 		//Load Metrics
@@ -229,12 +237,11 @@ public class LockSecurity extends JavaPlugin{
  *     Add a new configuration option: OnlyDuplicateOwnKeys: true/false
  *         -> You MUST be the owner of the keys to merge or duplicate them
  *     Add IRON_DOOR / IRON_TRAPDOOR support. Right clicking on a locked IRON_DOOR / IRON_TRAPDOOR will open it like a wooden door
+ *     Create a list for "MaximumBlocks" to allow for exceptions to the list
  * -------------------------------------------------------------------------------------------------------------------------
  * TODO Next Version:
  * /locknotify <on|off> - Toggle the visibility of administrative lock displays (Displays all lock information to administrators)
- * Add a limit to how many items the player can lock?
- *     -> Add a config option to determine how many they can lock (MaxLockableBlocks: <int>). -1 being infinite
  */
 
-/* Version 1.5.1/2: 96:0KiB */
 /* Version 1.6.0: 99.4KiB */
+/* Version 1.6.1: 100.2KiB */

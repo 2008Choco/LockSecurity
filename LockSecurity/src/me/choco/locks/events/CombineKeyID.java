@@ -70,6 +70,14 @@ public class CombineKeyID implements Listener{
 				event.getInventory().setResult(keys.createLockedKey(2, newIDs));
 			}
 		}
+		if (event.getRecipe().equals(plugin.keyRecipe1) || event.getRecipe().equals(plugin.keyRecipe2)
+				|| event.getRecipe().equals(plugin.keyRecipe3) || event.getRecipe().equals(plugin.keyRecipe4)
+				|| event.getRecipe().equals(plugin.keyRecipe5) || event.getRecipe().equals(plugin.keyRecipe6)
+				|| event.getRecipe().equals(plugin.keyRecipe7) || event.getRecipe().equals(plugin.keyRecipe8)){
+			if (!event.getViewers().get(0).hasPermission("locks.craft")){
+				event.getInventory().setResult(new ItemStack(Material.AIR));
+			}
+		}
 	}
 	
 	private boolean isLockedKey(ItemStack item){

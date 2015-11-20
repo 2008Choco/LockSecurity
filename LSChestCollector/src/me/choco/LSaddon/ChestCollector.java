@@ -127,4 +127,13 @@ public class ChestCollector extends JavaPlugin{
 	private String formatLocation(Location location){
 		return location.getWorld().getName() + " x:" + (int)location.getBlockX() + " y:" + (int)location.getBlockY() + " z:" + (int)location.getBlockY();
 	}
+	
+	/* TODO Future Version:
+	 * 
+	 * -------------------------------------------------------------------------------------------------------------------------------------
+	 * TODO: Next Version:
+	 * Configuration Additions:
+	 *     - A list to disable specific items from being collectable
+	 *     - Maximize the amount of chest collectors you may have per world
+	 */
 }

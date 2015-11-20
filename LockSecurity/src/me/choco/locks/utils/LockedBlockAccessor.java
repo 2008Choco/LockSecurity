@@ -239,6 +239,14 @@ public class LockedBlockAccessor {
 		return ids;
 	}
 	
+	/** Get the amount of locks that the player has
+	 * @param player - The player to look up in the database
+	 * @return The amount of locks the player has
+	 */
+	public int getLockCount(OfflinePlayer player){
+		return getAllLocks(player).size();
+	}
+	
 	private void dualComponentBlockHandler(Block block, Player owner){
 		String blockType = block.getType().toString();
 		String playerUUID = owner.getUniqueId().toString(); String playerName = owner.getName();

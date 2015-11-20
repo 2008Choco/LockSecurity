@@ -45,11 +45,13 @@ public class InteractWithBlock implements Listener{
 							if (keys.playerHasUnsmithedKey(player)){
 								event.setCancelled(true);
 								if (player.hasPermission("locks.lock")){
-									PlayerLockBlockEvent lockEvent = new PlayerLockBlockEvent(plugin, player, block);
-									Bukkit.getPluginManager().callEvent(lockEvent);
-									if (!lockEvent.isCancelled()){
-										plugin.sendPathMessage(player, plugin.messages.getConfig().getString("Events.SuccessfullyLockedBlock").replaceAll("%lockID%", String.valueOf(lockedAccessor.getNextLockID())).replaceAll("%keyID%", String.valueOf(lockedAccessor.getNextKeyID())));
-										lockedAccessor.setLocked(block, player);
+									if (hasLockAvailableForWorld(player)){
+										PlayerLockBlockEvent lockEvent = new PlayerLockBlockEvent(plugin, player, block);
+										Bukkit.getPluginManager().callEvent(lockEvent);
+										if (!lockEvent.isCancelled()){
+											plugin.sendPathMessage(player, plugin.messages.getConfig().getString("Events.SuccessfullyLockedBlock").replaceAll("%lockID%", String.valueOf(lockedAccessor.getNextLockID())).replaceAll("%keyID%", String.valueOf(lockedAccessor.getNextKeyID())));
+											lockedAccessor.setLocked(block, player);
+										}
 									}
 								}else{
 									plugin.sendPathMessage(player, plugin.messages.getConfig().getString("Events.NoPermissionToLock"));
@@ -144,5 +146,11 @@ public class InteractWithBlock implements Listener{
 		player.sendMessage(ChatColor.GOLD + "Key ID: " + ChatColor.AQUA + lockedAccessor.getBlockKeyID(block));
 		player.sendMessage(ChatColor.GOLD + "Owner: " + ChatColor.AQUA + lockedAccessor.getBlockOwner(block) + " (" + ChatColor.GOLD + lockedAccessor.getBlockOwnerUUID(block) + ChatColor.AQUA + ")");
 		player.sendMessage(ChatColor.GOLD + "Location: " + ChatColor.AQUA + block.getLocation().getWorld().getName() + " x:" + block.getLocation().getBlockX() + " y:" + block.getLocation().getBlockY() + " z:" + block.getLocation().getBlockZ());
+	}
+	
+	private boolean hasLockAvailableForWorld(Player player){
+		return (lockedAccessor.getLockCount(player) <= plugin.getConfig().getInt("MaximumLocks." + player.getWorld().getName())
+				|| plugin.getConfig().getInt("MaximumLocks." + player.getWorld().getName()) == -1
+				|| player.isOp());
 	}
 }
