@@ -42,3 +42,4 @@ Events:
   NoKey: "You do not have the key to open this"
   LockPickAttempt: "You attempt to pick the lock, but it doesn't work"
   CannotBreak: "This %type% is locked by %player%. You cannot break this"
+  ReachedLockMaximum: "You cannot lock this block. You have reached the maximum for this world"

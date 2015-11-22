@@ -8,6 +8,7 @@ import java.util.Set;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.PrepareItemCraftEvent;
@@ -33,11 +34,12 @@ public class CombineKeyID implements Listener{
 	
 	@EventHandler
 	public void onAttemptKeyCombine(PrepareItemCraftEvent event){
+		Player player = (Player) event.getInventory().getViewers().get(0);
 		boolean combination = true;
 		ItemStack unsmithedKey = null;
 		ItemStack smithedKey1 = null;
 		ItemStack smithedKey2 = null;
-		if (event.getRecipe().equals(plugin.combinationRecipe)){
+		if (event.getInventory().getResult().equals(new ItemStack(Material.BEDROCK))){
 			newIDs.clear();
 			for (ItemStack item : event.getInventory().getMatrix()){
 				if (isLockedKey(item)){
@@ -70,11 +72,8 @@ public class CombineKeyID implements Listener{
 				event.getInventory().setResult(keys.createLockedKey(2, newIDs));
 			}
 		}
-		if (event.getRecipe().equals(plugin.keyRecipe1) || event.getRecipe().equals(plugin.keyRecipe2)
-				|| event.getRecipe().equals(plugin.keyRecipe3) || event.getRecipe().equals(plugin.keyRecipe4)
-				|| event.getRecipe().equals(plugin.keyRecipe5) || event.getRecipe().equals(plugin.keyRecipe6)
-				|| event.getRecipe().equals(plugin.keyRecipe7) || event.getRecipe().equals(plugin.keyRecipe8)){
-			if (!event.getViewers().get(0).hasPermission("locks.craft")){
+		if (event.getInventory().getResult().equals(keys.createUnsmithedKey(1))){
+			if (!player.hasPermission("locks.craft")){
 				event.getInventory().setResult(new ItemStack(Material.AIR));
 			}
 		}

@@ -1,8 +1,6 @@
 MetricsEnabled: true
 MaximumLocks:
-  EXAMPLE_WORLD: -1
-  EXAMPLE_WORLD_2: 10
-  EXAMPLE_WORLD_3: 7
+  YOUR_WORLD: -1
 
 Griefing:
   PreventLockedExplosions: true

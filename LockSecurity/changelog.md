@@ -9,6 +9,15 @@ This is where you will find the official changelog of all releases of *LockSecur
 ## Official Releases ##
 - - - - - - - - - -
 
+### Release 1.6.3 ###
+* Fixed combining and duplicating keys not working properly
+* Fixed the locks.craft permission node not functioning
+* Fixed the 1 lock limitation if your world was not specified in the list. If not specified, it will default to infinite
+* Fixed being able to lock 1 over the specified maximum amount (i.e You put 4 in the config, they could lock 5)
+* Fixed ClassNotFoundException when disabling or reloading server
+* Added a message when attempting to lock a block when unable to due to maximum locks
+* Changed the default generation of "MaximumLocks" to have only 1 display rather than 3
+
 ### Release 1.6.2 ###
 * Added a new getLockCount(OfflinePlayer) method to check how many locks a player has
 * Added a new configuration option, "MaximumLocks", to specify how many locks a player can have per world

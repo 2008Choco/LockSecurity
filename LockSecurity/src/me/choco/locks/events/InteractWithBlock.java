@@ -52,6 +52,8 @@ public class InteractWithBlock implements Listener{
 											plugin.sendPathMessage(player, plugin.messages.getConfig().getString("Events.SuccessfullyLockedBlock").replaceAll("%lockID%", String.valueOf(lockedAccessor.getNextLockID())).replaceAll("%keyID%", String.valueOf(lockedAccessor.getNextKeyID())));
 											lockedAccessor.setLocked(block, player);
 										}
+									}else{
+										plugin.sendPathMessage(player, plugin.messages.getConfig().getString("Events.ReachedLockMaximum"));
 									}
 								}else{
 									plugin.sendPathMessage(player, plugin.messages.getConfig().getString("Events.NoPermissionToLock"));
@@ -149,8 +151,9 @@ public class InteractWithBlock implements Listener{
 	}
 	
 	private boolean hasLockAvailableForWorld(Player player){
-		return (lockedAccessor.getLockCount(player) <= plugin.getConfig().getInt("MaximumLocks." + player.getWorld().getName())
+		return (lockedAccessor.getLockCount(player) < plugin.getConfig().getInt("MaximumLocks." + player.getWorld().getName())
 				|| plugin.getConfig().getInt("MaximumLocks." + player.getWorld().getName()) == -1
+				|| plugin.getConfig().get("MaximumLocks." + player.getWorld().getName()) == null
 				|| player.isOp());
 	}
 }

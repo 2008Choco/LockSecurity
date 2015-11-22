@@ -25,4 +25,7 @@ public enum LSMode {
 	 * @param mode - The mode to set the player
 	 */
 	public static void setMode(Player player, LSMode mode){modeHandler.put(player.getName(), mode);}
+	
+	/**Used to prevent memory leaks. DO NOT USE*/
+	public static void clearAllModes(){modeHandler.clear();}
 }

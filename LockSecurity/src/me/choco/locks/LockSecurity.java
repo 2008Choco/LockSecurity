@@ -45,7 +45,7 @@ public class LockSecurity extends JavaPlugin{
 	
 	private static LockSecurity instance;
 	public static final LockSecurity getPlugin(Plugin plugin) {
-		System.out.println("Add-On Detected: " + plugin.getDescription().getName() + "v" + plugin.getDescription().getVersion()); 
+		System.out.println("[LockSecurity] Add-On Detected: " + plugin.getDescription().getName() + " version " + plugin.getDescription().getVersion()); 
 		return instance;
 	}
 	@Deprecated
@@ -71,7 +71,7 @@ public class LockSecurity extends JavaPlugin{
 	public ShapedRecipe keyRecipe6 = new ShapedRecipe(unsmithedKey).shape(" P ", " I ", " B ").setIngredient('B', Material.IRON_FENCE).setIngredient('I', Material.IRON_INGOT).setIngredient('P', Material.WOOD);
 	public ShapedRecipe keyRecipe7 = new ShapedRecipe(unsmithedKey).shape("P  ", " I ", "  B").setIngredient('B', Material.IRON_FENCE).setIngredient('I', Material.IRON_INGOT).setIngredient('P', Material.WOOD);
 	public ShapedRecipe keyRecipe8 = new ShapedRecipe(unsmithedKey).shape("   ", "BIP", "   ").setIngredient('B', Material.IRON_FENCE).setIngredient('I', Material.IRON_INGOT).setIngredient('P', Material.WOOD);
-	public ShapelessRecipe combinationRecipe = new ShapelessRecipe(keysClass.createUnsmithedKey(1)).addIngredient(2, Material.TRIPWIRE_HOOK);
+	public ShapelessRecipe combinationRecipe = new ShapelessRecipe(new ItemStack(Material.BEDROCK)).addIngredient(2, Material.TRIPWIRE_HOOK);
 	
 	@Override
 	public void onEnable(){
@@ -190,7 +190,7 @@ public class LockSecurity extends JavaPlugin{
 		this.getLogger().info("Removing stored data from the plugin, and saving it in locked.yml");
 		ram.clearLocks();
 		this.getLogger().info("Removing temporary information");
-		LSMode.modeHandler.clear();
+		LSMode.clearAllModes();
 		transferTo.clear();
 	}
 	
@@ -246,12 +246,11 @@ public class LockSecurity extends JavaPlugin{
  *     Add a new configuration option: OnlyDuplicateOwnKeys: true/false
  *         -> You MUST be the owner of the keys to merge or duplicate them
  *     Add IRON_DOOR / IRON_TRAPDOOR support. Right clicking on a locked IRON_DOOR / IRON_TRAPDOOR will open it like a wooden door
- *     Create a list for "MaximumBlocks" to allow for exceptions to the list
- *     Automatically set configuration lists for each and every world on the server onEnable
+ *     Add an override MaximumLocks for ALL worlds
  * -------------------------------------------------------------------------------------------------------------------------
  * TODO Next Version:
  * /locknotify <on|off> - Toggle the visibility of administrative lock displays (Displays all lock information to administrators)
  */
 
-/* Version 1.6.0: 99.4KiB */
-/* Version 1.6.1: 100.2KiB */
+/* Version 1.6.2: 101KiB */
+/* Version 1.6.3: 102KiB */
