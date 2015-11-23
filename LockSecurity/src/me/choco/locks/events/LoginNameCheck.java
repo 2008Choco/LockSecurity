@@ -1,5 +1,10 @@
 package me.choco.locks.events;
 
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -19,22 +24,27 @@ public class LoginNameCheck implements Listener{
 	@EventHandler
 	public void onJoin(PlayerJoinEvent event){
 		boolean refactoredName = false;
-		int changes = 0;
-		Player player = event.getPlayer(); 
-		String oldName = "";
+		Player player = event.getPlayer();
+		String oldName = player.getName();
 		String currentName = player.getName();
-		for (int id : lockedAccessor.getAllLocks(player)){
-			oldName = plugin.locked.getConfig().getString(id + ".PlayerName");
-			if (!oldName.equals(currentName)){
-				plugin.locked.getConfig().set(id + ".PlayerName", currentName);
-				plugin.locked.saveConfig();
-				plugin.locked.reloadConfig();
-				refactoredName = true;
-				changes++;
-			}
+		
+		Connection connection = plugin.openConnection();
+		Statement statement = plugin.createStatement(connection);
+		ResultSet set = plugin.queryDatabase(statement, "select OwnerName from LockedBlocks where OwnerUUID = '" + player.getUniqueId().toString() + "'");
+		
+		
+		try {
+			if (set.next())
+				oldName = set.getString("OwnerName");
+		}catch (SQLException e){e.printStackTrace();}
+		
+		if (!(oldName.equals(currentName))){
+			plugin.executeStatement(statement, "update LockedBlocks set OwnerName = '" + currentName + "' where OwnerUUID = '" + player.getUniqueId().toString() + "'");
+			refactoredName = true;
 		}
-		if (refactoredName && plugin.getConfig().getBoolean("Aesthetics.DisplayNameChangeNotice")){
-			plugin.getLogger().info("Player " + currentName + " refactored. Name has changed. (Old name: " + oldName + "). " + changes + " indexes changed");
-		}
+		if (refactoredName && plugin.getConfig().getBoolean("Aesthetics.DisplayNameChangeNotice"))
+			plugin.getLogger().info("Successfully refactored SQLite Database tables for player " + currentName + " (Old name: " + oldName + ")");
+		
+		plugin.closeResultSet(set); plugin.closeStatement(statement); plugin.closeConnection(connection);
 	}
 }

@@ -1,4 +1,5 @@
 MetricsEnabled: true
+RecipeYields: 1
 MaximumLocks:
   YOUR_WORLD: -1
 

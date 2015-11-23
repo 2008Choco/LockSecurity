@@ -1,7 +1,7 @@
 name: LockSecurity
 main: me.choco.locks.LockSecurity
-version: 1.6.3
-apiversion: 1.8.8-LS0.4
+version: 1.7.0
+apiversion: 1.8.8-LS1.0
 description: Lockable blocks only accessable by keys
 author: 2008Choco
 commands:

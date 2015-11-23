@@ -65,7 +65,6 @@ public class PlayerUnlockBlockEvent extends Event implements Cancellable{
 	/** Get the LockID of the block being unlocked
 	 * @return int - The lock ID
 	 */
-	@SuppressWarnings("deprecation")
 	public int getLockID(){
 		return lockedAccessor.getBlockLockID(block);
 	}

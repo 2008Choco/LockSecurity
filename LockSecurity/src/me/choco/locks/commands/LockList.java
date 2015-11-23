@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.command.Command;
@@ -81,12 +82,8 @@ public class LockList implements CommandExecutor{
 	private void gatherLockInformation(CommandSender sender, ArrayList<Integer> ids, String targetName){
 		sender.sendMessage(ChatColor.YELLOW + plugin.messages.getConfig().getString("Commands.LockList.ListIdentifier").replaceAll("%player%", targetName));
 		for (int id : ids){
-			World world = Bukkit.getServer().getWorld(plugin.locked.getConfig().getString(id + ".Location.World"));
-			double x = plugin.locked.getConfig().getDouble(id + ".Location.X");
-			double y = plugin.locked.getConfig().getDouble(id + ".Location.Y");
-			double z = plugin.locked.getConfig().getDouble(id + ".Location.Z");
-			
-			sender.sendMessage(formatListing(id, world, x, y, z));
+			Location location = lockedAccessor.getLocationFromLockID(id);
+			sender.sendMessage(formatListing(id, location.getWorld(), location.getBlockX(), location.getBlockY(), location.getBlockZ()));
 		}
 	}
 	

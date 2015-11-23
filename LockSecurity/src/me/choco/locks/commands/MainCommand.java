@@ -24,7 +24,6 @@ public class MainCommand implements CommandExecutor, TabCompleter{
 			if (args[0].equalsIgnoreCase("reload")){
 				if (sender.hasPermission("locks.reload")){
 					plugin.reloadConfig();
-					plugin.locked.reloadConfig();
 					plugin.messages.reloadConfig();
 					plugin.sendPathMessage(sender, plugin.messages.getConfig().getString("Commands.LockSecurity.SuccessfullyReloaded"));
 				}else{

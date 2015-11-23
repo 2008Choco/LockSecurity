@@ -11,17 +11,14 @@ import org.bukkit.entity.Player;
 import me.choco.locks.LockSecurity;
 import me.choco.locks.api.PlayerUnlockBlockEvent;
 import me.choco.locks.api.utils.LSMode;
-import me.choco.locks.utils.LockStorageHandler;
 import me.choco.locks.utils.LockedBlockAccessor;
 
 public class Unlock implements CommandExecutor{
 	LockSecurity plugin;
 	LockedBlockAccessor lockedAccessor;
-	LockStorageHandler ram;
 	public Unlock(LockSecurity plugin){
 		this.plugin = plugin;
 		lockedAccessor = new LockedBlockAccessor(plugin);
-		ram = new LockStorageHandler(plugin);
 	}
 	
 	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args){
@@ -53,8 +50,8 @@ public class Unlock implements CommandExecutor{
 						return true;
 					}
 					
-					if (ram.isStored(ram.getLocationFromLockID(ID))){
-						Location lockLocation = ram.getLocationFromLockID(ID);
+					if (lockedAccessor.isInDatabase(ID)){
+						Location lockLocation = lockedAccessor.getLocationFromLockID(ID);
 						PlayerUnlockBlockEvent unlockEvent = new PlayerUnlockBlockEvent(plugin, player, lockLocation.getBlock());
 						Bukkit.getPluginManager().callEvent(unlockEvent);
 						if (!unlockEvent.isCancelled()){

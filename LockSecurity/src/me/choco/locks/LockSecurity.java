@@ -1,6 +1,11 @@
 package me.choco.locks;
 
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
@@ -35,13 +40,11 @@ import me.choco.locks.events.InteractWithBlock;
 import me.choco.locks.events.LockedBlockGriefProtection;
 import me.choco.locks.events.LoginNameCheck;
 import me.choco.locks.utils.Keys;
-import me.choco.locks.utils.LockStorageHandler;
+import me.choco.locks.utils.LockedBlockAccessor;
 import me.choco.locks.utils.general.ConfigAccessor;
 import me.choco.locks.utils.general.Metrics;
 
 public class LockSecurity extends JavaPlugin{
-	
-	LockStorageHandler ram = new LockStorageHandler(this);
 	
 	private static LockSecurity instance;
 	public static final LockSecurity getPlugin(Plugin plugin) {
@@ -57,22 +60,10 @@ public class LockSecurity extends JavaPlugin{
 	public ConfigAccessor locked;
 	public ConfigAccessor messages;
 	Keys keysClass = new Keys(this);
+	LockedBlockAccessor lockedAccessor = new LockedBlockAccessor(this);
 
-	public HashMap<Location, Integer> lockedLockIDs = new HashMap<Location, Integer>();
-	public HashMap<Location, Integer> lockedKeyIDs = new HashMap<Location, Integer>();
 	public HashMap<String, String> transferTo = new HashMap<String, String>();
 
-	ItemStack unsmithedKey = keysClass.createUnsmithedKey(1);
-	public ShapedRecipe keyRecipe1 = new ShapedRecipe(unsmithedKey).shape("B  ", " I ", "  P").setIngredient('B', Material.IRON_FENCE).setIngredient('I', Material.IRON_INGOT).setIngredient('P', Material.WOOD);
-	public ShapedRecipe keyRecipe2 = new ShapedRecipe(unsmithedKey).shape(" B ", " I ", " P ").setIngredient('B', Material.IRON_FENCE).setIngredient('I', Material.IRON_INGOT).setIngredient('P', Material.WOOD);
-	public ShapedRecipe keyRecipe3 = new ShapedRecipe(unsmithedKey).shape("  B", " I ", "P  ").setIngredient('B', Material.IRON_FENCE).setIngredient('I', Material.IRON_INGOT).setIngredient('P', Material.WOOD);
-	public ShapedRecipe keyRecipe4 = new ShapedRecipe(unsmithedKey).shape("   ", "PIB", "   ").setIngredient('B', Material.IRON_FENCE).setIngredient('I', Material.IRON_INGOT).setIngredient('P', Material.WOOD);
-	public ShapedRecipe keyRecipe5 = new ShapedRecipe(unsmithedKey).shape("  P", " I ", "B  ").setIngredient('B', Material.IRON_FENCE).setIngredient('I', Material.IRON_INGOT).setIngredient('P', Material.WOOD);
-	public ShapedRecipe keyRecipe6 = new ShapedRecipe(unsmithedKey).shape(" P ", " I ", " B ").setIngredient('B', Material.IRON_FENCE).setIngredient('I', Material.IRON_INGOT).setIngredient('P', Material.WOOD);
-	public ShapedRecipe keyRecipe7 = new ShapedRecipe(unsmithedKey).shape("P  ", " I ", "  B").setIngredient('B', Material.IRON_FENCE).setIngredient('I', Material.IRON_INGOT).setIngredient('P', Material.WOOD);
-	public ShapedRecipe keyRecipe8 = new ShapedRecipe(unsmithedKey).shape("   ", "BIP", "   ").setIngredient('B', Material.IRON_FENCE).setIngredient('I', Material.IRON_INGOT).setIngredient('P', Material.WOOD);
-	public ShapelessRecipe combinationRecipe = new ShapelessRecipe(new ItemStack(Material.BEDROCK)).addIngredient(2, Material.TRIPWIRE_HOOK);
-	
 	@Override
 	public void onEnable(){
 		instance = this;
@@ -80,9 +71,6 @@ public class LockSecurity extends JavaPlugin{
 		//LockSecurity default config file
 		getConfig().options().copyDefaults(true);
 	    saveConfig();
-	    //LockSecurity locked.yml file
-		locked = new ConfigAccessor(this, "locked.yml");
-		locked.loadConfig();
 		//LockSecurity messages.yml file
 		messages = new ConfigAccessor(this, "messages.yml");
 		messages.loadConfig();
@@ -110,15 +98,16 @@ public class LockSecurity extends JavaPlugin{
 		this.getCommand("transferlock").setExecutor(new TransferLock(this));
 		
 		//Generate key recipes
-		Bukkit.getServer().addRecipe(keyRecipe1);
-		Bukkit.getServer().addRecipe(keyRecipe2);
-		Bukkit.getServer().addRecipe(keyRecipe3);
-		Bukkit.getServer().addRecipe(keyRecipe4);
-		Bukkit.getServer().addRecipe(keyRecipe5);
-		Bukkit.getServer().addRecipe(keyRecipe6);
-		Bukkit.getServer().addRecipe(keyRecipe7);
-		Bukkit.getServer().addRecipe(keyRecipe8);
-		Bukkit.getServer().addRecipe(combinationRecipe);
+		ItemStack unsmithedKey = keysClass.createUnsmithedKey(getConfig().getInt("RecipeYields"));
+		Bukkit.getServer().addRecipe(new ShapedRecipe(unsmithedKey).shape("B  ", " I ", "  P").setIngredient('B', Material.IRON_FENCE).setIngredient('I', Material.IRON_INGOT).setIngredient('P', Material.WOOD));
+		Bukkit.getServer().addRecipe(new ShapedRecipe(unsmithedKey).shape(" B ", " I ", " P ").setIngredient('B', Material.IRON_FENCE).setIngredient('I', Material.IRON_INGOT).setIngredient('P', Material.WOOD));
+		Bukkit.getServer().addRecipe(new ShapedRecipe(unsmithedKey).shape("  B", " I ", "P  ").setIngredient('B', Material.IRON_FENCE).setIngredient('I', Material.IRON_INGOT).setIngredient('P', Material.WOOD));
+		Bukkit.getServer().addRecipe(new ShapedRecipe(unsmithedKey).shape("   ", "BIP", "   ").setIngredient('B', Material.IRON_FENCE).setIngredient('I', Material.IRON_INGOT).setIngredient('P', Material.WOOD));
+		Bukkit.getServer().addRecipe(new ShapedRecipe(unsmithedKey).shape("   ", "PIB", "   ").setIngredient('B', Material.IRON_FENCE).setIngredient('I', Material.IRON_INGOT).setIngredient('P', Material.WOOD));
+		Bukkit.getServer().addRecipe(new ShapedRecipe(unsmithedKey).shape("  P", " I ", "B  ").setIngredient('B', Material.IRON_FENCE).setIngredient('I', Material.IRON_INGOT).setIngredient('P', Material.WOOD));
+		Bukkit.getServer().addRecipe(new ShapedRecipe(unsmithedKey).shape(" P ", " I ", " B ").setIngredient('B', Material.IRON_FENCE).setIngredient('I', Material.IRON_INGOT).setIngredient('P', Material.WOOD));
+		Bukkit.getServer().addRecipe(new ShapedRecipe(unsmithedKey).shape("P  ", " I ", "  B").setIngredient('B', Material.IRON_FENCE).setIngredient('I', Material.IRON_INGOT).setIngredient('P', Material.WOOD));
+		Bukkit.getServer().addRecipe(new ShapelessRecipe(new ItemStack(Material.BEDROCK)).addIngredient(2, Material.TRIPWIRE_HOOK));
 		
 		//Load Metrics
 		if (getConfig().getBoolean("MetricsEnabled") == true){
@@ -134,61 +123,74 @@ public class LockSecurity extends JavaPlugin{
 		    }
 		}
 		
-		//Load blocks into RAM (HashMap)
-		int errors = 0;
-		boolean checked = false;
-		this.getLogger().info("Storing all locked blocks and ID's in server RAM");
-		Set<String> keys = locked.getConfig().getKeys(false);
-		keys.remove("NextLockID");
-		keys.remove("NextKeyID");
-		for (String key : keys){
-			try{
-				int lockID = Integer.parseInt(key);
-				int keyID = locked.getConfig().getInt(key + ".KeyID");
-				World world = Bukkit.getServer().getWorld(locked.getConfig().getString(key + ".Location.World"));
-				double x = locked.getConfig().getDouble(key + ".Location.X");
-				double y = locked.getConfig().getDouble(key + ".Location.Y");
-				double z = locked.getConfig().getDouble(key + ".Location.Z");
-				Location location = new Location(world, x, y, z);
+		Connection connection = null;
+		Statement statement = null;
+		try{
+			Class.forName("org.sqlite.JDBC");
+			connection = openConnection();
+			statement = createStatement(connection);
+		}catch(Exception e){e.printStackTrace();}
+		this.getLogger().info("Opened database successfully");
+
+		try{
+			if (!connection.getMetaData().getTables(null, null, "LockedBlocks", null).next()){
+				this.getLogger().info("Creating database...");
+				statement.execute("create table if not exists LockedBlocks "
+					+ "(LockID integer primary key autoincrement, KeyID integer, OwnerUUID char(36), OwnerName char(20), BlockType char(30),"
+					+ " LocationX integer, LocationY integer, LocationZ integer, LocationWorld char(50))");
 				
-				if (location.getBlock().getType().toString().equals(locked.getConfig().getString(key + ".BlockType"))){
-					ram.addLockInformation(location, lockID, keyID);
-				}else{
-					this.getLogger().info("Lock ID " + key + " (Location: " + formatLocation(location) + ", Owner: " 
-							+ locked.getConfig().getString(key + ".PlayerName") + ") removed due to not being identical as the save. Was it removed?");
-					locked.getConfig().set(key, null);
-					locked.saveConfig();
-					locked.reloadConfig();
-				}
+				this.getLogger().info("-------------------------------------------------------------------------------------");
+				this.getLogger().info("Converting all locked.yml information into SQLite Database");
+				this.getLogger().info("");
+				this.getLogger().info("Depending on the amount of locked blocks in the YAML file, this may take some time");
+				this.getLogger().info("If any issues are encountered during this process, please copy the log, and create a ticket" +
+						" on the main development page at http://dev.bukkit.org/bukkit-plugins/lock-security/tickets");
+				this.getLogger().info("");
+				this.getLogger().info("Please be patient while the data is converting into the database");
+				this.getLogger().info("-------------------------------------------------------------------------------------");
+				this.getLogger().info("Data conversion logs:");
 				
-				if ((locked.getConfig().getInt("NextKeyID") == 1) && !checked){
-					Object[] ids = keys.toArray();
-					setNextKeyID(locked.getConfig().getInt((String) ids[ids.length - 1] + ".KeyID") + 1);
-					checked = true;
+				//THIS IS THE ONLY LOCATION WHERE LOCKED.YML SHOULD BE REFERENCED!!!!!
+				locked = new ConfigAccessor(this, "locked.yml");
+				Set<String> keys = locked.getConfig().getKeys(false);
+				keys.remove("NextLockID");
+				keys.remove("NextKeyID");
+				for (String key : keys){
+					try{
+						int lockID = Integer.parseInt(key);
+						int keyID = locked.getConfig().getInt(key + ".KeyID");
+						String ownerUUID = locked.getConfig().getString(key + ".OwnerUUID");
+						String ownerName = locked.getConfig().getString(key + ".PlayerName");
+						String blockType = locked.getConfig().getString(key + ".BlockType");
+
+						World world = Bukkit.getServer().getWorld(locked.getConfig().getString(key + ".Location.World"));
+						double x = locked.getConfig().getDouble(key + ".Location.X");
+						double y = locked.getConfig().getDouble(key + ".Location.Y");
+						double z = locked.getConfig().getDouble(key + ".Location.Z");
+						Location location = new Location(world, x, y, z);
+						
+						lockedAccessor.insertDatabaseInfo(lockID, keyID, ownerUUID, ownerName, blockType, location);
+						this.getLogger().info("Successfully Transfered LockID: " + lockID + ", Location: " + (int)x + ", " + (int)y + ", " + (int)z);
+					} catch (NumberFormatException e){}
 				}
-			}catch(NumberFormatException e){
-				if (errors == 0){
-					e.printStackTrace();
-					this.getLogger().warning("Something went wrong. Tell Choco about it immediately!");
-					this.getLogger().warning("Go to: http://dev.bukkit.org/bukkit-plugins/lock-security/tickets" + 
-							", and create a ticket including the error logged above");
-					this.getLogger().warning("Be sure to also include a copy of your locked.yml file in the ticket for revision");
-				}
-				errors++;
-				continue;
+				this.getLogger().info("-------------------------------------------------------------------------------------");
+				this.getLogger().info("All data has succesfully been transfered into the new SQLite database!");
+				this.getLogger().info("At this point, you may now do one of the following with your locked.yml:");
+				this.getLogger().info("   1. Delete the locked.yml completely");
+				this.getLogger().info("   2. Remove the locked.yml from the files, but keep a backup just in case (RECOMMENDED)");
+				this.getLogger().info("-------------------------------------------------------------------------------------");
 			}
+		}catch (Exception e){
+			e.printStackTrace();
+			this.getLogger().warning("Something went wrong while transfering data into the database");
+			this.getLogger().warning("Please leave a ticket on the LockSecurity plugin development page! http://dev.bukkit.org/bukkit-plugins/lock-security/tickets");
+			this.getLogger().warning("BE SURE TO INCLUDE A COPY OF YOUR locked.yml, YOUR lockinfo.db, AND YOUR ERROR LOG");
 		}
-		if (errors > 0){
-			this.getLogger().info("Stored as many locks as possible in server RAM. " + errors + " locks could not be loaded");
-		}else{
-			this.getLogger().info("Successfully stored all locks in server RAM. Plugin ready for use!");
-		}
+		closeStatement(statement); closeConnection(connection);
 	}
 
 	@Override
 	public void onDisable(){
-		this.getLogger().info("Removing stored data from the plugin, and saving it in locked.yml");
-		ram.clearLocks();
 		this.getLogger().info("Removing temporary information");
 		LSMode.clearAllModes();
 		transferTo.clear();
@@ -222,14 +224,60 @@ public class LockSecurity extends JavaPlugin{
 			ChatColor.translateAlternateColorCodes('&', message));
 	}
 	
-	private String formatLocation(Location location){
-		return location.getWorld().getName() + " x:" + (int)location.getBlockX() + " y:" + (int)location.getBlockY() + " z:" + (int)location.getBlockY();
+	/** Open a new connection to the lockinfo database
+	 * @return Connection to the database
+	 */
+	public Connection openConnection(){
+		try{return DriverManager.getConnection("jdbc:sqlite:plugins/LockSecurity/lockinfo.db");}
+		catch (SQLException e){e.printStackTrace(); return null;}
 	}
 	
-	private void setNextKeyID(int id){
-		locked.getConfig().set("NextKeyID", id);
-		locked.saveConfig();
-		locked.reloadConfig();
+	/** Close a specific opened connection to a database */
+	public void closeConnection(Connection connection){
+		try{connection.close();}
+		catch (SQLException e){e.printStackTrace();}
+	}
+	
+	/** Create a new statement from a connection to a database
+	 * @param connection - The connection to the database in which to create a statement
+	 * @return Statement for the database
+	 */
+	public Statement createStatement(Connection connection){
+		try{return connection.createStatement();}
+		catch (SQLException e){e.printStackTrace(); return null;}
+	}
+	
+	/** Close a specific statement from a connection to a database */
+	public void closeStatement(Statement statement){
+		try{statement.close();}
+		catch (SQLException e){e.printStackTrace();}
+	}
+	
+	/** Execute an SQL statement from the specified statement object
+	 * @param statement - The statement to use
+	 * @param sql - The SQL string parameters
+	 */
+	public void executeStatement(Statement statement, String sql){
+		try{statement.execute(sql);}
+		catch(SQLException e){e.printStackTrace();}
+	}
+	
+	/** Query / Return informatin from the database from a specific statement
+	 * @param statement - The statement to use
+	 * @param sql - The SQL string parameters
+	 * @return ResultSet of the query
+	 */
+	public ResultSet queryDatabase(Statement statement, String sql){
+		try{return statement.executeQuery(sql);}
+		catch (SQLException e){e.printStackTrace(); return null;}
+	}
+	
+	/** Close a specific result set from a connection to a database
+	 * @param set - The ResultSet to close
+	 */
+	public void closeResultSet(ResultSet set){
+		try{set.close();}
+		catch(SQLException e){e.printStackTrace();}
 	}
 }
 
@@ -252,5 +300,5 @@ public class LockSecurity extends JavaPlugin{
  * /locknotify <on|off> - Toggle the visibility of administrative lock displays (Displays all lock information to administrators)
  */
 
-/* Version 1.6.2: 101KiB */
 /* Version 1.6.3: 102KiB */
+/* Version 1.7.0: xxx.xKiB*/

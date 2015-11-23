@@ -21,7 +21,6 @@ public class DestroyLockedBlock implements Listener{
 		this.lockedAccessor = new LockedBlockAccessor(plugin);
 	}
 	
-	@SuppressWarnings("deprecation")
 	@EventHandler
 	public void onDestroyLockedBlock(BlockBreakEvent event){
 		Player player = event.getPlayer();
@@ -30,7 +29,7 @@ public class DestroyLockedBlock implements Listener{
 		if (plugin.isLockable(block)){
 			if (lockedAccessor.getLockedState(block).equals(LockState.LOCKED)){
 				String id = String.valueOf(lockedAccessor.getBlockLockID(block));
-				if (plugin.locked.getConfig().get(id + ".OwnerUUID").equals(player.getUniqueId().toString()) 
+				if (lockedAccessor.getBlockOwnerUUID(block).equals(player.getUniqueId().toString())
 						|| (LSMode.getMode(player).equals(LSMode.IGNORE_LOCKS) && plugin.getConfig().getBoolean("Griefing.IgnorelocksCanBreakLocks"))){
 					PlayerUnlockBlockEvent unlockEvent = new PlayerUnlockBlockEvent(plugin, player, block);
 					Bukkit.getPluginManager().callEvent(unlockEvent);

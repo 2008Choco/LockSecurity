@@ -10,6 +10,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.ItemStack;
 
 import me.choco.locks.LockSecurity;
 import me.choco.locks.api.PlayerInteractLockedBlockEvent;
@@ -51,6 +52,8 @@ public class InteractWithBlock implements Listener{
 										if (!lockEvent.isCancelled()){
 											plugin.sendPathMessage(player, plugin.messages.getConfig().getString("Events.SuccessfullyLockedBlock").replaceAll("%lockID%", String.valueOf(lockedAccessor.getNextLockID())).replaceAll("%keyID%", String.valueOf(lockedAccessor.getNextKeyID())));
 											lockedAccessor.setLocked(block, player);
+											removeCurrentItem(player);
+											player.playSound(player.getLocation(), Sound.DOOR_CLOSE, 1, 2);
 										}
 									}else{
 										plugin.sendPathMessage(player, plugin.messages.getConfig().getString("Events.ReachedLockMaximum"));
@@ -141,7 +144,6 @@ public class InteractWithBlock implements Listener{
 		}
 	}
 	
-	@SuppressWarnings("deprecation")
 	private void displayBlockInfo(Player player, Block block){
 		player.sendMessage(ChatColor.GOLD + "- - - - - - " + ChatColor.DARK_AQUA + "Lock information " + ChatColor.GOLD + "- - - - - -");
 		player.sendMessage(ChatColor.GOLD + "Lock ID: " + ChatColor.AQUA + lockedAccessor.getBlockLockID(block));
@@ -155,5 +157,14 @@ public class InteractWithBlock implements Listener{
 				|| plugin.getConfig().getInt("MaximumLocks." + player.getWorld().getName()) == -1
 				|| plugin.getConfig().get("MaximumLocks." + player.getWorld().getName()) == null
 				|| player.isOp());
+	}
+	
+	private void removeCurrentItem(Player player){
+		if (player.getItemInHand().getAmount() > 1){
+			player.getItemInHand().setAmount(player.getItemInHand().getAmount() - 1);
+		}
+		else{
+			player.getInventory().setItemInHand(new ItemStack(Material.AIR));
+		}
 	}
 }

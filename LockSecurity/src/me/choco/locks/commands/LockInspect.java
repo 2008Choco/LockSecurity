@@ -9,20 +9,16 @@ import org.bukkit.entity.Player;
 
 import me.choco.locks.LockSecurity;
 import me.choco.locks.api.utils.LSMode;
-import me.choco.locks.utils.LockStorageHandler;
 import me.choco.locks.utils.LockedBlockAccessor;
 
 public class LockInspect implements CommandExecutor{
 	LockSecurity plugin;
 	LockedBlockAccessor lockedAccessor;
-	LockStorageHandler ram;
 	public LockInspect(LockSecurity plugin){
 		this.plugin = plugin;
 		this.lockedAccessor = new LockedBlockAccessor(plugin);
-		this.ram = new LockStorageHandler(plugin);
 	}
 	
-	@SuppressWarnings("deprecation")
 	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args){
 		if (sender instanceof Player){
 			Player player = (Player) sender;
@@ -49,8 +45,8 @@ public class LockInspect implements CommandExecutor{
 						return true;
 					}
 					
-					if (ram.isStored(ram.getLocationFromLockID(ID))){
-						Block block = ram.getLocationFromLockID(ID).getBlock();
+					if (lockedAccessor.isInDatabase(ID)){
+						Block block = lockedAccessor.getLocationFromLockID(ID).getBlock();
 						player.sendMessage(ChatColor.GOLD + "- - - - - - " + ChatColor.DARK_AQUA + "Lock information " + ChatColor.GOLD + "- - - - - -");
 						player.sendMessage(ChatColor.GOLD + "Lock ID: " + ChatColor.AQUA + lockedAccessor.getBlockLockID(block));
 						player.sendMessage(ChatColor.GOLD + "Key ID: " + ChatColor.AQUA + lockedAccessor.getBlockKeyID(block));

@@ -41,7 +41,6 @@ public class LockedBlockGriefProtection implements Listener{
 		}
 	}
 	
-	@SuppressWarnings("deprecation")
 	@EventHandler
 	public void onDestroyBlockBeneathDoor(BlockBreakEvent event){
 		Block block = event.getBlock().getLocation().add(0, 1, 0).getBlock();
