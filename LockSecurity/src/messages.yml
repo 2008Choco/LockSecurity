@@ -27,6 +27,10 @@ Commands:
     TransferModeEnabled: "Transfer mode enabled. Right clock on the block you would like to transfer"
     TransferModeDisabled: "Transfer mode disabled"
     TransferredBlock: "%type% with LockID %lockID% (KeyID: %keyID%) transferred to %player%"
+  LockNotify:
+    LockNotifyEnabled: "Administrative lock notifications enabled"
+    LockNotifyDisabled: "Administrative lock notifications disabled"
+    LockNotification: "%player% has locked a %type% at x:%x% y:%y% z:%z% in world %world% with LockID %lockID% (KeyID: %keyID%)"
   General:
     OnlyPlayers: "Only players may use this command"
     NoPermission: "You do not have the sufficient permissions to do this"
@@ -43,3 +47,6 @@ Events:
   LockPickAttempt: "You attempt to pick the lock, but it doesn't work"
   CannotBreak: "This %type% is locked by %player%. You cannot break this"
   ReachedLockMaximum: "You cannot lock this block. You have reached the maximum for this world"
+  NotEnoughMoney: "You do not have the sufficient funds to lock a chest"
+  BalanceWithdrawn: "%money% has been withdrawn from your balance"
+  BalanceDeposited: "%money% has been deposited from your balance"

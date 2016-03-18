@@ -6,6 +6,7 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
@@ -21,6 +22,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.inventory.ShapelessRecipe;
 import org.bukkit.plugin.Plugin;
+import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import me.choco.locks.api.utils.LSMode;
@@ -29,6 +31,7 @@ import me.choco.locks.commands.GiveKey;
 import me.choco.locks.commands.IgnoreLocks;
 import me.choco.locks.commands.LockInspect;
 import me.choco.locks.commands.LockList;
+import me.choco.locks.commands.LockNotify;
 import me.choco.locks.commands.MainCommand;
 import me.choco.locks.commands.TransferLock;
 import me.choco.locks.commands.Unlock;
@@ -37,12 +40,13 @@ import me.choco.locks.events.CombineKeyID;
 import me.choco.locks.events.DestroyLockedBlock;
 import me.choco.locks.events.ExplodeLockedBlock;
 import me.choco.locks.events.InteractWithBlock;
+import me.choco.locks.events.JoinAndQuit;
 import me.choco.locks.events.LockedBlockGriefProtection;
-import me.choco.locks.events.LoginNameCheck;
 import me.choco.locks.utils.Keys;
 import me.choco.locks.utils.LockedBlockAccessor;
 import me.choco.locks.utils.general.ConfigAccessor;
 import me.choco.locks.utils.general.Metrics;
+import net.milkbowl.vault.economy.Economy;
 
 public class LockSecurity extends JavaPlugin{
 	
@@ -63,6 +67,8 @@ public class LockSecurity extends JavaPlugin{
 	LockedBlockAccessor lockedAccessor = new LockedBlockAccessor(this);
 
 	public HashMap<String, String> transferTo = new HashMap<String, String>();
+	public ArrayList<String> adminNotify = new ArrayList<String>();
+	public Economy economy = null;
 
 	@Override
 	public void onEnable(){
@@ -82,7 +88,7 @@ public class LockSecurity extends JavaPlugin{
 		Bukkit.getPluginManager().registerEvents(new DestroyLockedBlock(this), this);
 		Bukkit.getPluginManager().registerEvents(new ExplodeLockedBlock(this), this);
 		Bukkit.getPluginManager().registerEvents(new AttemptKeyPlace(), this);
-		Bukkit.getPluginManager().registerEvents(new LoginNameCheck(this), this);
+		Bukkit.getPluginManager().registerEvents(new JoinAndQuit(this), this);
 		Bukkit.getPluginManager().registerEvents(new CombineKeyID(this), this);
 		Bukkit.getPluginManager().registerEvents(new LockedBlockGriefProtection(this), this);
 		
@@ -96,6 +102,7 @@ public class LockSecurity extends JavaPlugin{
 		this.getCommand("lockinspect").setExecutor(new LockInspect(this));
 		this.getCommand("unlock").setExecutor(new Unlock(this));
 		this.getCommand("transferlock").setExecutor(new TransferLock(this));
+		this.getCommand("locknotify").setExecutor(new LockNotify(this));
 		
 		//Generate key recipes
 		ItemStack unsmithedKey = keysClass.createUnsmithedKey(getConfig().getInt("RecipeYields"));
@@ -122,6 +129,9 @@ public class LockSecurity extends JavaPlugin{
 		        	+ "Lock Security development page");
 		    }
 		}
+		
+		if (setupEconomy())
+			this.getLogger().info("Vault hooked successfully!");
 		
 		Connection connection = null;
 		Statement statement = null;
@@ -193,6 +203,7 @@ public class LockSecurity extends JavaPlugin{
 	public void onDisable(){
 		this.getLogger().info("Removing temporary information");
 		LSMode.clearAllModes();
+		adminNotify.clear();
 		transferTo.clear();
 	}
 	
@@ -279,6 +290,17 @@ public class LockSecurity extends JavaPlugin{
 		try{set.close();}
 		catch(SQLException e){e.printStackTrace();}
 	}
+	
+
+    private boolean setupEconomy() {
+        if (getServer().getPluginManager().getPlugin("Vault") == null)
+            return false;
+        RegisteredServiceProvider<Economy> rsp = getServer().getServicesManager().getRegistration(Economy.class);
+        if (rsp == null)
+            return false;
+        economy = rsp.getProvider();
+        return economy != null;
+    }
 }
 
 /* TODO Upcoming Versions
@@ -297,8 +319,8 @@ public class LockSecurity extends JavaPlugin{
  *     Add an override MaximumLocks for ALL worlds
  * -------------------------------------------------------------------------------------------------------------------------
  * TODO Next Version:
- * /locknotify <on|off> - Toggle the visibility of administrative lock displays (Displays all lock information to administrators)
+ * 
  */
 
-/* Version 1.6.3: 102KiB */
-/* Version 1.7.0: xxx.xKiB*/
+/* Version 1.7.0: 101.4KiB */
+/* Version 1.7.1: 105.0KiB */

@@ -57,7 +57,7 @@ public class Unlock implements CommandExecutor{
 						if (!unlockEvent.isCancelled()){
 							lockedAccessor.setUnlocked(lockLocation.getBlock());
 							plugin.sendPathMessage(player, plugin.messages.getConfig().getString("Commands.Unlock.BlockUnlocked").replaceAll("%lockID%", String.valueOf(ID)));
-							player.playSound(lockLocation, Sound.DOOR_OPEN, 1, 2);
+							player.playSound(lockLocation, Sound.BLOCK_WOODEN_DOOR_OPEN, 1, 2);
 						}
 					}else{
 						plugin.sendPathMessage(player, plugin.messages.getConfig().getString("Commands.Unlock.BlockNotLocked").replaceAll("%lockID%", String.valueOf(ID)));

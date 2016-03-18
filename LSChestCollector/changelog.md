@@ -10,8 +10,9 @@ This is where you will find the official changelog of all releases of *LS-ChestC
 - - - - - - - - - -
 
 ### Release 1.1 ###
-* Updated LockSecurity API to latest release (1.8.8-LS0.4)
+* Updated LockSecurity API to latest release (1.8.8-LS1.0), version 1.7.0
 * Added new configuration option: DisplayOnLockMsg, which displays a message informing players about chest collectors the first time they lock a chest
+* Few stability fixes with the LockSecurity API
 
 ### Release 1.0 ###
 * Added a /collects <ItemStack,ItemStack,ItemStack...> command to set the player in collector creation mode

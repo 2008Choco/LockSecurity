@@ -9,14 +9,15 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 
 import me.choco.locks.LockSecurity;
 import me.choco.locks.utils.LockedBlockAccessor;
 
-public class LoginNameCheck implements Listener{
+public class JoinAndQuit implements Listener{
 	LockSecurity plugin;
 	LockedBlockAccessor lockedAccessor;
-	public LoginNameCheck(LockSecurity plugin){
+	public JoinAndQuit(LockSecurity plugin){
 		this.plugin = plugin;
 		this.lockedAccessor = new LockedBlockAccessor(plugin);
 	}
@@ -32,7 +33,6 @@ public class LoginNameCheck implements Listener{
 		Statement statement = plugin.createStatement(connection);
 		ResultSet set = plugin.queryDatabase(statement, "select OwnerName from LockedBlocks where OwnerUUID = '" + player.getUniqueId().toString() + "'");
 		
-		
 		try {
 			if (set.next())
 				oldName = set.getString("OwnerName");
@@ -46,5 +46,14 @@ public class LoginNameCheck implements Listener{
 			plugin.getLogger().info("Successfully refactored SQLite Database tables for player " + currentName + " (Old name: " + oldName + ")");
 		
 		plugin.closeResultSet(set); plugin.closeStatement(statement); plugin.closeConnection(connection);
+		
+		// Set administrators into LockNotify mode
+		if (player.hasPermission("locks.locknotify") && plugin.getConfig().getBoolean("EnableNotifyOnLogin"))
+			plugin.adminNotify.add(player.getName());
+	}
+	
+	@EventHandler
+	public void onQuit(PlayerQuitEvent event){
+		if (plugin.adminNotify.contains(event.getPlayer().getName())){plugin.adminNotify.remove(event.getPlayer().getName());}
 	}
 }

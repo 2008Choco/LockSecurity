@@ -17,7 +17,6 @@ public class GiveKey implements CommandExecutor{
 
 	Keys keys = new Keys(plugin);
 	
-	@SuppressWarnings("deprecation")
 	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args){
 		if (sender instanceof Player){
 			Player player = (Player) sender;

@@ -63,7 +63,7 @@ public class LockedBlockAccessor {
 		String playerUUID = owner.getUniqueId().toString(); String playerName = owner.getName();
 		int nextID = getNextKeyID();
 		
-		owner.getInventory().addItem(keys.convertToLockedKey(owner.getItemInHand(), nextID));
+		owner.getInventory().addItem(keys.convertToLockedKey(owner.getInventory().getItemInMainHand(), nextID));
 		insertDatabaseInfo(nextID, playerUUID, playerName, blockType, block.getLocation());
 		dualComponentBlockHandler(block, owner, nextID);
 	}
@@ -119,8 +119,8 @@ public class LockedBlockAccessor {
 	 * @return boolean - Whether the player has the right key in their hand or not
 	 */
 	public boolean playerHasCorrectKey(Block block, Player player){
-		if (player.getItemInHand().getType().equals(Material.TRIPWIRE_HOOK)){
-			List<Integer> keyIDs = getKeyIDs(player.getItemInHand());
+		if (player.getInventory().getItemInMainHand().getType().equals(Material.TRIPWIRE_HOOK)){
+			List<Integer> keyIDs = getKeyIDs(player.getInventory().getItemInMainHand());
 			if (keyIDs == null)
 				return false;
 			

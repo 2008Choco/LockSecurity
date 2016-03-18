@@ -48,7 +48,7 @@ public class PickupCollectorItem implements Listener{
 							
 							event.setCancelled(true);
 							event.getItem().remove();
-							player.playSound(player.getLocation(), Sound.ENDERMAN_TELEPORT, 1, 0);
+							player.playSound(player.getLocation(), Sound.ENTITY_ENDERMEN_TELEPORT, 1, 0);
 						}
 						break;
 					}

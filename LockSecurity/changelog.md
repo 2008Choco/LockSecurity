@@ -9,6 +9,45 @@ This is where you will find the official changelog of all releases of *LockSecur
 ## Official Releases ##
 - - - - - - - - - -
 
+### Release 1.7.1 ###
+* Added a new notification for administrators when players lock a block
+* Added a new /locknotify command for administrators to toggle whether these messages display or not (default, enabled on login)
+* |-> These messages will display: The player who locked it, type of block, x, y, z, world, lock id, and key id (configurable in messages.yml)
+* |-> Permission required to enter / leave locknotify mode: locks.locknotify
+* Renamed a specific class to represent what it does more accurately
+* Made preparations for a future conversion to LSPlayer's (developer heads-up: LSMode will be removed in 1.8.0)
+* Added Vault support to allow for a cost to lock block, and a return value for unlocking a block
+* |-> Added 4 new configuration options and a new configuration section to determine the cost and reward of locks
+
+### Release 1.7.0 ###
+* ADDED SQLITE DATABASE SUPPORT!!!
+* REMOVED locked.yml functionality
+* |-> There is an automatic conversion method to convert all data in your locked.yml into the database. Please watch your server console to make sure all data is successfully transfered into the database. If something goes wrong, a message will display, and tell you what to do from there. PLEASE follow the warning instructions if they are displayed
+* Removed the LockedStorageHandler class
+* Added RecipeYields configuration option to determine how many Unsmithed keys the recipe creates
+* Removed lockedLockIDs and lockedKeyIDs HashMaps (unused in this update)
+* Changed absolute variables for recipes to direct recipes in the onEnable()
+* Removed locked.yml HashMap data loading code block
+* Added a conversion block of code to automatically transfer all information from the locked.yml into the new database
+* Removed some logging information from onDisable() method
+* Removed formatLocation(Location) method in main class
+* Removed setNextKeyID(int) and setNextLockID() methods
+* Added database-related methods in main class (openConnection(), closeConnection(), createStatement(), closeStatement(), executeStatement(), queryDatabase(), closeResultSet())
+* Removed @SuppressWarnings for deprecation (no more deprecated methods) for most classes
+* Removed references to LockStorageHandler class in most classes
+* Removed unnecessary declaration of variables, and used direct Location variable for parameters instead
+* Removed reload for locked.yml (fixes a NullPointerException)
+* Moved the removal of key and play sound into the actual moment a block is interacted with (Fixes potential NullPointerException in API)
+* Moved removeCurrentItem() method from LockedBlockAccessor into InteractWithBlock class
+* Fixed using multiple ID's and queries for a single ID (more efficient locking of blocks)
+* LockedBlockAccessor API changes:
+* |-> Added getLocationFromLockID(int) method to get a specific location from the specified id
+* |-> Added insertDatabaseInfo(int, String, String, String, Location) method to insert information into the database
+* |-> Added insertDatabaseInfo(int, int, String, String, String, Location) method to insert information into the database with a specific LockID
+* |-> Added isInDatabase(int) method to determine whether the id is in the database or not
+* |-> Removed addLockedYMLInformation() method (no longer to be used)
+* |-> Modified MANY LockedBlockAccessor methods to reference the database rather than the locked.yml
+
 ### Release 1.6.3 ###
 * Fixed combining and duplicating keys not working properly
 * Fixed the locks.craft permission node not functioning

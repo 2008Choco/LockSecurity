@@ -1,9 +1,10 @@
 name: LockSecurity
 main: me.choco.locks.LockSecurity
-version: 1.7.0
-apiversion: 1.8.8-LS1.0
+version: 1.7.2
+apiversion: 1.9-LS1.0
 description: Lockable blocks only accessable by keys
 author: 2008Choco
+softdepend: [Vault]
 commands:
     locksecurity:
         description: The main administrative command for LockSecurity
@@ -38,6 +39,9 @@ commands:
     transferlock:
         description: Transfer the block you click to another player
         usage: /<command> <player>
+    locknotify:
+        description: Toggle whether messages are display or not when a player locks a block
+        usage: /<command>
 permissions:
     locks.lock:
         description: Allow the ability to lock a block
@@ -84,3 +88,6 @@ permissions:
     locks.craft:
         description: Allow the ability to craft an unsmithed key
         default: true
+    locks.locknotify:
+        description: Allow the ability to view messages when players lock blocks
+        default: op

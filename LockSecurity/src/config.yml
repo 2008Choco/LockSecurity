@@ -1,5 +1,6 @@
 MetricsEnabled: true
 RecipeYields: 1
+EnableNotifyOnLogin: true
 MaximumLocks:
   YOUR_WORLD: -1
 
@@ -11,6 +12,12 @@ Griefing:
 Aesthetics:
   DisplayLockedSmokeParticle: true
   DisplayNameChangeNotice: true
+  
+Vault:
+  CostToLock: 100
+  UnlockReward: 75
+  DisplayWithdrawMsg: true
+  DisplayDepositMsg: true
   
 LockableBlocks:
 - CHEST
