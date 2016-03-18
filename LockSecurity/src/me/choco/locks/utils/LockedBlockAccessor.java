@@ -38,9 +38,9 @@ public class LockedBlockAccessor {
 		int z = block.getLocation().getBlockZ();
 		String world = block.getWorld().getName();
 		
-		Connection connection = plugin.openConnection();
-		Statement statement = plugin.createStatement(connection);
-		ResultSet set = plugin.queryDatabase(statement, "select * from LockedBlocks");
+		Connection connection = plugin.getLSDatabase().openConnection();
+		Statement statement = plugin.getLSDatabase().createStatement(connection);
+		ResultSet set = plugin.getLSDatabase().queryDatabase(statement, "select * from LockedBlocks");
 		
 		try{
 			while (set.next())
@@ -49,7 +49,7 @@ public class LockedBlockAccessor {
 					return LockState.LOCKED;
 				}
 		}catch (SQLException e){e.printStackTrace();}
-		finally{plugin.closeResultSet(set); plugin.closeStatement(statement); plugin.closeConnection(connection);}
+		finally{plugin.getLSDatabase().closeResultSet(set); plugin.getLSDatabase().closeStatement(statement); plugin.getLSDatabase().closeConnection(connection);}
 		return LockState.UNLOCKED;
 	}
 	
@@ -77,21 +77,21 @@ public class LockedBlockAccessor {
 		int z = block.getLocation().getBlockZ();
 		String world = block.getWorld().getName();
 		
-		Connection connection = plugin.openConnection();
-		Statement statement = plugin.createStatement(connection);
-		plugin.executeStatement(statement, "delete from LockedBlocks " +
+		Connection connection = plugin.getLSDatabase().openConnection();
+		Statement statement = plugin.getLSDatabase().createStatement(connection);
+		plugin.getLSDatabase().executeStatement(statement, "delete from LockedBlocks " +
 			"where LocationX = " + x + " and LocationY = " + y + " and LocationZ = " + z + " and LocationWorld = '" + world + "'");
-		plugin.closeStatement(statement); plugin.closeConnection(connection);
+		plugin.getLSDatabase().closeStatement(statement); plugin.getLSDatabase().closeConnection(connection);
 	}
 	
 	/** Set the specified LockID to be unlocked
 	 * @param lockID - The LockID to unlock
 	 */
 	public void setUnlocked(int lockID){
-		Connection connection = plugin.openConnection();
-		Statement statement = plugin.createStatement(connection);
-		plugin.executeStatement(statement, "delete from LockedBlocks where LockID = " + lockID);
-		plugin.closeStatement(statement); plugin.closeConnection(connection);
+		Connection connection = plugin.getLSDatabase().openConnection();
+		Statement statement = plugin.getLSDatabase().createStatement(connection);
+		plugin.getLSDatabase().executeStatement(statement, "delete from LockedBlocks where LockID = " + lockID);
+		plugin.getLSDatabase().closeStatement(statement); plugin.getLSDatabase().closeConnection(connection);
 	}
 	
 	/** Transfer a locked block to another player
@@ -104,13 +104,13 @@ public class LockedBlockAccessor {
 		int z = block.getLocation().getBlockZ();
 		String world = block.getWorld().getName();
 		
-		Connection connection = plugin.openConnection();
-		Statement statement = plugin.createStatement(connection);
-		plugin.executeStatement(statement, "update LockedBlocks set OwnerName = '" + player.getName()
+		Connection connection = plugin.getLSDatabase().openConnection();
+		Statement statement = plugin.getLSDatabase().createStatement(connection);
+		plugin.getLSDatabase().executeStatement(statement, "update LockedBlocks set OwnerName = '" + player.getName()
 				+ "' where LocationX = " + x + " and LocationY = " + y + " and LocationZ = " + z + " and LocationWorld = '" + world + "'");
-		plugin.executeStatement(statement, "update LockedBlocks set OwnerUUID = '" + player.getUniqueId().toString()
+		plugin.getLSDatabase().executeStatement(statement, "update LockedBlocks set OwnerUUID = '" + player.getUniqueId().toString()
 				+ "' where LocationX = " + x + " and LocationY = " + y + " and LocationZ = " + z + " and LocationWorld = '" + world + "'");
-		plugin.closeStatement(statement); plugin.closeConnection(connection);
+		plugin.getLSDatabase().closeStatement(statement); plugin.getLSDatabase().closeConnection(connection);
 	}
 	
 	/** A boolean method to determine whether the Key ID matches the Block Lock ID
@@ -136,14 +136,14 @@ public class LockedBlockAccessor {
 	 * @return int - The ID of the lock
 	 */
 	public int getNextLockID(){
-		Connection connection = plugin.openConnection();
-		Statement statement = plugin.createStatement(connection);
-		ResultSet set = plugin.queryDatabase(statement, "select * from LockedBlocks order by LockID desc limit 1");
+		Connection connection = plugin.getLSDatabase().openConnection();
+		Statement statement = plugin.getLSDatabase().createStatement(connection);
+		ResultSet set = plugin.getLSDatabase().queryDatabase(statement, "select * from LockedBlocks order by LockID desc limit 1");
 		int lockID = 1;
 		try{
 			lockID = set.getInt("LockID") + lockID;
 		}catch (SQLException e){}
-		plugin.closeResultSet(set); plugin.closeStatement(statement); plugin.closeConnection(connection);
+		plugin.getLSDatabase().closeResultSet(set); plugin.getLSDatabase().closeStatement(statement); plugin.getLSDatabase().closeConnection(connection);
 		return lockID;
 	}
 	
@@ -151,14 +151,14 @@ public class LockedBlockAccessor {
 	 * @return int - The ID of the next key
 	 */
 	public int getNextKeyID(){
-		Connection connection = plugin.openConnection();
-		Statement statement = plugin.createStatement(connection);
-		ResultSet set = plugin.queryDatabase(statement, "select * from LockedBlocks order by KeyID desc limit 1");
+		Connection connection = plugin.getLSDatabase().openConnection();
+		Statement statement = plugin.getLSDatabase().createStatement(connection);
+		ResultSet set = plugin.getLSDatabase().queryDatabase(statement, "select * from LockedBlocks order by KeyID desc limit 1");
 		int keyID = 1;
 		try{
 			keyID = set.getInt("KeyID") + keyID;
 		}catch (SQLException e){}
-		plugin.closeResultSet(set); plugin.closeStatement(statement); plugin.closeConnection(connection);
+		plugin.getLSDatabase().closeResultSet(set); plugin.getLSDatabase().closeStatement(statement); plugin.getLSDatabase().closeConnection(connection);
 		return keyID;
 	}
 	
@@ -196,21 +196,21 @@ public class LockedBlockAccessor {
 		int z = block.getLocation().getBlockZ();
 		String world = block.getWorld().getName();
 		
-		Connection connection = plugin.openConnection();
-		Statement statement = plugin.createStatement(connection);
-		ResultSet set = plugin.queryDatabase(statement, "select * from LockedBlocks");
+		Connection connection = plugin.getLSDatabase().openConnection();
+		Statement statement = plugin.getLSDatabase().createStatement(connection);
+		ResultSet set = plugin.getLSDatabase().queryDatabase(statement, "select * from LockedBlocks");
 		try{
 			while (set.next()){
 				if (set.getInt("LocationX") == x && set.getInt("LocationY") == y && set.getInt("LocationZ") == z 
 						&& set.getString("LocationWorld").equals(world)){
 					int lockID = set.getInt("LockID");
-					plugin.closeResultSet(set); plugin.closeStatement(statement); plugin.closeConnection(connection);
+					plugin.getLSDatabase().closeResultSet(set); plugin.getLSDatabase().closeStatement(statement); plugin.getLSDatabase().closeConnection(connection);
 					return lockID;
 				}
 			}
 			
 		}catch (SQLException e){e.printStackTrace();}
-		plugin.closeResultSet(set); plugin.closeStatement(statement); plugin.closeConnection(connection);
+		plugin.getLSDatabase().closeResultSet(set); plugin.getLSDatabase().closeStatement(statement); plugin.getLSDatabase().closeConnection(connection);
 		return 0;
 	}
 	
@@ -224,21 +224,21 @@ public class LockedBlockAccessor {
 		int z = block.getLocation().getBlockZ();
 		String world = block.getWorld().getName();
 		
-		Connection connection = plugin.openConnection();
-		Statement statement = plugin.createStatement(connection);
-		ResultSet set = plugin.queryDatabase(statement, "select * from LockedBlocks");
+		Connection connection = plugin.getLSDatabase().openConnection();
+		Statement statement = plugin.getLSDatabase().createStatement(connection);
+		ResultSet set = plugin.getLSDatabase().queryDatabase(statement, "select * from LockedBlocks");
 		try{
 			while (set.next()){
 				if (set.getInt("LocationX") == x && set.getInt("LocationY") == y && set.getInt("LocationZ") == z 
 						&& set.getString("LocationWorld").equals(world)){
 					int lockID = set.getInt("KeyID");
-					plugin.closeResultSet(set); plugin.closeStatement(statement); plugin.closeConnection(connection);
+					plugin.getLSDatabase().closeResultSet(set); plugin.getLSDatabase().closeStatement(statement); plugin.getLSDatabase().closeConnection(connection);
 					return lockID;
 				}
 			}
 			
 		}catch (SQLException e){e.printStackTrace();}
-		plugin.closeResultSet(set); plugin.closeStatement(statement); plugin.closeConnection(connection);
+		plugin.getLSDatabase().closeResultSet(set); plugin.getLSDatabase().closeStatement(statement); plugin.getLSDatabase().closeConnection(connection);
 		return 0;
 	}
 	
@@ -252,21 +252,21 @@ public class LockedBlockAccessor {
 		int z = block.getLocation().getBlockZ();
 		String world = block.getWorld().getName();
 		
-		Connection connection = plugin.openConnection();
-		Statement statement = plugin.createStatement(connection);
-		ResultSet set = plugin.queryDatabase(statement, "select * from LockedBlocks");
+		Connection connection = plugin.getLSDatabase().openConnection();
+		Statement statement = plugin.getLSDatabase().createStatement(connection);
+		ResultSet set = plugin.getLSDatabase().queryDatabase(statement, "select * from LockedBlocks");
 		try{
 			while (set.next()){
 				if (set.getInt("LocationX") == x && set.getInt("LocationY") == y && set.getInt("LocationZ") == z 
 						&& set.getString("LocationWorld").equals(world)){
 					String name = set.getString("OwnerName");
-					plugin.closeResultSet(set); plugin.closeStatement(statement); plugin.closeConnection(connection);
+					plugin.getLSDatabase().closeResultSet(set); plugin.getLSDatabase().closeStatement(statement); plugin.getLSDatabase().closeConnection(connection);
 					return name;
 				}
 			}
 			
 		}catch (SQLException e){e.printStackTrace();}
-		plugin.closeResultSet(set); plugin.closeStatement(statement); plugin.closeConnection(connection);
+		plugin.getLSDatabase().closeResultSet(set); plugin.getLSDatabase().closeStatement(statement); plugin.getLSDatabase().closeConnection(connection);
 		return null;
 	}
 	
@@ -280,35 +280,35 @@ public class LockedBlockAccessor {
 		int z = block.getLocation().getBlockZ();
 		String world = block.getWorld().getName();
 		
-		Connection connection = plugin.openConnection();
-		Statement statement = plugin.createStatement(connection);
-		ResultSet set = plugin.queryDatabase(statement, "select * from LockedBlocks");
+		Connection connection = plugin.getLSDatabase().openConnection();
+		Statement statement = plugin.getLSDatabase().createStatement(connection);
+		ResultSet set = plugin.getLSDatabase().queryDatabase(statement, "select * from LockedBlocks");
 		try{
 			while (set.next()){
 				if (set.getInt("LocationX") == x && set.getInt("LocationY") == y && set.getInt("LocationZ") == z 
 						&& set.getString("LocationWorld").equals(world)){
 					String uuid = set.getString("OwnerUUID");
-					plugin.closeResultSet(set); plugin.closeStatement(statement); plugin.closeConnection(connection);
+					plugin.getLSDatabase().closeResultSet(set); plugin.getLSDatabase().closeStatement(statement); plugin.getLSDatabase().closeConnection(connection);
 					return uuid;
 				}
 			}
 			
 		}catch (SQLException e){e.printStackTrace();}
-		plugin.closeResultSet(set); plugin.closeStatement(statement); plugin.closeConnection(connection);
+		plugin.getLSDatabase().closeResultSet(set); plugin.getLSDatabase().closeStatement(statement); plugin.getLSDatabase().closeConnection(connection);
 		return null;
 	}
 	
 	public Location getLocationFromLockID(int lockID){
-		Connection connection = plugin.openConnection();
-		Statement statement = plugin.createStatement(connection);
-		ResultSet set = plugin.queryDatabase(statement, "select * from LockedBlocks where LockID = " + lockID);
+		Connection connection = plugin.getLSDatabase().openConnection();
+		Statement statement = plugin.getLSDatabase().createStatement(connection);
+		ResultSet set = plugin.getLSDatabase().queryDatabase(statement, "select * from LockedBlocks where LockID = " + lockID);
 		try {
 			int x = set.getInt("LocationX"); int y = set.getInt("LocationY"); int z = set.getInt("LocationZ");
 			String world = set.getString("LocationWorld");
-			plugin.closeResultSet(set); plugin.closeStatement(statement); plugin.closeConnection(connection);
+			plugin.getLSDatabase().closeResultSet(set); plugin.getLSDatabase().closeStatement(statement); plugin.getLSDatabase().closeConnection(connection);
 			return new Location(Bukkit.getWorld(world), x, y, z);
 		}catch (SQLException e){e.printStackTrace(); return null;}
-		finally{plugin.closeResultSet(set); plugin.closeStatement(statement); plugin.closeConnection(connection);}
+		finally{plugin.getLSDatabase().closeResultSet(set); plugin.getLSDatabase().closeStatement(statement); plugin.getLSDatabase().closeConnection(connection);}
 	}
 	
 	/** Gather all the blocks that the player has locked
@@ -317,15 +317,15 @@ public class LockedBlockAccessor {
 	 */
 	public ArrayList<Integer> getAllLocks(OfflinePlayer player){
 		ArrayList<Integer> ids = new ArrayList<Integer>();
-		Connection connection = plugin.openConnection();
-		Statement statement = plugin.createStatement(connection);
-		ResultSet set = plugin.queryDatabase(statement, "select * from LockedBlocks");
+		Connection connection = plugin.getLSDatabase().openConnection();
+		Statement statement = plugin.getLSDatabase().createStatement(connection);
+		ResultSet set = plugin.getLSDatabase().queryDatabase(statement, "select * from LockedBlocks");
 		try{
 			while (set.next())
 				if (set.getString("OwnerUUID").equals(player.getUniqueId().toString()))
 					ids.add(set.getInt("LockID"));
 		}catch (SQLException e){e.printStackTrace();}
-		plugin.closeResultSet(set); plugin.closeStatement(statement); plugin.closeConnection(connection);
+		plugin.getLSDatabase().closeResultSet(set); plugin.getLSDatabase().closeStatement(statement); plugin.getLSDatabase().closeConnection(connection);
 		return ids;
 	}
 	
@@ -335,15 +335,15 @@ public class LockedBlockAccessor {
 	 */
 	public int getLockCount(OfflinePlayer player){
 		int amount = 0;
-		Connection connection = plugin.openConnection();
-		Statement statement = plugin.createStatement(connection);
-		ResultSet set = plugin.queryDatabase(statement, "select * from LockedBlocks");
+		Connection connection = plugin.getLSDatabase().openConnection();
+		Statement statement = plugin.getLSDatabase().createStatement(connection);
+		ResultSet set = plugin.getLSDatabase().queryDatabase(statement, "select * from LockedBlocks");
 		try{
 			while (set.next())
 				if (set.getString("OwnerUUID").equals(player.getUniqueId().toString()))
 					amount++;
 		}catch (SQLException e){e.printStackTrace();}
-		plugin.closeResultSet(set); plugin.closeStatement(statement); plugin.closeConnection(connection);
+		plugin.getLSDatabase().closeResultSet(set); plugin.getLSDatabase().closeStatement(statement); plugin.getLSDatabase().closeConnection(connection);
 		return amount;
 	}
 	
@@ -355,11 +355,11 @@ public class LockedBlockAccessor {
 	 * @param location - The location of the block
 	 */
 	public void insertDatabaseInfo(int keyID, String ownerUUID, String ownerName, String blockType, Location location){
-		Connection connection = plugin.openConnection();
-		Statement statement = plugin.createStatement(connection);
-		plugin.executeStatement(statement, "insert into LockedBlocks values(null, " + keyID + ", '" + ownerUUID + "', '" + ownerName + "', '" 
+		Connection connection = plugin.getLSDatabase().openConnection();
+		Statement statement = plugin.getLSDatabase().createStatement(connection);
+		plugin.getLSDatabase().executeStatement(statement, "insert into LockedBlocks values(null, " + keyID + ", '" + ownerUUID + "', '" + ownerName + "', '" 
 				+ blockType + "', " + location.getBlockX() + ", " + location.getBlockY() + ", " + location.getBlockZ() + ", '" + location.getWorld().getName() + "')");
-		plugin.closeStatement(statement); plugin.closeConnection(connection);
+		plugin.getLSDatabase().closeStatement(statement); plugin.getLSDatabase().closeConnection(connection);
 	}
 	
 	/** Insert information into the SQLite Database with a specific lock ID (Used in startup, should not be used otherwise)
@@ -371,25 +371,25 @@ public class LockedBlockAccessor {
 	 * @param location - The location of the block
 	 */
 	public void insertDatabaseInfo(int lockID, int keyID, String ownerUUID, String ownerName, String blockType, Location location){
-		Connection connection = plugin.openConnection();
-		Statement statement = plugin.createStatement(connection);
-		plugin.executeStatement(statement, "insert into LockedBlocks values(" + lockID + ", " + keyID + ", '" + ownerUUID + "', '" + ownerName + "', '" 
+		Connection connection = plugin.getLSDatabase().openConnection();
+		Statement statement = plugin.getLSDatabase().createStatement(connection);
+		plugin.getLSDatabase().executeStatement(statement, "insert into LockedBlocks values(" + lockID + ", " + keyID + ", '" + ownerUUID + "', '" + ownerName + "', '" 
 				+ blockType + "', " + location.getBlockX() + ", " + location.getBlockY() + ", " + location.getBlockZ() + ", '" + location.getWorld().getName() + "')");
-		plugin.closeStatement(statement); plugin.closeConnection(connection);
+		plugin.getLSDatabase().closeStatement(statement); plugin.getLSDatabase().closeConnection(connection);
 	}
 	
 	public boolean isInDatabase(int lockID){
-		Connection connection = plugin.openConnection();
-		Statement statement = plugin.createStatement(connection);
-		ResultSet set = plugin.queryDatabase(statement, "select LockID from LockedBlocks where LockID = " + lockID);
+		Connection connection = plugin.getLSDatabase().openConnection();
+		Statement statement = plugin.getLSDatabase().createStatement(connection);
+		ResultSet set = plugin.getLSDatabase().queryDatabase(statement, "select LockID from LockedBlocks where LockID = " + lockID);
 		try {
 			if (set.next()){
-				plugin.closeResultSet(set); plugin.closeStatement(statement); plugin.closeConnection(connection);
+				plugin.getLSDatabase().closeResultSet(set); plugin.getLSDatabase().closeStatement(statement); plugin.getLSDatabase().closeConnection(connection);
 				return true;
 			}
 		}
 		catch (SQLException e){return false;}
-		plugin.closeResultSet(set); plugin.closeStatement(statement); plugin.closeConnection(connection);
+		plugin.getLSDatabase().closeResultSet(set); plugin.getLSDatabase().closeStatement(statement); plugin.getLSDatabase().closeConnection(connection);
 		return false;
 	}
 	

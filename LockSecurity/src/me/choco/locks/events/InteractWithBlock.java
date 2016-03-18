@@ -5,6 +5,7 @@ import java.util.UUID;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -23,7 +24,6 @@ import me.choco.locks.api.utils.LSMode;
 import me.choco.locks.utils.Keys;
 import me.choco.locks.utils.LockState;
 import me.choco.locks.utils.LockedBlockAccessor;
-import me.choco.locks.utils.particles.ParticleEffect;
 
 public class InteractWithBlock implements Listener{
 	LockSecurity plugin;
@@ -34,6 +34,8 @@ public class InteractWithBlock implements Listener{
 		this.lockedAccessor = new LockedBlockAccessor(plugin);
 		this.keys = new Keys(plugin);
 	}
+	
+	//TODO: Use LocalizedDataHandler
 	
 	@SuppressWarnings("deprecation")
 	@EventHandler
@@ -106,7 +108,7 @@ public class InteractWithBlock implements Listener{
 									Bukkit.getPluginManager().callEvent(interactLockedBlockEvent);
 									if (!interactLockedBlockEvent.isCancelled()){
 										if (plugin.getConfig().getBoolean("Aesthetics.DisplayLockedSmokeParticle"))
-											ParticleEffect.SMOKE_NORMAL.display(0.1F, 0.2F, 0.1F, 0.01F, 5, block.getLocation().add(0.5, 1.2, 0.5), player);
+											player.spawnParticle(Particle.SMOKE_NORMAL, block.getLocation().add(0, 1, 0), 5, 0.1F, 0.2F, 0.1F, 0.01F);
 										plugin.sendPathMessage(player, plugin.messages.getConfig().getString("Events.NoKey"));
 										player.playSound(player.getLocation(), Sound.BLOCK_WOODEN_DOOR_CLOSE, 1, 0);
 									}
@@ -115,7 +117,7 @@ public class InteractWithBlock implements Listener{
 									Bukkit.getPluginManager().callEvent(interactLockedBlockEvent);
 									if (!interactLockedBlockEvent.isCancelled()){
 										if (plugin.getConfig().getBoolean("Aesthetics.DisplayLockedSmokeParticle"))
-											ParticleEffect.SMOKE_NORMAL.display(0.1F, 0.2F, 0.1F, 0.01F, 5, block.getLocation().add(0.5, 1.2, 0.5), player);
+											player.spawnParticle(Particle.SMOKE_NORMAL, block.getLocation().add(0, 1, 0), 5, 0.1F, 0.2F, 0.1F, 0.01F);
 										plugin.sendPathMessage(player, plugin.messages.getConfig().getString("Events.LockPickAttempt"));
 										player.playSound(player.getLocation(), Sound.BLOCK_TRIPWIRE_CLICK_OFF, 1, 2);
 									}

@@ -2,7 +2,7 @@ package me.choco.locks;
 
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -24,8 +25,9 @@ import org.bukkit.inventory.ShapelessRecipe;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitRunnable;
 
-import me.choco.locks.api.utils.LSMode;
+import me.choco.locks.api.block.LockedBlock;
 import me.choco.locks.commands.ForgeKey;
 import me.choco.locks.commands.GiveKey;
 import me.choco.locks.commands.IgnoreLocks;
@@ -43,9 +45,11 @@ import me.choco.locks.events.InteractWithBlock;
 import me.choco.locks.events.JoinAndQuit;
 import me.choco.locks.events.LockedBlockGriefProtection;
 import me.choco.locks.utils.Keys;
+import me.choco.locks.utils.LocalizedDataHandler;
 import me.choco.locks.utils.LockedBlockAccessor;
 import me.choco.locks.utils.general.ConfigAccessor;
 import me.choco.locks.utils.general.Metrics;
+import me.choco.locks.utils.general.SQLite;
 import net.milkbowl.vault.economy.Economy;
 
 public class LockSecurity extends JavaPlugin{
@@ -55,7 +59,7 @@ public class LockSecurity extends JavaPlugin{
 		System.out.println("[LockSecurity] Add-On Detected: " + plugin.getDescription().getName() + " version " + plugin.getDescription().getVersion()); 
 		return instance;
 	}
-	@Deprecated
+	
 	public static final LockSecurity getPlugin(){
 		System.out.println("Add-On Detected. No information provided");
 		return instance;
@@ -63,7 +67,8 @@ public class LockSecurity extends JavaPlugin{
 	
 	public ConfigAccessor locked;
 	public ConfigAccessor messages;
-	Keys keysClass = new Keys(this);
+	private LocalizedDataHandler data;
+	private final SQLite database = new SQLite();
 	LockedBlockAccessor lockedAccessor = new LockedBlockAccessor(this);
 
 	public HashMap<String, String> transferTo = new HashMap<String, String>();
@@ -73,10 +78,12 @@ public class LockSecurity extends JavaPlugin{
 	@Override
 	public void onEnable(){
 		instance = this;
+		this.data = new LocalizedDataHandler(this);
 		
 		//LockSecurity default config file
 		getConfig().options().copyDefaults(true);
 	    saveConfig();
+	    
 		//LockSecurity messages.yml file
 		messages = new ConfigAccessor(this, "messages.yml");
 		messages.loadConfig();
@@ -105,7 +112,7 @@ public class LockSecurity extends JavaPlugin{
 		this.getCommand("locknotify").setExecutor(new LockNotify(this));
 		
 		//Generate key recipes
-		ItemStack unsmithedKey = keysClass.createUnsmithedKey(getConfig().getInt("RecipeYields"));
+		ItemStack unsmithedKey = new Keys(this).createUnsmithedKey(getConfig().getInt("RecipeYields"));
 		Bukkit.getServer().addRecipe(new ShapedRecipe(unsmithedKey).shape("B  ", " I ", "  P").setIngredient('B', Material.IRON_FENCE).setIngredient('I', Material.IRON_INGOT).setIngredient('P', Material.WOOD));
 		Bukkit.getServer().addRecipe(new ShapedRecipe(unsmithedKey).shape(" B ", " I ", " P ").setIngredient('B', Material.IRON_FENCE).setIngredient('I', Material.IRON_INGOT).setIngredient('P', Material.WOOD));
 		Bukkit.getServer().addRecipe(new ShapedRecipe(unsmithedKey).shape("  B", " I ", "P  ").setIngredient('B', Material.IRON_FENCE).setIngredient('I', Material.IRON_INGOT).setIngredient('P', Material.WOOD));
@@ -137,11 +144,12 @@ public class LockSecurity extends JavaPlugin{
 		Statement statement = null;
 		try{
 			Class.forName("org.sqlite.JDBC");
-			connection = openConnection();
-			statement = createStatement(connection);
+			connection = getLSDatabase().openConnection();
+			statement = getLSDatabase().createStatement(connection);
 		}catch(Exception e){e.printStackTrace();}
 		this.getLogger().info("Opened database successfully");
-
+		
+		//YML to database transfer
 		try{
 			if (!connection.getMetaData().getTables(null, null, "LockedBlocks", null).next()){
 				this.getLogger().info("Creating database...");
@@ -196,17 +204,62 @@ public class LockSecurity extends JavaPlugin{
 			this.getLogger().warning("Please leave a ticket on the LockSecurity plugin development page! http://dev.bukkit.org/bukkit-plugins/lock-security/tickets");
 			this.getLogger().warning("BE SURE TO INCLUDE A COPY OF YOUR locked.yml, YOUR lockinfo.db, AND YOUR ERROR LOG");
 		}
-		closeStatement(statement); closeConnection(connection);
+		getLSDatabase().closeStatement(statement); getLSDatabase().closeConnection(connection);
+		
+		//Database to LocalizedDataHandler
+		new BukkitRunnable(){
+			@Override
+			public void run(){
+				try{
+					Connection connection = getLSDatabase().openConnection();
+					Statement statement = getLSDatabase().createStatement(connection);
+					ResultSet set = getLSDatabase().queryDatabase(statement, "SELECT * FROM LockedBlocks");
+					while (set.next()){
+						getLocalizedData().registerLockedBlock(new LockedBlock(
+								Bukkit.getWorld(set.getString("LocationWorld")).getBlockAt(
+										set.getInt("LocationX"),
+										set.getInt("LocationY"), 
+										set.getInt("LocationZ")),
+								Bukkit.getOfflinePlayer(UUID.fromString(set.getString("OwnerUUID"))),
+								set.getInt("LockID"),
+								set.getInt("KeyID")));
+					}
+					getLSDatabase().closeResultSet(set); getLSDatabase().closeStatement(statement); getLSDatabase().closeConnection(connection);
+				}catch(SQLException e){ e.printStackTrace(); }
+				getLogger().info("Locked data successfully transfered to localized data handler");
+			}
+		}.runTaskAsynchronously(this);
 	}
 
 	@Override
 	public void onDisable(){
 		this.getLogger().info("Removing temporary information");
-		LSMode.clearAllModes();
 		adminNotify.clear();
 		transferTo.clear();
+		
+		if (getLocalizedData().getLockedBlocks().size() >= 1){
+			this.getLogger().info("Storing locked block information to the database");
+			try{
+				Connection connection = getLSDatabase().openConnection();
+				PreparedStatement statement = getLSDatabase().createPreparedStatement(connection, 
+						"INSERT OR REPLACE INTO LockedBlocks VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)");
+				for (LockedBlock block : getLocalizedData().getLockedBlocks()){
+					statement.setInt(1, block.getLockId());
+					statement.setInt(2, block.getKeyId());
+					statement.setString(3, block.getOwner().getUniqueId().toString());
+					statement.setString(4, block.getOwner().getName());
+					statement.setString(5, block.getBlock().getType().name());
+					statement.setInt(6, block.getBlock().getLocation().getBlockX());
+					statement.setInt(7, block.getBlock().getLocation().getBlockY());
+					statement.setInt(8, block.getBlock().getLocation().getBlockZ());
+					statement.setString(9, block.getBlock().getWorld().getName());
+					statement.execute();
+				}
+			}catch(SQLException e){ e.printStackTrace(); }
+		}
 	}
 	
+	//TODO: Removable after rewriting InteractWithBlock listener class
 	/** Check whether the specified block is a lockable or not
 	 * @param block - The block to check
 	 * @return boolean - Whether the block is lockable or not
@@ -235,62 +288,19 @@ public class LockSecurity extends JavaPlugin{
 			ChatColor.translateAlternateColorCodes('&', message));
 	}
 	
-	/** Open a new connection to the lockinfo database
-	 * @return Connection to the database
+	/** Get the database storing information about all locks
+	 * @return SQLite - The database information class
 	 */
-	public Connection openConnection(){
-		try{return DriverManager.getConnection("jdbc:sqlite:plugins/LockSecurity/lockinfo.db");}
-		catch (SQLException e){e.printStackTrace(); return null;}
+	public SQLite getLSDatabase(){
+		return database;
 	}
 	
-	/** Close a specific opened connection to a database */
-	public void closeConnection(Connection connection){
-		try{connection.close();}
-		catch (SQLException e){e.printStackTrace();}
-	}
-	
-	/** Create a new statement from a connection to a database
-	 * @param connection - The connection to the database in which to create a statement
-	 * @return Statement for the database
+	/** Get localized data from LockSecurity, containing locked block information
+	 * @return LocalizedDataHandler - Information about all locked blocks on the server
 	 */
-	public Statement createStatement(Connection connection){
-		try{return connection.createStatement();}
-		catch (SQLException e){e.printStackTrace(); return null;}
+	public LocalizedDataHandler getLocalizedData(){
+		return data;
 	}
-	
-	/** Close a specific statement from a connection to a database */
-	public void closeStatement(Statement statement){
-		try{statement.close();}
-		catch (SQLException e){e.printStackTrace();}
-	}
-	
-	/** Execute an SQL statement from the specified statement object
-	 * @param statement - The statement to use
-	 * @param sql - The SQL string parameters
-	 */
-	public void executeStatement(Statement statement, String sql){
-		try{statement.execute(sql);}
-		catch(SQLException e){e.printStackTrace();}
-	}
-	
-	/** Query / Return informatin from the database from a specific statement
-	 * @param statement - The statement to use
-	 * @param sql - The SQL string parameters
-	 * @return ResultSet of the query
-	 */
-	public ResultSet queryDatabase(Statement statement, String sql){
-		try{return statement.executeQuery(sql);}
-		catch (SQLException e){e.printStackTrace(); return null;}
-	}
-	
-	/** Close a specific result set from a connection to a database
-	 * @param set - The ResultSet to close
-	 */
-	public void closeResultSet(ResultSet set){
-		try{set.close();}
-		catch(SQLException e){e.printStackTrace();}
-	}
-	
 
     private boolean setupEconomy() {
         if (getServer().getPluginManager().getPlugin("Vault") == null)

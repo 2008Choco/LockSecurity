@@ -9,16 +9,13 @@ import org.bukkit.event.block.BlockBreakEvent;
 
 import me.choco.locks.LockSecurity;
 import me.choco.locks.api.PlayerUnlockBlockEvent;
+import me.choco.locks.api.block.LockedBlock;
 import me.choco.locks.api.utils.LSMode;
-import me.choco.locks.utils.LockState;
-import me.choco.locks.utils.LockedBlockAccessor;
 
 public class DestroyLockedBlock implements Listener{
 	LockSecurity plugin;
-	LockedBlockAccessor lockedAccessor;
 	public DestroyLockedBlock(LockSecurity plugin){
 		this.plugin = plugin;
-		this.lockedAccessor = new LockedBlockAccessor(plugin);
 	}
 	
 	@EventHandler
@@ -26,23 +23,19 @@ public class DestroyLockedBlock implements Listener{
 		Player player = event.getPlayer();
 		Block block = event.getBlock();
 		
-		if (plugin.isLockable(block)){
-			if (lockedAccessor.getLockedState(block).equals(LockState.LOCKED)){
-				String id = String.valueOf(lockedAccessor.getBlockLockID(block));
-				if (lockedAccessor.getBlockOwnerUUID(block).equals(player.getUniqueId().toString())
-						|| (LSMode.getMode(player).equals(LSMode.IGNORE_LOCKS) && plugin.getConfig().getBoolean("Griefing.IgnorelocksCanBreakLocks"))){
-					PlayerUnlockBlockEvent unlockEvent = new PlayerUnlockBlockEvent(plugin, player, block);
-					Bukkit.getPluginManager().callEvent(unlockEvent);
-					if (!unlockEvent.isCancelled()){
-						plugin.sendPathMessage(player, plugin.messages.getConfig().getString("Events.BlockUnregistered").replaceAll("%type%", block.getType().toString()).replaceAll("%id%", id));
-						lockedAccessor.setUnlocked(block);
-					}else{
-						event.setCancelled(true);
-					}
-				}else{
-					event.setCancelled(true);
-					plugin.sendPathMessage(player, plugin.messages.getConfig().getString("Events.CannotBreak").replaceAll("%type%", block.getType().toString()).replaceAll("%player%", lockedAccessor.getBlockOwner(block)));
-				}
+		if (plugin.getLocalizedData().isLockedBlock(block)){
+			LockedBlock lockedBlock = plugin.getLocalizedData().getLockedBlock(block);
+			if (lockedBlock.getOwner().getUniqueId().equals(player.getUniqueId())
+					|| (plugin.getConfig().getBoolean("Griefing.IgnorelocksCanBreakLocks") && LSMode.getMode(player).equals(LSMode.IGNORE_LOCKS))){
+				PlayerUnlockBlockEvent unlockEvent = new PlayerUnlockBlockEvent(plugin, player, block);
+				Bukkit.getPluginManager().callEvent(unlockEvent);
+				if (!unlockEvent.isCancelled()){
+					plugin.sendPathMessage(player, plugin.messages.getConfig().getString("Events.BlockUnregistered").replaceAll("%type%", block.getType().toString()).replace("%id%", String.valueOf(lockedBlock.getLockId())));
+					plugin.getLocalizedData().unregisterLockedBlock(lockedBlock);
+				}else{ event.setCancelled(true); }
+			}else{
+				event.setCancelled(true);
+				plugin.sendPathMessage(player, plugin.messages.getConfig().getString("Events.CannotBreak").replace("%type%", block.getType().name()).replace("%player%", lockedBlock.getOwner().getName()));
 			}
 		}
 	}
