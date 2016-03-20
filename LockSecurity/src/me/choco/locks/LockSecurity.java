@@ -2,7 +2,6 @@ package me.choco.locks;
 
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -27,7 +26,7 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import me.choco.locks.api.block.LockedBlock;
+import me.choco.locks.api.LockedBlock;
 import me.choco.locks.commands.ForgeKey;
 import me.choco.locks.commands.GiveKey;
 import me.choco.locks.commands.IgnoreLocks;
@@ -46,22 +45,21 @@ import me.choco.locks.events.JoinAndQuit;
 import me.choco.locks.events.LockedBlockGriefProtection;
 import me.choco.locks.utils.Keys;
 import me.choco.locks.utils.LocalizedDataHandler;
-import me.choco.locks.utils.LockedBlockAccessor;
 import me.choco.locks.utils.general.ConfigAccessor;
 import me.choco.locks.utils.general.Metrics;
 import me.choco.locks.utils.general.SQLite;
+import me.choco.locks.utils.general.loops.DatabaseSaveLoop;
 import net.milkbowl.vault.economy.Economy;
 
 public class LockSecurity extends JavaPlugin{
 	
 	private static LockSecurity instance;
-	public static final LockSecurity getPlugin(Plugin plugin) {
+	public static LockSecurity getPlugin(Plugin plugin) {
 		System.out.println("[LockSecurity] Add-On Detected: " + plugin.getDescription().getName() + " version " + plugin.getDescription().getVersion()); 
 		return instance;
 	}
 	
-	public static final LockSecurity getPlugin(){
-		System.out.println("Add-On Detected. No information provided");
+	public static LockSecurity getPlugin(){
 		return instance;
 	}
 	
@@ -69,7 +67,6 @@ public class LockSecurity extends JavaPlugin{
 	public ConfigAccessor messages;
 	private LocalizedDataHandler data;
 	private final SQLite database = new SQLite();
-	LockedBlockAccessor lockedAccessor = new LockedBlockAccessor(this);
 
 	public HashMap<String, String> transferTo = new HashMap<String, String>();
 	public ArrayList<String> adminNotify = new ArrayList<String>();
@@ -187,7 +184,7 @@ public class LockSecurity extends JavaPlugin{
 						double z = locked.getConfig().getDouble(key + ".Location.Z");
 						Location location = new Location(world, x, y, z);
 						
-						lockedAccessor.insertDatabaseInfo(lockID, keyID, ownerUUID, ownerName, blockType, location);
+						insertDatabaseInfo(lockID, keyID, ownerUUID, ownerName, blockType, location);
 						this.getLogger().info("Successfully Transfered LockID: " + lockID + ", Location: " + (int)x + ", " + (int)y + ", " + (int)z);
 					} catch (NumberFormatException e){}
 				}
@@ -229,6 +226,9 @@ public class LockSecurity extends JavaPlugin{
 				getLogger().info("Locked data successfully transfered to localized data handler");
 			}
 		}.runTaskAsynchronously(this);
+		
+		long delay = (this.getConfig().getLong("DatabaseSaveIntreval") * 60) * 20;
+		new DatabaseSaveLoop(this).runTaskTimer(this, delay, delay);
 	}
 
 	@Override
@@ -236,30 +236,9 @@ public class LockSecurity extends JavaPlugin{
 		this.getLogger().info("Removing temporary information");
 		adminNotify.clear();
 		transferTo.clear();
-		
-		if (getLocalizedData().getLockedBlocks().size() >= 1){
-			this.getLogger().info("Storing locked block information to the database");
-			try{
-				Connection connection = getLSDatabase().openConnection();
-				PreparedStatement statement = getLSDatabase().createPreparedStatement(connection, 
-						"INSERT OR REPLACE INTO LockedBlocks VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)");
-				for (LockedBlock block : getLocalizedData().getLockedBlocks()){
-					statement.setInt(1, block.getLockId());
-					statement.setInt(2, block.getKeyId());
-					statement.setString(3, block.getOwner().getUniqueId().toString());
-					statement.setString(4, block.getOwner().getName());
-					statement.setString(5, block.getBlock().getType().name());
-					statement.setInt(6, block.getBlock().getLocation().getBlockX());
-					statement.setInt(7, block.getBlock().getLocation().getBlockY());
-					statement.setInt(8, block.getBlock().getLocation().getBlockZ());
-					statement.setString(9, block.getBlock().getWorld().getName());
-					statement.execute();
-				}
-			}catch(SQLException e){ e.printStackTrace(); }
-		}
+		getLocalizedData().saveLocalizedDataToDatabase(true);
 	}
 	
-	//TODO: Removable after rewriting InteractWithBlock listener class
 	/** Check whether the specified block is a lockable or not
 	 * @param block - The block to check
 	 * @return boolean - Whether the block is lockable or not
@@ -311,6 +290,14 @@ public class LockSecurity extends JavaPlugin{
         economy = rsp.getProvider();
         return economy != null;
     }
+    
+	private void insertDatabaseInfo(int lockID, int keyID, String ownerUUID, String ownerName, String blockType, Location location){
+		Connection connection = getLSDatabase().openConnection();
+		Statement statement = getLSDatabase().createStatement(connection);
+		getLSDatabase().executeStatement(statement, "insert into LockedBlocks values(" + lockID + ", " + keyID + ", '" + ownerUUID + "', '" + ownerName + "', '" 
+				+ blockType + "', " + location.getBlockX() + ", " + location.getBlockY() + ", " + location.getBlockZ() + ", '" + location.getWorld().getName() + "')");
+		getLSDatabase().closeStatement(statement); getLSDatabase().closeConnection(connection);
+	}
 }
 
 /* TODO Upcoming Versions

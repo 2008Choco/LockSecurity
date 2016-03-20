@@ -1,4 +1,4 @@
-package me.choco.locks.api;
+package me.choco.locks.api.event;
 
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -7,30 +7,21 @@ import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
 import me.choco.locks.LockSecurity;
-import me.choco.locks.api.utils.InteractResult;
-import me.choco.locks.utils.LockedBlockAccessor;
 
-public class PlayerInteractLockedBlockEvent extends Event implements Cancellable{
+public class PlayerLockBlockEvent extends Event implements Cancellable{
 	private static final HandlerList handlers = new HandlerList();
 	private boolean cancelled = false;
-	LockSecurity plugin;
-	LockedBlockAccessor lockedAccessor;
-	Player player;
-	Block block;
-	InteractResult result;
 	
-	/** This event is fired before a player interacts with a locked block
+	private Player player;
+	private Block block;
+	/** This event is fired before a player successfully locks a block
 	 * @param plugin - An instance of the LockSecurity plugin
 	 * @param player - The player that locked the block
 	 * @param block - The block that is being locked
-	 * @param InteractResult - The result of the event
 	 */
-	public PlayerInteractLockedBlockEvent(LockSecurity plugin, Player player, Block block, InteractResult result){
-		this.plugin = plugin;
+	public PlayerLockBlockEvent(Player player, Block block){
 		this.player = player;
 		this.block = block;
-		this.result = result;
-		this.lockedAccessor = new LockedBlockAccessor(plugin);
 	}
 	
 	@Override
@@ -70,17 +61,13 @@ public class PlayerInteractLockedBlockEvent extends Event implements Cancellable
 	 * @return int - The lock ID
 	 */
 	public int getLockID(){
-		return lockedAccessor.getNextLockID();
+		return LockSecurity.getPlugin().getLocalizedData().getNextLockID();
 	}
 	
 	/** Get the KeyID that this block will have
 	 * @return int - The key ID
 	 */
 	public int getKeyID(){
-		return lockedAccessor.getNextKeyID();
-	}
-	
-	public InteractResult getResult(){
-		return result;
+		return LockSecurity.getPlugin().getLocalizedData().getNextKeyID();
 	}
 }

@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemFlag;
@@ -101,5 +102,38 @@ public class Keys {
 		if (player.getInventory().getItemInMainHand().equals(createUnsmithedKey(1)))
 			return true;
 		return false;
+	}
+	
+	/** A boolean method to determine whether the Key ID matches the Block Lock ID
+	 * @param block - The block to reference an ID from
+	 * @param player - The player that is right clicking the locked block
+	 * @return boolean - Whether the player has the right key in their hand or not
+	 */
+	public boolean playerHasCorrectKey(Block block, Player player){
+		if (!plugin.getLocalizedData().isLockedBlock(block)) return true;
+		if (player.getInventory().getItemInMainHand().getType().equals(Material.TRIPWIRE_HOOK)){
+			List<Integer> keyIDs = getKeyIDs(player.getInventory().getItemInMainHand());
+			if (keyIDs == null) return false;
+			return keyIDs.contains(plugin.getLocalizedData().getLockedBlock(block).getKeyId());
+		}
+		return false;
+	}
+	
+	/** Get the IDs of the Key in the players hand
+	 * @param player - The player to reference the item in hand
+	 * @return String - String value of the ID binded to the key
+	 */
+	public List<Integer> getKeyIDs(ItemStack key){
+		if (!key.getType().equals(Material.TRIPWIRE_HOOK)) return null;
+		if (!key.hasItemMeta()) return null;
+		if (!key.getItemMeta().hasLore()) return null;
+		String[] ids = key.getItemMeta().getLore().toString().replace("Key ID: ", "").replaceAll("\\[", "").replaceAll("\\]", "").split(", ");
+		
+		List<Integer> intIDs = new ArrayList<Integer>();
+		for (String currentID : ids){
+			try{ intIDs.add(Integer.parseInt(ChatColor.stripColor(currentID)));
+			}catch(NumberFormatException e){ continue; }
+		}
+		return intIDs;
 	}
 }

@@ -1,6 +1,7 @@
 MetricsEnabled: true
 RecipeYields: 1
 EnableNotifyOnLogin: true
+DatabaseSaveIntreval: 5
 MaximumLocks:
   YOUR_WORLD: -1
 

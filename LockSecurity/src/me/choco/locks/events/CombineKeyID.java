@@ -15,18 +15,15 @@ import org.bukkit.event.inventory.PrepareItemCraftEvent;
 import org.bukkit.inventory.ItemStack;
 
 import me.choco.locks.LockSecurity;
-import me.choco.locks.api.PlayerCombineKeyEvent;
-import me.choco.locks.api.PlayerDuplicateKeyEvent;
+import me.choco.locks.api.event.PlayerCombineKeyEvent;
+import me.choco.locks.api.event.PlayerDuplicateKeyEvent;
 import me.choco.locks.utils.Keys;
-import me.choco.locks.utils.LockedBlockAccessor;
 
 public class CombineKeyID implements Listener{
 	LockSecurity plugin;
-	LockedBlockAccessor lockedAccessor;
 	Keys keys;
 	public CombineKeyID(LockSecurity plugin) {
 		this.plugin = plugin;
-		this.lockedAccessor = new LockedBlockAccessor(plugin);
 		this.keys = new Keys(plugin);
 	}
 	
@@ -43,7 +40,7 @@ public class CombineKeyID implements Listener{
 			newIDs.clear();
 			for (ItemStack item : event.getInventory().getMatrix()){
 				if (isLockedKey(item)){
-					List<Integer> itemIDs = lockedAccessor.getKeyIDs(item);
+					List<Integer> itemIDs = keys.getKeyIDs(item);
 					for (int id : itemIDs){
 						newIDs.add(id);
 					}
@@ -53,7 +50,7 @@ public class CombineKeyID implements Listener{
 						smithedKey2 = item;
 					}
 				}else if (isUnsmithedKey(item)){
-					List<Integer> itemIDs = lockedAccessor.getKeyIDs(item);
+					List<Integer> itemIDs = keys.getKeyIDs(item);
 					for (int id : itemIDs){
 						newIDs.add(id);
 					}
@@ -63,7 +60,7 @@ public class CombineKeyID implements Listener{
 			}
 			newIDs = removeDuplicates(newIDs);
 			if (combination){
-				PlayerCombineKeyEvent combineEvent = new PlayerCombineKeyEvent(plugin, newIDs, smithedKey1, smithedKey2);
+				PlayerCombineKeyEvent combineEvent = new PlayerCombineKeyEvent(newIDs, smithedKey1, smithedKey2);
 				Bukkit.getPluginManager().callEvent(combineEvent);
 				event.getInventory().setResult(keys.createLockedKey(1, newIDs));
 			}else{

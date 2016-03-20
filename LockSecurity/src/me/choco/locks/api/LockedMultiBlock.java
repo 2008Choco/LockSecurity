@@ -1,4 +1,4 @@
-package me.choco.locks.api.block;
+package me.choco.locks.api;
 
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;

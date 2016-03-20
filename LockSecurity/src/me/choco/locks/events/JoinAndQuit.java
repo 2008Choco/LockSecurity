@@ -13,14 +13,11 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import me.choco.locks.LockSecurity;
-import me.choco.locks.utils.LockedBlockAccessor;
 
 public class JoinAndQuit implements Listener{
 	LockSecurity plugin;
-	LockedBlockAccessor lockedAccessor;
 	public JoinAndQuit(LockSecurity plugin){
 		this.plugin = plugin;
-		this.lockedAccessor = new LockedBlockAccessor(plugin);
 	}
 	
 	@EventHandler

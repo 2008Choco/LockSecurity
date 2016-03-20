@@ -1,4 +1,4 @@
-package me.choco.locks.api;
+package me.choco.locks.api.event;
 
 import java.util.List;
 
@@ -6,19 +6,12 @@ import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import org.bukkit.inventory.ItemStack;
 
-import me.choco.locks.LockSecurity;
-import me.choco.locks.utils.LockedBlockAccessor;
-
 public class PlayerCombineKeyEvent extends Event{
 	private static final HandlerList handlers = new HandlerList();
-	LockSecurity plugin;
-	LockedBlockAccessor lockedAccessor;
-	List<Integer> keyIDs;
-	ItemStack smithedKey1, smithedKey2;
 	
-	public PlayerCombineKeyEvent(LockSecurity plugin, List<Integer> keyIDs, ItemStack smithedKey1, ItemStack smithedKey2){
-		this.plugin = plugin;
-		this.lockedAccessor = new LockedBlockAccessor(plugin);
+	private List<Integer> keyIDs;
+	private ItemStack smithedKey1, smithedKey2;
+	public PlayerCombineKeyEvent(List<Integer> keyIDs, ItemStack smithedKey1, ItemStack smithedKey2){
 		this.keyIDs = keyIDs;
 		this.smithedKey1 = smithedKey1;
 		this.smithedKey2 = smithedKey2;

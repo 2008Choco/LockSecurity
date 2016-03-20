@@ -8,8 +8,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 
 import me.choco.locks.LockSecurity;
-import me.choco.locks.api.PlayerUnlockBlockEvent;
-import me.choco.locks.api.block.LockedBlock;
+import me.choco.locks.api.LockedBlock;
+import me.choco.locks.api.event.PlayerUnlockBlockEvent;
 import me.choco.locks.api.utils.LSMode;
 
 public class DestroyLockedBlock implements Listener{
@@ -27,7 +27,7 @@ public class DestroyLockedBlock implements Listener{
 			LockedBlock lockedBlock = plugin.getLocalizedData().getLockedBlock(block);
 			if (lockedBlock.getOwner().getUniqueId().equals(player.getUniqueId())
 					|| (plugin.getConfig().getBoolean("Griefing.IgnorelocksCanBreakLocks") && LSMode.getMode(player).equals(LSMode.IGNORE_LOCKS))){
-				PlayerUnlockBlockEvent unlockEvent = new PlayerUnlockBlockEvent(plugin, player, block);
+				PlayerUnlockBlockEvent unlockEvent = new PlayerUnlockBlockEvent(player, lockedBlock);
 				Bukkit.getPluginManager().callEvent(unlockEvent);
 				if (!unlockEvent.isCancelled()){
 					plugin.sendPathMessage(player, plugin.messages.getConfig().getString("Events.BlockUnregistered").replaceAll("%type%", block.getType().toString()).replace("%id%", String.valueOf(lockedBlock.getLockId())));

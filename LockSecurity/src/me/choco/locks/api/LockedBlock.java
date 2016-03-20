@@ -1,4 +1,4 @@
-package me.choco.locks.api.block;
+package me.choco.locks.api;
 
 import org.bukkit.OfflinePlayer;
 import org.bukkit.block.Block;

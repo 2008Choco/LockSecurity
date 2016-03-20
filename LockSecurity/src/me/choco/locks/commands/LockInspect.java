@@ -1,22 +1,19 @@
 package me.choco.locks.commands;
 
 import org.bukkit.ChatColor;
-import org.bukkit.block.Block;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import me.choco.locks.LockSecurity;
+import me.choco.locks.api.LockedBlock;
 import me.choco.locks.api.utils.LSMode;
-import me.choco.locks.utils.LockedBlockAccessor;
 
 public class LockInspect implements CommandExecutor{
 	LockSecurity plugin;
-	LockedBlockAccessor lockedAccessor;
 	public LockInspect(LockSecurity plugin){
 		this.plugin = plugin;
-		this.lockedAccessor = new LockedBlockAccessor(plugin);
 	}
 	
 	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args){
@@ -45,13 +42,13 @@ public class LockInspect implements CommandExecutor{
 						return true;
 					}
 					
-					if (lockedAccessor.isInDatabase(ID)){
-						Block block = lockedAccessor.getLocationFromLockID(ID).getBlock();
+					if (plugin.getLocalizedData().isLockedBlock(ID)){
+						LockedBlock block = plugin.getLocalizedData().getLockedBlock(ID);
 						player.sendMessage(ChatColor.GOLD + "- - - - - - " + ChatColor.DARK_AQUA + "Lock information " + ChatColor.GOLD + "- - - - - -");
-						player.sendMessage(ChatColor.GOLD + "Lock ID: " + ChatColor.AQUA + lockedAccessor.getBlockLockID(block));
-						player.sendMessage(ChatColor.GOLD + "Key ID: " + ChatColor.AQUA + lockedAccessor.getBlockKeyID(block));
-						player.sendMessage(ChatColor.GOLD + "Owner: " + ChatColor.AQUA + lockedAccessor.getBlockOwner(block) + " (" + ChatColor.GOLD + lockedAccessor.getBlockOwnerUUID(block) + ChatColor.AQUA + ")");
-						player.sendMessage(ChatColor.GOLD + "Location: " + ChatColor.AQUA + block.getLocation().getWorld().getName() + " x:" + block.getLocation().getBlockX() + " y:" + block.getLocation().getBlockY() + " z:" + block.getLocation().getBlockZ());
+						player.sendMessage(ChatColor.GOLD + "Lock ID: " + ChatColor.AQUA + block.getLockId());
+						player.sendMessage(ChatColor.GOLD + "Key ID: " + ChatColor.AQUA + block.getKeyId());
+						player.sendMessage(ChatColor.GOLD + "Owner: " + ChatColor.AQUA + block.getOwner().getName() + " (" + ChatColor.GOLD + block.getOwner().getUniqueId() + ChatColor.AQUA + ")");
+						player.sendMessage(ChatColor.GOLD + "Location: " + ChatColor.AQUA + block.getBlock().getWorld().getName() + " x:" + block.getBlock().getX() + " y:" + block.getBlock().getY() + " z:" + block.getBlock().getZ());
 					}else{
 						plugin.sendPathMessage(player, plugin.messages.getConfig().getString("Commands.Unlock.BlockNotLocked").replaceAll("%lockID%", String.valueOf(ID)));
 					}

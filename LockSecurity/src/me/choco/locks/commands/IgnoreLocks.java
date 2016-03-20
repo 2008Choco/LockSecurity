@@ -26,8 +26,7 @@ public class IgnoreLocks implements CommandExecutor{
 					LSMode.setMode(player, LSMode.IGNORE_LOCKS);
 					plugin.sendPathMessage(player, plugin.messages.getConfig().getString("Commands.IgnoreLocks.IgnoringLocks"));
 				}
-			}
-			else{
+			}else{
 				plugin.sendPathMessage(player, plugin.messages.getConfig().getString("Commands.General.NoPermission"));
 			}
 			return true;

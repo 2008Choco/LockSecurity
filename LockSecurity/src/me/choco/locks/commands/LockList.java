@@ -1,6 +1,6 @@
 package me.choco.locks.commands;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -13,14 +13,12 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import me.choco.locks.LockSecurity;
-import me.choco.locks.utils.LockedBlockAccessor;
+import me.choco.locks.api.LockedBlock;
 
 public class LockList implements CommandExecutor{
 	LockSecurity plugin;
-	LockedBlockAccessor lockedAccessor;
 	public LockList(LockSecurity plugin){
 		this.plugin = plugin;
-		this.lockedAccessor = new LockedBlockAccessor(plugin);
 	}
 	
 	@SuppressWarnings("deprecation")
@@ -29,7 +27,7 @@ public class LockList implements CommandExecutor{
 			if (sender instanceof Player){
 				Player player = (Player) sender;
 				if (player.hasPermission("locks.locklist")){
-					gatherLockInformation(player, lockedAccessor.getAllLocks(player), player.getName());
+					displayLockInformation(player, plugin.getLocalizedData().getAllLocks(player), player.getName());
 				}else{
 					plugin.sendPathMessage(player, plugin.messages.getConfig().getString("Commands.General.NoPermission"));
 				}
@@ -40,50 +38,27 @@ public class LockList implements CommandExecutor{
 		}
 		
 		if (cmd.getName().equals("locklistother")){
-			if (sender instanceof Player){
-				Player player = (Player) sender;
-				if (args.length == 0){
-					plugin.sendPathMessage(player, plugin.messages.getConfig().getString("Commands.General.MustSpecifyPlayer"));
-					return true;
-				}
-				if (args.length >= 1){
-					if (player.hasPermission("locks.locklistother")){
-						if (Bukkit.getOnlinePlayers().contains(Bukkit.getPlayer(args[0]))){
-							Player target = Bukkit.getPlayer(args[0]);
-							gatherLockInformation(player, lockedAccessor.getAllLocks(target), target.getName());
-						}else{
-							OfflinePlayer target = Bukkit.getOfflinePlayer(args[0]);
-							gatherLockInformation(player, lockedAccessor.getAllLocks(target), target.getName());
-						}
-					}else{
-						plugin.sendPathMessage(player, plugin.messages.getConfig().getString("Commands.General.NoPermission"));
-					}
-					return true;
-				}
-			}else{
-				if (args.length == 0){
-					plugin.sendPathMessage(sender, plugin.messages.getConfig().getString("Commands.General.MustSpecifyPlayer"));
-				}
-				if (args.length >= 1){
-					if (Bukkit.getOnlinePlayers().contains(Bukkit.getPlayer(args[0]))){
-						Player target = Bukkit.getPlayer(args[0]);
-						gatherLockInformation(sender, lockedAccessor.getAllLocks(target), target.getName());
-					}else{
-						OfflinePlayer target = Bukkit.getOfflinePlayer(args[0]);
-						gatherLockInformation(sender, lockedAccessor.getAllLocks(target), target.getName());
-					}
-					return true;
+			if (args.length == 0){
+				plugin.sendPathMessage(sender, plugin.messages.getConfig().getString("Commands.General.MustSpecifyPlayer"));
+			}
+			else if (args.length >= 1){
+				if (sender.hasPermission("locks.locklistother")){
+					OfflinePlayer target = Bukkit.getOfflinePlayer(args[0]);
+					displayLockInformation(sender, plugin.getLocalizedData().getAllLocks(target), target.getName());
+				}else{
+					plugin.sendPathMessage(sender, plugin.messages.getConfig().getString("Commands.General.NoPermission"));
 				}
 			}
+			return true;
 		}
 		return false;
 	}
 	
-	private void gatherLockInformation(CommandSender sender, ArrayList<Integer> ids, String targetName){
-		sender.sendMessage(ChatColor.YELLOW + plugin.messages.getConfig().getString("Commands.LockList.ListIdentifier").replaceAll("%player%", targetName));
-		for (int id : ids){
-			Location location = lockedAccessor.getLocationFromLockID(id);
-			sender.sendMessage(formatListing(id, location.getWorld(), location.getBlockX(), location.getBlockY(), location.getBlockZ()));
+	private void displayLockInformation(CommandSender sender, List<LockedBlock> blocks, String targetName){
+		sender.sendMessage(ChatColor.YELLOW + plugin.messages.getConfig().getString("Commands.LockList.ListIdentifier").replace("%player%", targetName));
+		for (LockedBlock block : blocks){
+			Location location = block.getBlock().getLocation();
+			sender.sendMessage(formatListing(block.getLockId(), location.getWorld(), location.getBlockX(), location.getBlockY(), location.getBlockZ()));
 		}
 	}
 	

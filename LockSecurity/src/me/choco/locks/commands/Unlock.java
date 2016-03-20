@@ -1,7 +1,6 @@
 package me.choco.locks.commands;
 
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -9,16 +8,14 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import me.choco.locks.LockSecurity;
-import me.choco.locks.api.PlayerUnlockBlockEvent;
+import me.choco.locks.api.LockedBlock;
+import me.choco.locks.api.event.PlayerUnlockBlockEvent;
 import me.choco.locks.api.utils.LSMode;
-import me.choco.locks.utils.LockedBlockAccessor;
 
 public class Unlock implements CommandExecutor{
 	LockSecurity plugin;
-	LockedBlockAccessor lockedAccessor;
 	public Unlock(LockSecurity plugin){
 		this.plugin = plugin;
-		lockedAccessor = new LockedBlockAccessor(plugin);
 	}
 	
 	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args){
@@ -50,14 +47,14 @@ public class Unlock implements CommandExecutor{
 						return true;
 					}
 					
-					if (lockedAccessor.isInDatabase(ID)){
-						Location lockLocation = lockedAccessor.getLocationFromLockID(ID);
-						PlayerUnlockBlockEvent unlockEvent = new PlayerUnlockBlockEvent(plugin, player, lockLocation.getBlock());
+					if (plugin.getLocalizedData().isLockedBlock(ID)){
+						LockedBlock block = plugin.getLocalizedData().getLockedBlock(ID);
+						PlayerUnlockBlockEvent unlockEvent = new PlayerUnlockBlockEvent(player, block);
 						Bukkit.getPluginManager().callEvent(unlockEvent);
 						if (!unlockEvent.isCancelled()){
-							lockedAccessor.setUnlocked(lockLocation.getBlock());
+							plugin.getLocalizedData().unregisterLockedBlock(block);
 							plugin.sendPathMessage(player, plugin.messages.getConfig().getString("Commands.Unlock.BlockUnlocked").replaceAll("%lockID%", String.valueOf(ID)));
-							player.playSound(lockLocation, Sound.BLOCK_WOODEN_DOOR_OPEN, 1, 2);
+							player.playSound(block.getBlock().getLocation(), Sound.BLOCK_WOODEN_DOOR_OPEN, 1, 2);
 						}
 					}else{
 						plugin.sendPathMessage(player, plugin.messages.getConfig().getString("Commands.Unlock.BlockNotLocked").replaceAll("%lockID%", String.valueOf(ID)));
