@@ -6,7 +6,7 @@ import org.bukkit.event.Listener;
 
 import me.choco.LSaddon.ChestCollector;
 import me.choco.LSaddon.utils.CollectorHandler;
-import me.choco.locks.api.PlayerUnlockBlockEvent;
+import me.choco.locks.api.event.PlayerUnlockBlockEvent;
 
 public class UnlockBlock implements Listener{
 	CollectorHandler collectorHandler;
@@ -16,7 +16,7 @@ public class UnlockBlock implements Listener{
 	
 	@EventHandler
 	public void onBlockUnlock(PlayerUnlockBlockEvent event){
-		Block block = event.getBlock();
+		Block block = event.getBlock().getBlock();
 		if (collectorHandler.isCollector(block)){
 			collectorHandler.removeCollector(block);
 		}

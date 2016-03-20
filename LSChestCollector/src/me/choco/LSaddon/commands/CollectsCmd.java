@@ -41,7 +41,7 @@ public class CollectsCmd implements CommandExecutor{
 			}
 			return true;
 		}else{
-			sender.sendMessage("This is a player owner command");
+			sender.sendMessage("This is a player only command");
 			return true;
 		}
 	}

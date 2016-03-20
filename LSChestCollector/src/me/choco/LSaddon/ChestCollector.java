@@ -17,13 +17,11 @@ import me.choco.LSaddon.events.PickupCollectorItem;
 import me.choco.LSaddon.events.UnlockBlock;
 import me.choco.LSaddon.utils.ConfigAccessor;
 import me.choco.locks.LockSecurity;
-import me.choco.locks.utils.LockedBlockAccessor;
 import me.choco.locks.utils.general.Metrics;
 
 public class ChestCollector extends JavaPlugin{
 	
-	 public LockSecurity lockSecurity;
-	 public LockedBlockAccessor lockedAccessor;
+	 private LockSecurity lockSecurity;
 	 public ConfigAccessor collectors;
 	 
 	 public ArrayList<String> collectorCreationMode = new ArrayList<String>();
@@ -33,7 +31,6 @@ public class ChestCollector extends JavaPlugin{
 	@Override
 	public void onEnable(){
 		lockSecurity = LockSecurity.getPlugin(this);
-		lockedAccessor = new LockedBlockAccessor(lockSecurity);
 		this.getLogger().info("Successfully hooked into LockSecurity.");
 		
 		//LSChestCollector default config
@@ -114,6 +111,10 @@ public class ChestCollector extends JavaPlugin{
 		collectorCreationMode.clear();
 		collectorBlocks.clear();
 		collectsCommandTempInfo.clear();
+	}
+	
+	public LockSecurity getLockSecurity(){
+		return lockSecurity;
 	}
 	
 	public void setCommandItems(String playerName, String[] items){

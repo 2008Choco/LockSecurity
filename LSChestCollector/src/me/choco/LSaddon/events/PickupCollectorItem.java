@@ -60,8 +60,7 @@ public class PickupCollectorItem implements Listener{
 	
 	private boolean hasOpenSlot(Inventory inventory){
 		for (ItemStack item : inventory.getContents()){
-			if (item == null)
-				return true;
+			if (item == null) return true;
 		}
 		return false;
 	}
