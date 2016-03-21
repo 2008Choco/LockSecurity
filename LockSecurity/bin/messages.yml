@@ -38,6 +38,9 @@ Commands:
     MustSpecifyPlayer: "You must specify a player to run this command"
     InvalidInteger: "%param% is not a number. Please specify an ID"
     PlayerNeverPlayedBefore: "%targetPlayer% has never played on this server before"
+    DataTransfer:
+      Commencing: "Saving localized data to databse..."
+      SuccessfulTransfer: "&aSuccessfully transfered data to database"
 Events:
   BlockUnregistered: "%type% Lock ID %id% unregistered"
   CannotOpen: "This %type% is locked by %player%. You cannot open this"

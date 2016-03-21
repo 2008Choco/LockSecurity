@@ -31,7 +31,7 @@ public class MainCommand implements CommandExecutor, TabCompleter{
 				}
 				return true;
 			}
-			if (args[0].equalsIgnoreCase("version")){
+			else if (args[0].equalsIgnoreCase("version")){
 				@SuppressWarnings("deprecation")
 				YamlConfiguration pluginFile = YamlConfiguration.loadConfiguration(getClass().getResourceAsStream("/plugin.yml"));
 				sender.sendMessage(ChatColor.GOLD + "--------------------------------------------");
@@ -42,6 +42,16 @@ public class MainCommand implements CommandExecutor, TabCompleter{
 				sender.sendMessage(ChatColor.DARK_AQUA + "" + ChatColor.BOLD + "Report Bugs To: " + ChatColor.RESET + ChatColor.GRAY + "http://dev.bukkit.org/bukkit-plugins/lock-security/tickets");
 				sender.sendMessage(ChatColor.DARK_AQUA + "" + ChatColor.BOLD + "Add-Ons: " + ChatColor.RESET + ChatColor.GRAY + "Work In Progress - Please do create some, devs");
 				sender.sendMessage(ChatColor.GOLD + "--------------------------------------------");
+				return true;
+			}
+			else if (args[0].equalsIgnoreCase("forcesave")){
+				if (sender.hasPermission("locks.forcesave")){
+					plugin.sendPathMessage(sender, plugin.messages.getConfig().getString("Commands.General.DataTransfer.Commencing"));
+					plugin.getLocalizedData().saveLocalizedDataToDatabase(true);
+					plugin.sendPathMessage(sender, plugin.messages.getConfig().getString("Commands.General.DataTransfer.SuccessfulTransfer"));
+				}else{
+					plugin.sendPathMessage(sender, plugin.messages.getConfig().getString("Commands.General.NoPermission"));
+				}
 				return true;
 			}
 		}

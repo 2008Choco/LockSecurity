@@ -11,7 +11,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.inventory.ItemStack;
 
 import me.choco.locks.LockSecurity;
 import me.choco.locks.api.LockedBlock;
@@ -69,8 +68,14 @@ public class InteractWithBlock implements Listener{
 														.replace("%lockID%", String.valueOf(plugin.getLocalizedData().getNextLockID()))
 														.replace("%keyID%", String.valueOf(plugin.getLocalizedData().getNextKeyID())));
 											}
+											if (event.getItem().getAmount() > 1){
+												event.getItem().setAmount(event.getItem().getAmount() - 1);
+												player.getInventory().addItem(keys.createLockedKey(1, plugin.getLocalizedData().getNextKeyID()));
+											}else{
+												keys.convertToLockedKey(event.getItem(), plugin.getLocalizedData().getNextKeyID());
+											}
+											
 											plugin.getLocalizedData().registerLockedBlock(new LockedBlock(block, player, plugin.getLocalizedData().getNextLockID(), plugin.getLocalizedData().getNextKeyID()));
-											removeCurrentItem(player);
 											player.playSound(player.getLocation(), Sound.BLOCK_WOODEN_DOOR_CLOSE, 1, 2);
 										}
 									}else{
@@ -136,7 +141,7 @@ public class InteractWithBlock implements Listener{
 									plugin.sendPathMessage(player, plugin.messages.getConfig().getString("Commands.Unlock.BlockUnlocked").replaceAll("%lockID%", String.valueOf(lockedBlock.getLockId())));
 									plugin.getLocalizedData().unregisterLockedBlock(lockedBlock);
 									player.playSound(block.getLocation(), Sound.BLOCK_WOODEN_DOOR_CLOSE, 1, 2);
-									LSMode.getMode(player).equals(LSMode.DEFAULT);
+									LSMode.setMode(player, LSMode.DEFAULT);
 								}
 							}else{
 								plugin.sendPathMessage(player, plugin.messages.getConfig().getString("Commands.Unlock.NotOwner"));
@@ -181,14 +186,5 @@ public class InteractWithBlock implements Listener{
 				|| plugin.getConfig().getInt("MaximumLocks." + player.getWorld().getName()) == -1
 				|| plugin.getConfig().get("MaximumLocks." + player.getWorld().getName()) == null
 				|| player.isOp());
-	}
-	
-	private void removeCurrentItem(Player player){
-		if (player.getInventory().getItemInMainHand().getAmount() > 1){
-			player.getInventory().getItemInMainHand().setAmount(player.getInventory().getItemInMainHand().getAmount() - 1);
-		}
-		else{
-			player.getInventory().setItemInMainHand(new ItemStack(Material.AIR));
-		}
 	}
 }

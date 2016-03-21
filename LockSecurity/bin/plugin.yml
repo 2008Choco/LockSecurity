@@ -64,6 +64,9 @@ permissions:
     locks.reload:
         description: Allow access to the /locksecurity reload command
         default: op
+    locks.forcesave:
+        description: Allow access to the /locksecurity forcesave
+        default: op
     locks.lockinspect:
         description: Allow access to the /lockinspect command
         default: op

@@ -99,7 +99,7 @@ public class Keys {
 	 * @return Whether the player has an unsmithed key in hand
 	 */
 	public boolean playerHasUnsmithedKey(Player player){
-		if (player.getInventory().getItemInMainHand().equals(createUnsmithedKey(1)))
+		if (player.getInventory().getItemInMainHand().isSimilar(createUnsmithedKey(1)))
 			return true;
 		return false;
 	}
