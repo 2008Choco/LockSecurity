@@ -7,6 +7,7 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockBurnEvent;
 import org.bukkit.event.block.BlockRedstoneEvent;
 import org.bukkit.event.entity.EntityBreakDoorEvent;
+import org.bukkit.event.inventory.InventoryMoveItemEvent;
 
 import me.choco.locks.LockSecurity;
 
@@ -40,5 +41,10 @@ public class LockedBlockGriefProtection implements Listener{
 	@EventHandler
 	public void onRedstonePowerDoor(BlockRedstoneEvent event){
 		if (plugin.getLocalizedData().isLockedBlock(event.getBlock())) event.setNewCurrent(0);
+	}
+	
+	@EventHandler
+	public void onHopperPullItem(InventoryMoveItemEvent event){
+		if (plugin.getLocalizedData().isLockedBlock(event.getSource().getLocation().getBlock())) event.setCancelled(true);
 	}
 }

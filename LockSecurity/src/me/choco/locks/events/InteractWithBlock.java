@@ -94,7 +94,7 @@ public class InteractWithBlock implements Listener{
 							event.setCancelled(true);
 						}
 					}
-					else if (plugin.getLocalizedData().isLockedBlock(block)){
+					else{
 						LockedBlock lockedBlock = plugin.getLocalizedData().getLockedBlock(block);
 						if (plugin.getModes(player).isEmpty() || plugin.isInMode(player, LSMode.IGNORE_LOCKS)){
 							if (keys.playerHasCorrectKey(block, player) || plugin.isInMode(player, LSMode.IGNORE_LOCKS)
@@ -102,8 +102,7 @@ public class InteractWithBlock implements Listener{
 									|| (lockedBlock.getOwner().getUniqueId().equals(player.getUniqueId()) && !plugin.getConfig().getBoolean("Griefing.OwnerRequiresKey"))){
 								PlayerInteractLockedBlockEvent interactLockedBlockEvent = new PlayerInteractLockedBlockEvent(player, lockedBlock, InteractResult.SUCCESS);
 								Bukkit.getPluginManager().callEvent(interactLockedBlockEvent);
-								if (!interactLockedBlockEvent.isCancelled()){ return; }
-								else{ event.setCancelled(true); }
+								if (interactLockedBlockEvent.isCancelled()){ event.setCancelled(true); }
 							}else{
 								event.setCancelled(true);
 								if (!player.getInventory().getItemInMainHand().getType().equals(Material.TRIPWIRE_HOOK)){
@@ -126,7 +125,7 @@ public class InteractWithBlock implements Listener{
 									}
 								}
 							}
-						}else if (plugin.isInMode(player, LSMode.IGNORE_LOCKS)){ /*Inspect Lock Mode*/
+						}else if (plugin.isInMode(player, LSMode.INSPECT_LOCKS)){ /*Inspect Lock Mode*/
 							event.setCancelled(true);
 							displayBlockInfo(player, plugin.getLocalizedData().getLockedBlock(block));
 						}else if (plugin.isInMode(player, LSMode.UNLOCK)){ /*Unlock Mode*/

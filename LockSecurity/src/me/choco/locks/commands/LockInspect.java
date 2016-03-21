@@ -23,10 +23,10 @@ public class LockInspect implements CommandExecutor{
 				if (player.hasPermission("locks.lockinspect")){
 					if (!plugin.isInMode(player, LSMode.INSPECT_LOCKS)){
 						plugin.addMode(player, LSMode.INSPECT_LOCKS);
-						plugin.sendPathMessage(player, plugin.messages.getConfig().getString("Commands.LockInspect.LockInspectDisabled"));
+						plugin.sendPathMessage(player, plugin.messages.getConfig().getString("Commands.LockInspect.LockInspectEnabled"));
 					}else{
 						plugin.removeMode(player, LSMode.INSPECT_LOCKS);
-						plugin.sendPathMessage(player, plugin.messages.getConfig().getString("Commands.LockInspect.LockInspectEnabled"));
+						plugin.sendPathMessage(player, plugin.messages.getConfig().getString("Commands.LockInspect.LockInspectDisabled"));
 					}
 				}else{
 					plugin.sendPathMessage(player, plugin.messages.getConfig().getString("Commands.General.NoPermission"));
