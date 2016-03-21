@@ -21,10 +21,10 @@ public class TransferLock implements CommandExecutor{
 		if (sender instanceof Player){
 			Player player = (Player) sender;
 			if (player.hasPermission("locks.transferlock")){
-				if (!LSMode.getMode(player).equals(LSMode.TRANSFER_LOCK)){
+				if (!plugin.isInMode(player, LSMode.TRANSFER_LOCK)){
 					if (args.length == 1){
 						if (Bukkit.getOfflinePlayer(args[0]).hasPlayedBefore()){
-							LSMode.setMode(player, LSMode.TRANSFER_LOCK);
+							plugin.addMode(player, LSMode.TRANSFER_LOCK);
 							plugin.transferTo.put(player.getName(), args[0]);
 							plugin.sendPathMessage(player, plugin.messages.getConfig().getString("Commands.TransferLock.TransferModeEnabled"));
 						}else{
@@ -35,7 +35,7 @@ public class TransferLock implements CommandExecutor{
 						//TODO /transferlock <player> <LockID>
 					}
 				}else{
-					LSMode.setMode(player, LSMode.DEFAULT);
+					plugin.removeMode(player, LSMode.TRANSFER_LOCK);
 					plugin.transferTo.remove(player.getName());
 					plugin.sendPathMessage(player, plugin.messages.getConfig().getString("Commands.TransferLock.TransferModeDisabled"));
 					return true;

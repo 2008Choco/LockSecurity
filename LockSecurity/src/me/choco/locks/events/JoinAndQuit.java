@@ -9,10 +9,10 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import me.choco.locks.LockSecurity;
+import me.choco.locks.api.utils.LSMode;
 
 public class JoinAndQuit implements Listener{
 	LockSecurity plugin;
@@ -53,11 +53,6 @@ public class JoinAndQuit implements Listener{
 		
 		// Set administrators into LockNotify mode
 		if (player.hasPermission("locks.locknotify") && plugin.getConfig().getBoolean("EnableNotifyOnLogin"))
-			plugin.adminNotify.add(player.getName());
-	}
-	
-	@EventHandler
-	public void onQuit(PlayerQuitEvent event){
-		if (plugin.adminNotify.contains(event.getPlayer().getName())){plugin.adminNotify.remove(event.getPlayer().getName());}
+			plugin.addMode(player, LSMode.ADMIN_NOTIFY);
 	}
 }

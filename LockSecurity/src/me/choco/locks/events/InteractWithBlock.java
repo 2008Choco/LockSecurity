@@ -6,6 +6,7 @@ import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -38,8 +39,8 @@ public class InteractWithBlock implements Listener{
 			if (event.getAction().equals(Action.RIGHT_CLICK_BLOCK)){
 				if (plugin.isLockable(block)){
 					if (!plugin.getLocalizedData().isLockedBlock(block)){
-						if (!LSMode.getMode(player).equals(LSMode.INSPECT_LOCKS)){ //TODO
-							if (keys.playerHasUnsmithedKey(player)){
+						if (!plugin.isInMode(player, LSMode.IGNORE_LOCKS)){
+							if (keys.isUnsmithedKey(event.getItem())){
 								event.setCancelled(true);
 								if (player.hasPermission("locks.lock")){
 									if (hasLockAvailableForWorld(player)){
@@ -58,8 +59,8 @@ public class InteractWithBlock implements Listener{
 												}
 											}
 											plugin.sendPathMessage(player, plugin.messages.getConfig().getString("Events.SuccessfullyLockedBlock").replaceAll("%lockID%", String.valueOf(plugin.getLocalizedData().getNextLockID())).replaceAll("%keyID%", String.valueOf(plugin.getLocalizedData().getNextKeyID())));
-											for (String name : plugin.adminNotify){
-												plugin.sendPathMessage(Bukkit.getPlayer(name), plugin.messages.getConfig().getString("Commands.LockNotify.LockNotification")
+											for (Player p : plugin.getPlayersInMode(LSMode.ADMIN_NOTIFY)){
+												plugin.sendPathMessage(p, plugin.messages.getConfig().getString("Commands.LockNotify.LockNotification")
 														.replace("%player%", player.getName()).replaceAll("%type%", block.getType().toString())
 														.replace("%x%", String.valueOf(block.getLocation().getBlockX()))
 														.replace("%y%", String.valueOf(block.getLocation().getBlockY()))
@@ -68,6 +69,7 @@ public class InteractWithBlock implements Listener{
 														.replace("%lockID%", String.valueOf(plugin.getLocalizedData().getNextLockID()))
 														.replace("%keyID%", String.valueOf(plugin.getLocalizedData().getNextKeyID())));
 											}
+											
 											if (event.getItem().getAmount() > 1){
 												event.getItem().setAmount(event.getItem().getAmount() - 1);
 												player.getInventory().addItem(keys.createLockedKey(1, plugin.getLocalizedData().getNextKeyID()));
@@ -75,7 +77,9 @@ public class InteractWithBlock implements Listener{
 												keys.convertToLockedKey(event.getItem(), plugin.getLocalizedData().getNextKeyID());
 											}
 											
-											plugin.getLocalizedData().registerLockedBlock(new LockedBlock(block, player, plugin.getLocalizedData().getNextLockID(), plugin.getLocalizedData().getNextKeyID()));
+											int keyId = plugin.getLocalizedData().getNextKeyID();
+											plugin.getLocalizedData().registerLockedBlock(new LockedBlock(block, player, plugin.getLocalizedData().getNextLockID(), keyId));
+											dualComponentBlockHandler(block, player, keyId);
 											player.playSound(player.getLocation(), Sound.BLOCK_WOODEN_DOOR_CLOSE, 1, 2);
 										}
 									}else{
@@ -92,8 +96,8 @@ public class InteractWithBlock implements Listener{
 					}
 					else if (plugin.getLocalizedData().isLockedBlock(block)){
 						LockedBlock lockedBlock = plugin.getLocalizedData().getLockedBlock(block);
-						if (LSMode.getMode(player).equals(LSMode.DEFAULT) || LSMode.getMode(player).equals(LSMode.IGNORE_LOCKS)){
-							if (keys.playerHasCorrectKey(block, player) || LSMode.getMode(player).equals(LSMode.IGNORE_LOCKS)
+						if (plugin.getModes(player).isEmpty() || plugin.isInMode(player, LSMode.IGNORE_LOCKS)){
+							if (keys.playerHasCorrectKey(block, player) || plugin.isInMode(player, LSMode.IGNORE_LOCKS)
 									|| (player.isSneaking() && !player.getInventory().getItemInMainHand().getType().equals(Material.AIR))
 									|| (lockedBlock.getOwner().getUniqueId().equals(player.getUniqueId()) && !plugin.getConfig().getBoolean("Griefing.OwnerRequiresKey"))){
 								PlayerInteractLockedBlockEvent interactLockedBlockEvent = new PlayerInteractLockedBlockEvent(player, lockedBlock, InteractResult.SUCCESS);
@@ -122,10 +126,10 @@ public class InteractWithBlock implements Listener{
 									}
 								}
 							}
-						}else if (LSMode.getMode(player).equals(LSMode.INSPECT_LOCKS)){ /*Inspect Lock Mode*/
+						}else if (plugin.isInMode(player, LSMode.IGNORE_LOCKS)){ /*Inspect Lock Mode*/
 							event.setCancelled(true);
 							displayBlockInfo(player, plugin.getLocalizedData().getLockedBlock(block));
-						}else if (LSMode.getMode(player).equals(LSMode.UNLOCK)){ /*Unlock Mode*/
+						}else if (plugin.isInMode(player, LSMode.UNLOCK)){ /*Unlock Mode*/
 							event.setCancelled(true);
 							if (lockedBlock.getOwner().getUniqueId().equals(player.getUniqueId())
 									|| player.hasPermission("locks.adminunlock")){
@@ -141,23 +145,23 @@ public class InteractWithBlock implements Listener{
 									plugin.sendPathMessage(player, plugin.messages.getConfig().getString("Commands.Unlock.BlockUnlocked").replaceAll("%lockID%", String.valueOf(lockedBlock.getLockId())));
 									plugin.getLocalizedData().unregisterLockedBlock(lockedBlock);
 									player.playSound(block.getLocation(), Sound.BLOCK_WOODEN_DOOR_CLOSE, 1, 2);
-									LSMode.setMode(player, LSMode.DEFAULT);
+									plugin.removeMode(player, LSMode.UNLOCK);
 								}
 							}else{
 								plugin.sendPathMessage(player, plugin.messages.getConfig().getString("Commands.Unlock.NotOwner"));
 							}
-						}else if (LSMode.getMode(player).equals(LSMode.TRANSFER_LOCK)){ /*Transfer Lock Mode*/
+						}else if (plugin.isInMode(player, LSMode.TRANSFER_LOCK)){ /*Transfer Lock Mode*/
 							event.setCancelled(true);
 							lockedBlock.setOwner(Bukkit.getOfflinePlayer(plugin.transferTo.get(player.getName())));
 							plugin.sendPathMessage(player, plugin.messages.getConfig().getString("Commands.TransferLock.TransferredBlock")
 								.replaceAll("%type%", block.getType().toString()).replaceAll("%player%", plugin.transferTo.get(player.getName()))
 								.replaceAll("%keyID%", String.valueOf(lockedBlock.getKeyId())).replaceAll("%lockID%", String.valueOf(lockedBlock.getLockId())));
-							LSMode.setMode(player, LSMode.DEFAULT);
+							plugin.removeMode(player, LSMode.TRANSFER_LOCK);
 						}
 					}
 				}
 			}else if (event.getAction().equals(Action.LEFT_CLICK_BLOCK)){
-				if (LSMode.getMode(player).equals(LSMode.INSPECT_LOCKS)){ /*Inspect Lock Mode*/
+				if (plugin.isInMode(player, LSMode.INSPECT_LOCKS)){ /*Inspect Lock Mode*/
 					if (plugin.isLockable(block)){
 						event.setCancelled(true);
 						if (plugin.getLocalizedData().isLockedBlock(block)){
@@ -186,5 +190,28 @@ public class InteractWithBlock implements Listener{
 				|| plugin.getConfig().getInt("MaximumLocks." + player.getWorld().getName()) == -1
 				|| plugin.getConfig().get("MaximumLocks." + player.getWorld().getName()) == null
 				|| player.isOp());
+	}
+	
+	private void dualComponentBlockHandler(Block block, Player owner, int keyId){
+		Material type = block.getType();
+		
+		if (type.toString().contains("DOOR")){
+			if (block.getRelative(BlockFace.UP).getType().equals(type)){
+				plugin.getLocalizedData().registerLockedBlock(new LockedBlock(block.getLocation().add(0, 1, 0).getBlock(), owner, plugin.getLocalizedData().getNextLockID(), keyId));
+			}else if (block.getRelative(BlockFace.DOWN).getType().equals(type)){
+				plugin.getLocalizedData().registerLockedBlock(new LockedBlock(block.getLocation().add(0, 1, 0).getBlock(), owner, plugin.getLocalizedData().getNextLockID(), keyId));
+			}
+		}
+		if (type.equals(Material.CHEST) || type.equals(Material.TRAPPED_CHEST)){
+			if (block.getRelative(BlockFace.NORTH).getType().equals(type)){
+				plugin.getLocalizedData().registerLockedBlock(new LockedBlock(block.getRelative(BlockFace.NORTH), owner, plugin.getLocalizedData().getNextLockID(), keyId));
+			}else if (block.getRelative(BlockFace.SOUTH).getType().equals(type)){
+				plugin.getLocalizedData().registerLockedBlock(new LockedBlock(block.getRelative(BlockFace.SOUTH), owner, plugin.getLocalizedData().getNextLockID(), keyId));
+			}else if (block.getRelative(BlockFace.EAST).getType().equals(type)){
+				plugin.getLocalizedData().registerLockedBlock(new LockedBlock(block.getRelative(BlockFace.EAST), owner, plugin.getLocalizedData().getNextLockID(), keyId));
+			}else if (block.getRelative(BlockFace.WEST).getType().equals(type)){
+				plugin.getLocalizedData().registerLockedBlock(new LockedBlock(block.getRelative(BlockFace.WEST), owner, plugin.getLocalizedData().getNextLockID(), keyId));
+			}
+		}
 	}
 }

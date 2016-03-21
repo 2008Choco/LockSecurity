@@ -24,26 +24,43 @@ public class LocalizedDataHandler {
 		this.plugin = plugin;
 	}
 	
+	/** Get all currently registered locked blocks (Local data)
+	 * @return A list of all LockedBlock objects
+	 */
 	public List<LockedBlock> getLockedBlocks(){
 		return lockedBlocks;
 	}
 
+	/** Register a new locked block
+	 * @param block - The new locked block to create
+	 */
 	public void registerLockedBlock(LockedBlock block){
 		this.lockedBlocks.add(block);
 		isDirty = true;
 	}
 	
+	/** Unregister a locked block based on a LockedBlock object
+	 * @param block - The locked block to unregister
+	 */
 	public void unregisterLockedBlock(LockedBlock block){
 		this.lockedBlocks.remove(block);
 		isDirty = true;
 	}
 	
+	/** Unregister a locked block based on a {@link Block}
+	 * @param block - The block to unregister
+	 */
 	public void unregisterLockedBlock(Block block){
 		for (LockedBlock lockedBlock : lockedBlocks)
 			if (lockedBlock.getBlock().equals(block)) lockedBlocks.remove(block);
 		isDirty = true;
 	}
 	
+	/** Get the LockState of a specified block
+	 * @param block - The block to reference
+	 * @return LockState.UNLOCKED if unlocked, or LockState.LOCKED elsewise
+	 * @deprecated Unused. See {@link LocalizedDataHandler#isLockedBlock(Block)} or {@link LocalizedDataHandler#isLockedBlock(int)}
+	 */
 	@Deprecated
 	public LockState getLockedState(Block block){
 		for (LockedBlock lockedBlock : lockedBlocks)
@@ -51,30 +68,50 @@ public class LocalizedDataHandler {
 		return LockState.UNLOCKED;
 	}
 	
+	/** Check whether a block is currently locked or not
+	 * @param block - The block to reference
+	 * @return true if the block is locked, false elsewise
+	 */
 	public boolean isLockedBlock(Block block){
 		for (LockedBlock lockedBlock : lockedBlocks)
 			if (lockedBlock.getBlock().equals(block)) return true;
 		return false;
 	}
 	
+	/** Check whether a LockID is currently registered or not
+	 * @param lockID - The lock id to reference
+	 * @return true if the block is locked, false elsewise
+	 */
 	public boolean isLockedBlock(int lockID){
 		for (LockedBlock lockedBlock : lockedBlocks)
 			if (lockedBlock.getLockId() == lockID) return true;
 		return false;
 	}
 	
+	/** Get an instance of a LockedBlock (If one exists). Will return null if not found
+	 * @param block - The block to get an instance of LockedBlock from
+	 * @return The LockedBlock instance of the block
+	 */
 	public LockedBlock getLockedBlock(Block block){
 		for (LockedBlock lockedBlock : lockedBlocks)
 			if (lockedBlock.getBlock().equals(block)) return lockedBlock;
 		return null;
 	}
 	
+	/** Get an instance of a LockedBlock (If one exists). Will return null if not found
+	 * @param lockID - The lockID to get an instance of LockedBlock from
+	 * @return The LockedBlock instance of the ID
+	 */
 	public LockedBlock getLockedBlock(int lockID){
 		for (LockedBlock lockedBlock : lockedBlocks)
 			if (lockedBlock.getLockId() == lockID) return lockedBlock;
 		return null;
 	}
 	
+	/** Get all locks owned by the specified player
+	 * @param player - The player to reference
+	 * @return A list of all LockedBlocks owned by the player
+	 */
 	public List<LockedBlock> getAllLocks(OfflinePlayer player){
 		List<LockedBlock> blocks = new ArrayList<LockedBlock>();
 		for (LockedBlock lockedBlock : lockedBlocks)
@@ -98,6 +135,9 @@ public class LocalizedDataHandler {
 		return lockedBlocks.get(lockedBlocks.size() - 1).getKeyId() + 1;
 	}
 	
+	/** Save all current localized data to the database (Can be slow if lots of information is present)
+	 * @param logInfo - Whether information should be logged to the console or not
+	 */
 	public void saveLocalizedDataToDatabase(boolean logInfo){
 		if (isDirty){
 			if (logInfo) plugin.getLogger().info("... Saving localized data to the database ...");

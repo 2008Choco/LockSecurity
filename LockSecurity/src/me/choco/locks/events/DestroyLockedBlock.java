@@ -26,7 +26,7 @@ public class DestroyLockedBlock implements Listener{
 		if (plugin.getLocalizedData().isLockedBlock(block)){
 			LockedBlock lockedBlock = plugin.getLocalizedData().getLockedBlock(block);
 			if (lockedBlock.getOwner().getUniqueId().equals(player.getUniqueId())
-					|| (plugin.getConfig().getBoolean("Griefing.IgnorelocksCanBreakLocks") && LSMode.getMode(player).equals(LSMode.IGNORE_LOCKS))){
+					|| (plugin.getConfig().getBoolean("Griefing.IgnorelocksCanBreakLocks") && plugin.isInMode(player, LSMode.IGNORE_LOCKS))){
 				PlayerUnlockBlockEvent unlockEvent = new PlayerUnlockBlockEvent(player, lockedBlock);
 				Bukkit.getPluginManager().callEvent(unlockEvent);
 				if (!unlockEvent.isCancelled()){

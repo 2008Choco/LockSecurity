@@ -6,6 +6,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import me.choco.locks.LockSecurity;
+import me.choco.locks.api.utils.LSMode;
 
 public class LockNotify implements CommandExecutor{
 	LockSecurity plugin;
@@ -18,13 +19,13 @@ public class LockNotify implements CommandExecutor{
 		if (sender instanceof Player){
 			Player player = (Player) sender;
 			if (player.hasPermission("locks.locknotify")){
-				if (plugin.adminNotify.contains(player.getName())){
-					plugin.adminNotify.remove(player.getName());
-					plugin.sendPathMessage(player, plugin.messages.getConfig().getString("Commands.LockNotify.LockNotifyDisabled"));
+				if (!plugin.isInMode(player, LSMode.ADMIN_NOTIFY)){
+					plugin.addMode(player, LSMode.ADMIN_NOTIFY);
+					plugin.sendPathMessage(player, plugin.messages.getConfig().getString("Commands.LockNotify.LockNotifyEnabled"));
 					return true;
 				}else{
-					plugin.adminNotify.add(player.getName());
-					plugin.sendPathMessage(player, plugin.messages.getConfig().getString("Commands.LockNotify.LockNotifyEnabled"));
+					plugin.removeMode(player, LSMode.ADMIN_NOTIFY);
+					plugin.sendPathMessage(player, plugin.messages.getConfig().getString("Commands.LockNotify.LockNotifyDisabled"));
 					return true;
 				}
 			}else{

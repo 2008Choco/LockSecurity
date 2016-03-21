@@ -23,12 +23,12 @@ public class Unlock implements CommandExecutor{
 			Player player = (Player) sender;
 			if (args.length == 0){
 				if (player.hasPermission("locks.unlock.self")){
-					if (!LSMode.getMode(player).equals(LSMode.UNLOCK)){
-						LSMode.setMode(player, LSMode.UNLOCK);
+					if (!plugin.isInMode(player, LSMode.UNLOCK)){
+						plugin.addMode(player, LSMode.UNLOCK);
 						plugin.sendPathMessage(player, plugin.messages.getConfig().getString("Commands.Unlock.UnlockModeEnabled"));
 						return true;
 					}else{
-						LSMode.setMode(player, LSMode.DEFAULT);
+						plugin.removeMode(player, LSMode.UNLOCK);
 						plugin.sendPathMessage(player, plugin.messages.getConfig().getString("Commands.Unlock.UnlockModeDisabled"));
 						return true;
 					}

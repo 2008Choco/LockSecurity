@@ -94,14 +94,13 @@ public class Keys {
 		return key;
 	}
 	
-	/**
-	 * @param player The player to check
-	 * @return Whether the player has an unsmithed key in hand
+	/** Check whether an item is an unsmithed item or not
+	 * @param item - The item to check
+	 * @return Whether the item is an unsmithed key or not
 	 */
-	public boolean playerHasUnsmithedKey(Player player){
-		if (player.getInventory().getItemInMainHand().isSimilar(createUnsmithedKey(1)))
-			return true;
-		return false;
+	public boolean isUnsmithedKey(ItemStack item){
+		if (item == null) return false;
+		return item.isSimilar(createUnsmithedKey(1));
 	}
 	
 	/** A boolean method to determine whether the Key ID matches the Block Lock ID

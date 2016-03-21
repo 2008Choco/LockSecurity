@@ -18,6 +18,7 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.inventory.ShapelessRecipe;
@@ -27,6 +28,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import me.choco.locks.api.LockedBlock;
+import me.choco.locks.api.utils.LSMode;
 import me.choco.locks.commands.ForgeKey;
 import me.choco.locks.commands.GiveKey;
 import me.choco.locks.commands.IgnoreLocks;
@@ -54,14 +56,8 @@ import net.milkbowl.vault.economy.Economy;
 public class LockSecurity extends JavaPlugin{
 	
 	private static LockSecurity instance;
-	public static LockSecurity getPlugin(Plugin plugin) {
-		System.out.println("[LockSecurity] Add-On Detected: " + plugin.getDescription().getName() + " version " + plugin.getDescription().getVersion()); 
-		return instance;
-	}
-	
-	public static LockSecurity getPlugin(){
-		return instance;
-	}
+	public static LockSecurity getPlugin(Plugin plugin) { return instance; }
+	public static LockSecurity getPlugin(){ return instance; }
 	
 	public ConfigAccessor locked;
 	public ConfigAccessor messages;
@@ -69,8 +65,9 @@ public class LockSecurity extends JavaPlugin{
 	private final SQLite database = new SQLite();
 
 	public HashMap<String, String> transferTo = new HashMap<String, String>();
-	public ArrayList<String> adminNotify = new ArrayList<String>();
 	public Economy economy = null;
+	
+	private HashMap<Player, List<LSMode>> modes = new HashMap<>();
 
 	@Override
 	public void onEnable(){
@@ -234,7 +231,6 @@ public class LockSecurity extends JavaPlugin{
 	@Override
 	public void onDisable(){
 		this.getLogger().info("Removing temporary information");
-		adminNotify.clear();
 		transferTo.clear();
 		getLocalizedData().saveLocalizedDataToDatabase(true);
 	}
@@ -262,9 +258,61 @@ public class LockSecurity extends JavaPlugin{
 		return false;
 	}
 	
+	/** Send a message to a player with Essentials colour code translations and the [LockSecurity] in front of it
+	 * @param player - The player the message
+	 * @param message - The message to send to the player
+	 */
 	public void sendPathMessage(CommandSender player, String message){
 		player.sendMessage(ChatColor.GOLD + "[" + ChatColor.AQUA + "Locked" + ChatColor.GOLD + "] " + ChatColor.GRAY +
 			ChatColor.translateAlternateColorCodes('&', message));
+	}
+	
+	/** Check if the player is in a specific mode
+	 * @param player - The player to check
+	 * @param mode - The mode to check
+	 * @return Whether the player is in the specified mode or not
+	 */
+	public boolean isInMode(Player player, LSMode mode){
+		if (!modes.containsKey(player)) modes.put(player, new ArrayList<LSMode>());
+		return modes.get(player).contains(mode);
+	}
+	
+	/** Get all players currently in a specified mode
+	 * @param mode - The mode to reference
+	 * @return A list of players in that mode
+	 */
+	public List<Player> getPlayersInMode(LSMode mode){
+		List<Player> players = new ArrayList<>();
+		for (Player player : modes.keySet())
+			if (isInMode(player, mode)) players.addAll(players);
+		return players;
+	}
+	
+	/** Get all modes that the specified player is currently in
+	 * @param player - The player to reference
+	 * @return A list of all modes the player is in
+	 */
+	public List<LSMode> getModes(Player player){
+		if (!modes.containsKey(player)) modes.put(player, new ArrayList<LSMode>());
+		return modes.get(player);
+	}
+	
+	/** Add a mode to a player
+	 * @param player - The player to add the mode to
+	 * @param mode - The mode to add
+	 */
+	public void addMode(Player player, LSMode mode){
+		if (!modes.containsKey(player)) modes.put(player, new ArrayList<LSMode>());
+		if (!isInMode(player, mode)) modes.get(player).add(mode);
+	}
+	
+	/** Remove a mode from a player
+	 * @param player - The player to remove the mode from
+	 * @param mode - The mode to remove
+	 */
+	public void removeMode(Player player, LSMode mode){
+		if (!modes.containsKey(player)) modes.put(player, new ArrayList<LSMode>());
+		if (isInMode(player, mode)) modes.get(player).remove(mode);
 	}
 	
 	/** Get the database storing information about all locks
@@ -318,6 +366,3 @@ public class LockSecurity extends JavaPlugin{
  * TODO Next Version:
  * 
  */
-
-/* Version 1.7.0: 101.4KiB */
-/* Version 1.7.1: 105.0KiB */

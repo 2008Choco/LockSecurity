@@ -21,11 +21,11 @@ public class LockInspect implements CommandExecutor{
 			Player player = (Player) sender;
 			if (args.length == 0){
 				if (player.hasPermission("locks.lockinspect")){
-					if (LSMode.getMode(player).equals(LSMode.INSPECT_LOCKS)){
-						LSMode.setMode(player, LSMode.DEFAULT);
+					if (!plugin.isInMode(player, LSMode.INSPECT_LOCKS)){
+						plugin.addMode(player, LSMode.INSPECT_LOCKS);
 						plugin.sendPathMessage(player, plugin.messages.getConfig().getString("Commands.LockInspect.LockInspectDisabled"));
 					}else{
-						LSMode.setMode(player, LSMode.INSPECT_LOCKS);
+						plugin.removeMode(player, LSMode.INSPECT_LOCKS);
 						plugin.sendPathMessage(player, plugin.messages.getConfig().getString("Commands.LockInspect.LockInspectEnabled"));
 					}
 				}else{
