@@ -246,7 +246,7 @@ public class LockSecurity extends JavaPlugin{
 				|| type.equals(Material.FURNACE) || type.equals(Material.DISPENSER) || type.equals(Material.DROPPER)
 				|| type.equals(Material.HOPPER) || type.equals(Material.WOODEN_DOOR) || type.equals(Material.ACACIA_DOOR)
 				|| type.equals(Material.BIRCH_DOOR) || type.equals(Material.DARK_OAK_DOOR) || type.equals(Material.JUNGLE_DOOR)
-				|| type.equals(Material.SPRUCE_DOOR) || type.toString().contains("FENCE_GATE"))){
+				|| type.equals(Material.SPRUCE_DOOR) || type.equals(Material.ANVIL) || type.toString().contains("FENCE_GATE"))){
 			return false;
 		}
 		List<String> lockableBlocks = getConfig().getStringList("LockableBlocks");
