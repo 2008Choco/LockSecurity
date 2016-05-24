@@ -222,7 +222,7 @@ public class LockSecurity extends JavaPlugin{
 				}catch(SQLException e){ e.printStackTrace(); }
 				getLogger().info("Locked data successfully transfered to localized data handler");
 			}
-		}.runTaskAsynchronously(this);
+		}.runTask(this);
 		
 		long delay = (this.getConfig().getLong("DatabaseSaveIntreval") * 60) * 20;
 		new DatabaseSaveLoop(this).runTaskTimer(this, delay, delay);
