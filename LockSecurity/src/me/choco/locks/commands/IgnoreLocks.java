@@ -22,10 +22,10 @@ public class IgnoreLocks implements CommandExecutor{
 			if (player.hasPermission("locks.ignorelocks")){
 				if (!plugin.isInMode(player, LSMode.IGNORE_LOCKS)){
 					plugin.addMode(player, LSMode.IGNORE_LOCKS);
-					plugin.sendPathMessage(player, plugin.messages.getConfig().getString("Commands.IgnoreLocks.NoLongerIgnoringLocks"));
+					plugin.sendPathMessage(player, plugin.messages.getConfig().getString("Commands.IgnoreLocks.IgnoringLocks"));
 				}else{
 					plugin.removeMode(player, LSMode.IGNORE_LOCKS);
-					plugin.sendPathMessage(player, plugin.messages.getConfig().getString("Commands.IgnoreLocks.IgnoringLocks"));
+					plugin.sendPathMessage(player, plugin.messages.getConfig().getString("Commands.IgnoreLocks.NoLongerIgnoringLocks"));
 				}
 			}else{
 				plugin.sendPathMessage(player, plugin.messages.getConfig().getString("Commands.General.NoPermission"));

@@ -372,7 +372,6 @@ public class LockSecurity extends JavaPlugin{
  *     Add faction support. Lock a block under your faction name rather than your own name
  *     Add a new configuration option: OnlyDuplicateOwnKeys: true/false
  *         -> You MUST be the owner of the keys to merge or duplicate them
- *     Add IRON_DOOR / IRON_TRAPDOOR support. Right clicking on a locked IRON_DOOR / IRON_TRAPDOOR will open it like a wooden door
  *     Add an override MaximumLocks for ALL worlds
  * -------------------------------------------------------------------------------------------------------------------------
  * TODO Next Version:

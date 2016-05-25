@@ -64,7 +64,7 @@ public class LockedBlockGriefProtection implements Listener{
 			LocalizedDataHandler data = plugin.getLocalizedData();
 			for (BlockFace face : faces){
 				Block relative = block.getRelative(face);
-				if (!(relative.getType().equals(Material.CHEST) || relative.getType().equals(Material.TRAPPED_CHEST)) ||
+				if (!relative.getType().equals(block.getType()) ||
 						!data.isLockedBlock(block.getRelative(face))) continue;
 				
 				LockedBlock refLock = data.getLockedBlock(relative);
@@ -73,6 +73,7 @@ public class LockedBlockGriefProtection implements Listener{
 					plugin.sendPathMessage(player, plugin.messages.getConfig().getString("Events.DisallowedAction")
 							.replace("%type%", block.getType().name())
 							.replace("%owner%", refLock.getOwner().getName()));
+					return;
 				}
 				
 				data.registerLockedBlock(new LockedBlock(block, player, data.getNextLockID(), refLock.getKeyId()));
