@@ -11,7 +11,8 @@ import me.choco.locks.api.LockedBlock;
 import me.choco.locks.api.utils.LSMode;
 
 public class LockInspect implements CommandExecutor{
-	LockSecurity plugin;
+	
+	private LockSecurity plugin;
 	public LockInspect(LockSecurity plugin){
 		this.plugin = plugin;
 	}

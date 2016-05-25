@@ -9,7 +9,8 @@ import me.choco.locks.LockSecurity;
 import me.choco.locks.api.utils.LSMode;
 
 public class LockNotify implements CommandExecutor{
-	LockSecurity plugin;
+	
+	private LockSecurity plugin;
 	public LockNotify(LockSecurity plugin){
 		this.plugin = plugin;
 	}

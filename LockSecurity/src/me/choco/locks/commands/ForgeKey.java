@@ -9,11 +9,12 @@ import me.choco.locks.LockSecurity;
 import me.choco.locks.utils.Keys;
 
 public class ForgeKey implements CommandExecutor{
-	LockSecurity plugin;
-	Keys keys;
+	
+	private LockSecurity plugin;
+	private Keys keys;
 	public ForgeKey(LockSecurity plugin){
 		this.plugin = plugin;
-		this.keys = new Keys(plugin);
+		this.keys = plugin.getKeyManager();
 	}
 	
 	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args){

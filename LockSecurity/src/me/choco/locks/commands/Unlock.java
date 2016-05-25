@@ -13,7 +13,8 @@ import me.choco.locks.api.event.PlayerUnlockBlockEvent;
 import me.choco.locks.api.utils.LSMode;
 
 public class Unlock implements CommandExecutor{
-	LockSecurity plugin;
+	
+	private LockSecurity plugin;
 	public Unlock(LockSecurity plugin){
 		this.plugin = plugin;
 	}

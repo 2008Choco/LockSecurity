@@ -9,8 +9,8 @@ import org.bukkit.inventory.ItemStack;
 public class PlayerDuplicateKeyEvent extends Event{
 	private static final HandlerList handlers = new HandlerList();
 	
-	List<Integer> keyIDs;
-	ItemStack smithedKey, unsmithedKey;
+	private List<Integer> keyIDs;
+	private ItemStack smithedKey, unsmithedKey;
 	public PlayerDuplicateKeyEvent(List<Integer> keyIDs, ItemStack unsmithedKey, ItemStack smithedKey){
 		this.keyIDs = keyIDs;
 		this.unsmithedKey = unsmithedKey;

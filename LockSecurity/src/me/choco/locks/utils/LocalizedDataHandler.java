@@ -19,7 +19,7 @@ public class LocalizedDataHandler {
 	private final List<LockedBlock> lockedBlocks = new ArrayList<LockedBlock>();
 	private boolean isDirty = false;
 	
-	LockSecurity plugin;
+	private LockSecurity plugin;
 	public LocalizedDataHandler(LockSecurity plugin) {
 		this.plugin = plugin;
 	}

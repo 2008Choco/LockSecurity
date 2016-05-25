@@ -16,7 +16,8 @@ import org.bukkit.inventory.meta.ItemMeta;
 import me.choco.locks.LockSecurity;
 
 public class Keys {
-	LockSecurity plugin;
+	
+	private LockSecurity plugin;
 	public Keys(LockSecurity plugin){
 		this.plugin = plugin;
 	}

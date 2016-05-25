@@ -6,7 +6,7 @@ import me.choco.locks.LockSecurity;
 
 public class DatabaseSaveLoop extends BukkitRunnable{
 	
-	LockSecurity plugin;
+	private LockSecurity plugin;
 	public DatabaseSaveLoop(LockSecurity plugin){
 		this.plugin = plugin;
 	}

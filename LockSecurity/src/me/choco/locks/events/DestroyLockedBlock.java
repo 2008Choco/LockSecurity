@@ -13,7 +13,8 @@ import me.choco.locks.api.event.PlayerUnlockBlockEvent;
 import me.choco.locks.api.utils.LSMode;
 
 public class DestroyLockedBlock implements Listener{
-	LockSecurity plugin;
+	
+	private LockSecurity plugin;
 	public DestroyLockedBlock(LockSecurity plugin){
 		this.plugin = plugin;
 	}

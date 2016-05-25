@@ -18,25 +18,32 @@ import me.choco.locks.LockSecurity;
 import me.choco.locks.api.event.PlayerCombineKeyEvent;
 import me.choco.locks.api.event.PlayerDuplicateKeyEvent;
 import me.choco.locks.utils.Keys;
+import me.choco.locks.utils.general.ItemBuilder;
 
 public class CombineKeyID implements Listener{
-	LockSecurity plugin;
-	Keys keys;
+	
+	private static final ItemStack combinedKeyResult = new ItemBuilder(Material.BEDROCK).setName("COMBINE").build(),
+									convertKeyResult = new ItemBuilder(Material.BEDROCK).setName("CONVERT").build();
+	private static ItemStack unsmithedKey;
+	
+	private Keys keys;
 	public CombineKeyID(LockSecurity plugin) {
-		this.plugin = plugin;
-		this.keys = new Keys(plugin);
+		this.keys = plugin.getKeyManager();
+		unsmithedKey = keys.createUnsmithedKey(1);
 	}
 	
-	List<Integer> newIDs = new ArrayList<Integer>();
+	private static List<Integer> newIDs = new ArrayList<Integer>();
 	
 	@EventHandler
 	public void onAttemptKeyCombine(PrepareItemCraftEvent event){
+		if (event.getInventory().getResult() == null) return;
+		
 		Player player = (Player) event.getInventory().getViewers().get(0);
 		boolean combination = true;
 		ItemStack unsmithedKey = null;
 		ItemStack smithedKey1 = null;
 		ItemStack smithedKey2 = null;
-		if (event.getInventory().getResult().equals(new ItemStack(Material.BEDROCK))){
+		if (event.getInventory().getResult().equals(combinedKeyResult)){
 			newIDs.clear();
 			for (ItemStack item : event.getInventory().getMatrix()){
 				if (isLockedKey(item)){
@@ -51,9 +58,8 @@ public class CombineKeyID implements Listener{
 					}
 				}else if (isUnsmithedKey(item)){
 					List<Integer> itemIDs = keys.getKeyIDs(item);
-					for (int id : itemIDs){
+					for (int id : itemIDs)
 						newIDs.add(id);
-					}
 					combination = false;
 					unsmithedKey = item;
 				}
@@ -69,7 +75,18 @@ public class CombineKeyID implements Listener{
 				event.getInventory().setResult(keys.createLockedKey(2, newIDs));
 			}
 		}
-		if (event.getInventory().getResult().equals(keys.createUnsmithedKey(1))){
+		
+		else if (event.getInventory().getResult().equals(convertKeyResult)){
+			boolean allowConvert = false;
+			for (ItemStack item : event.getInventory().getMatrix()){
+				if (isLockedKey(item)) allowConvert = true;
+			}
+			
+			event.getInventory().setResult((allowConvert ? CombineKeyID.unsmithedKey : new ItemStack(Material.AIR)));
+		}
+		
+		if (event.getInventory().getResult() == null) return;
+		if (event.getInventory().getResult().equals(CombineKeyID.unsmithedKey)){
 			if (!player.hasPermission("locks.craft")){
 				event.getInventory().setResult(new ItemStack(Material.AIR));
 			}
@@ -77,39 +94,33 @@ public class CombineKeyID implements Listener{
 	}
 	
 	private boolean isLockedKey(ItemStack item){
-		if (item != null)
-			if (item.hasItemMeta())
-				if (item.getType().equals(Material.TRIPWIRE_HOOK))
-					if (item.getItemMeta().getDisplayName().equals(ChatColor.GRAY + "Key"))
-						return true;
-		return false;
+		if (item == null) return false;
+		if (!item.hasItemMeta() || !item.getType().equals(Material.TRIPWIRE_HOOK)) return false;
+		if (!item.getItemMeta().getDisplayName().equals(ChatColor.GRAY + "Key")) return false;
+		
+		return true;
 	}
 	
 	private boolean isUnsmithedKey(ItemStack item){
-		if (item != null)
-			if (item.hasItemMeta())
-				if (item.getType().equals(Material.TRIPWIRE_HOOK))
-					if (item.getItemMeta().getDisplayName().equals(ChatColor.GRAY + "Unsmithed Key"))
-						return true;
-		return false;
+		if (item == null) return false;
+		if (!item.hasItemMeta() || !item.getType().equals(Material.TRIPWIRE_HOOK)) return false;
+		if (!item.getItemMeta().getDisplayName().equals(ChatColor.GRAY + "Unsmithed Key")) return false;
+		
+		return true;
 	}
 	
 	private List<Integer> removeDuplicates(List<Integer> numbers){
-	    int size = numbers.size();
-	    int out = 0;
-	    {
-	        final Set<Integer> encountered = new HashSet<Integer>();
-	        for (int in = 0; in < size; in++) {
-	            final Integer i = numbers.get(in);
-	            final boolean first = encountered.add(i);
-	            if (first) {
-	                numbers.set(out++, i);
-	            }
-	        }
-	    }
-	    while (out < size) {
-	        numbers.remove(--size);
-	    }
+	    int size = numbers.size(), out = 0;
+        
+	    Set<Integer> encountered = new HashSet<Integer>();
+        for (int in = 0; in < size; in++) {
+            int i = numbers.get(in);
+            boolean first = encountered.add(i);
+            
+            if (first) numbers.set(out++, i);
+        }
+	    
+        while (out < size) numbers.remove(--size);
 	    return numbers;
 	}
 }

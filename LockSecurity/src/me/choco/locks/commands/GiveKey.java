@@ -10,12 +10,13 @@ import me.choco.locks.LockSecurity;
 import me.choco.locks.utils.Keys;
 
 public class GiveKey implements CommandExecutor{
-	LockSecurity plugin;
+	
+	private LockSecurity plugin;
+	private Keys keys;
 	public GiveKey(LockSecurity plugin){
 		this.plugin = plugin;
+		this.keys = plugin.getKeyManager();
 	}
-
-	Keys keys = new Keys(plugin);
 	
 	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args){
 		if (sender instanceof Player){

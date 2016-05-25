@@ -23,11 +23,12 @@ import me.choco.locks.api.utils.LSMode;
 import me.choco.locks.utils.Keys;
 
 public class InteractWithBlock implements Listener{
-	LockSecurity plugin;
-	Keys keys;
+	
+	private LockSecurity plugin;
+	private Keys keys;
 	public InteractWithBlock(LockSecurity plugin){
 		this.plugin = plugin;
-		this.keys = new Keys(plugin);
+		this.keys = plugin.getKeyManager();
 	}
 	
 	@SuppressWarnings("deprecation")

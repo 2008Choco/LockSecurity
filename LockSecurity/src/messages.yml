@@ -53,3 +53,4 @@ Events:
   NotEnoughMoney: "You do not have the sufficient funds to lock a chest"
   BalanceWithdrawn: "%money% has been withdrawn from your balance"
   BalanceDeposited: "%money% has been deposited from your balance"
+  DisallowedAction: "You are not allowed to place a %type% next to a locked block owned by %owner%"

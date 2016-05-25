@@ -16,7 +16,8 @@ import me.choco.locks.LockSecurity;
 import me.choco.locks.api.LockedBlock;
 
 public class LockList implements CommandExecutor{
-	LockSecurity plugin;
+	
+	private LockSecurity plugin;
 	public LockList(LockSecurity plugin){
 		this.plugin = plugin;
 	}

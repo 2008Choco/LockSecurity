@@ -10,7 +10,8 @@ import me.choco.locks.LockSecurity;
 import me.choco.locks.api.utils.LSMode;
 
 public class TransferLock implements CommandExecutor{
-	LockSecurity plugin;
+	
+	private LockSecurity plugin;
 	public TransferLock(LockSecurity plugin){
 		this.plugin = plugin;
 	}
@@ -28,7 +29,8 @@ public class TransferLock implements CommandExecutor{
 							plugin.transferTo.put(player.getName(), args[0]);
 							plugin.sendPathMessage(player, plugin.messages.getConfig().getString("Commands.TransferLock.TransferModeEnabled"));
 						}else{
-							plugin.sendPathMessage(player, plugin.messages.getConfig().getString("Commands.General.PlayerNeverPlayedBefore"));
+							plugin.sendPathMessage(player, plugin.messages.getConfig().getString("Commands.General.PlayerNeverPlayedBefore")
+									.replace("%targetPlayer%", args[0]));
 						}
 						return true;
 					}else if (args.length == 2){

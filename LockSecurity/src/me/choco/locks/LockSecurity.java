@@ -48,6 +48,7 @@ import me.choco.locks.events.LockedBlockGriefProtection;
 import me.choco.locks.utils.Keys;
 import me.choco.locks.utils.LocalizedDataHandler;
 import me.choco.locks.utils.general.ConfigAccessor;
+import me.choco.locks.utils.general.ItemBuilder;
 import me.choco.locks.utils.general.Metrics;
 import me.choco.locks.utils.general.SQLite;
 import me.choco.locks.utils.general.loops.DatabaseSaveLoop;
@@ -62,6 +63,7 @@ public class LockSecurity extends JavaPlugin{
 	public ConfigAccessor locked;
 	public ConfigAccessor messages;
 	private LocalizedDataHandler data;
+	private Keys keys;
 	private final SQLite database = new SQLite();
 
 	public HashMap<String, String> transferTo = new HashMap<String, String>();
@@ -73,6 +75,7 @@ public class LockSecurity extends JavaPlugin{
 	public void onEnable(){
 		instance = this;
 		this.data = new LocalizedDataHandler(this);
+		this.keys = new Keys(this);
 		
 		//LockSecurity default config file
 		getConfig().options().copyDefaults(true);
@@ -106,7 +109,7 @@ public class LockSecurity extends JavaPlugin{
 		this.getCommand("locknotify").setExecutor(new LockNotify(this));
 		
 		//Generate key recipes
-		ItemStack unsmithedKey = new Keys(this).createUnsmithedKey(getConfig().getInt("RecipeYields"));
+		ItemStack unsmithedKey = keys.createUnsmithedKey(getConfig().getInt("RecipeYields"));
 		Bukkit.getServer().addRecipe(new ShapedRecipe(unsmithedKey).shape("B  ", " I ", "  P").setIngredient('B', Material.IRON_FENCE).setIngredient('I', Material.IRON_INGOT).setIngredient('P', Material.WOOD));
 		Bukkit.getServer().addRecipe(new ShapedRecipe(unsmithedKey).shape(" B ", " I ", " P ").setIngredient('B', Material.IRON_FENCE).setIngredient('I', Material.IRON_INGOT).setIngredient('P', Material.WOOD));
 		Bukkit.getServer().addRecipe(new ShapedRecipe(unsmithedKey).shape("  B", " I ", "P  ").setIngredient('B', Material.IRON_FENCE).setIngredient('I', Material.IRON_INGOT).setIngredient('P', Material.WOOD));
@@ -115,7 +118,8 @@ public class LockSecurity extends JavaPlugin{
 		Bukkit.getServer().addRecipe(new ShapedRecipe(unsmithedKey).shape("  P", " I ", "B  ").setIngredient('B', Material.IRON_FENCE).setIngredient('I', Material.IRON_INGOT).setIngredient('P', Material.WOOD));
 		Bukkit.getServer().addRecipe(new ShapedRecipe(unsmithedKey).shape(" P ", " I ", " B ").setIngredient('B', Material.IRON_FENCE).setIngredient('I', Material.IRON_INGOT).setIngredient('P', Material.WOOD));
 		Bukkit.getServer().addRecipe(new ShapedRecipe(unsmithedKey).shape("P  ", " I ", "  B").setIngredient('B', Material.IRON_FENCE).setIngredient('I', Material.IRON_INGOT).setIngredient('P', Material.WOOD));
-		Bukkit.getServer().addRecipe(new ShapelessRecipe(new ItemStack(Material.BEDROCK)).addIngredient(2, Material.TRIPWIRE_HOOK));
+		Bukkit.getServer().addRecipe(new ShapelessRecipe(new ItemBuilder(Material.BEDROCK).setName("COMBINE").build()).addIngredient(2, Material.TRIPWIRE_HOOK));
+		Bukkit.getServer().addRecipe(new ShapelessRecipe(new ItemBuilder(Material.BEDROCK).setName("CONVERT").build()).addIngredient(1, Material.TRIPWIRE_HOOK));
 		
 		//Load Metrics
 		if (getConfig().getBoolean("MetricsEnabled") == true){
@@ -246,7 +250,8 @@ public class LockSecurity extends JavaPlugin{
 				|| type.equals(Material.FURNACE) || type.equals(Material.DISPENSER) || type.equals(Material.DROPPER)
 				|| type.equals(Material.HOPPER) || type.equals(Material.WOODEN_DOOR) || type.equals(Material.ACACIA_DOOR)
 				|| type.equals(Material.BIRCH_DOOR) || type.equals(Material.DARK_OAK_DOOR) || type.equals(Material.JUNGLE_DOOR)
-				|| type.equals(Material.SPRUCE_DOOR) || type.equals(Material.ANVIL) || type.toString().contains("FENCE_GATE"))){
+				|| type.equals(Material.SPRUCE_DOOR) || type.equals(Material.ANVIL) || type.equals(Material.IRON_DOOR_BLOCK)
+				|| type.equals(Material.IRON_TRAPDOOR) || type.toString().contains("FENCE_GATE"))){
 			return false;
 		}
 		List<String> lockableBlocks = getConfig().getStringList("LockableBlocks");
@@ -327,6 +332,13 @@ public class LockSecurity extends JavaPlugin{
 	 */
 	public LocalizedDataHandler getLocalizedData(){
 		return data;
+	}
+	
+	/** Get the key manager from LockSecurity, containing methods to create various keys
+	 * @return Keys - The key manager
+	 */
+	public Keys getKeyManager(){
+		return keys;
 	}
 
     private boolean setupEconomy() {

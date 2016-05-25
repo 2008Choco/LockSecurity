@@ -9,7 +9,8 @@ import me.choco.locks.LockSecurity;
 import me.choco.locks.api.utils.LSMode;
 
 public class IgnoreLocks implements CommandExecutor{
-	LockSecurity plugin;
+	
+	private LockSecurity plugin;
 	public IgnoreLocks(LockSecurity plugin){
 		this.plugin = plugin;
 	}

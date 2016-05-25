@@ -15,7 +15,8 @@ import me.choco.locks.LockSecurity;
 import me.choco.locks.api.utils.LSMode;
 
 public class JoinAndQuit implements Listener{
-	LockSecurity plugin;
+	
+	private LockSecurity plugin;
 	public JoinAndQuit(LockSecurity plugin){
 		this.plugin = plugin;
 	}

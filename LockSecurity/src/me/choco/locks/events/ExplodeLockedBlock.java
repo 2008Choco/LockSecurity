@@ -12,7 +12,8 @@ import org.bukkit.event.entity.EntityExplodeEvent;
 import me.choco.locks.LockSecurity;
 
 public class ExplodeLockedBlock implements Listener{
-	LockSecurity plugin;
+	
+	private LockSecurity plugin;
 	public ExplodeLockedBlock(LockSecurity plugin){
 		this.plugin = plugin;
 	}

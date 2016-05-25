@@ -13,7 +13,8 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import me.choco.locks.LockSecurity;
 
 public class MainCommand implements CommandExecutor, TabCompleter{
-	LockSecurity plugin;
+	
+	private LockSecurity plugin;
 	public MainCommand(LockSecurity plugin){
 		this.plugin = plugin;
 	}
