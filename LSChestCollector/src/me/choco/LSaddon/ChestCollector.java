@@ -15,55 +15,60 @@ import me.choco.LSaddon.commands.CollectsCmd;
 import me.choco.LSaddon.events.ClickLockedChest;
 import me.choco.LSaddon.events.PickupCollectorItem;
 import me.choco.LSaddon.events.UnlockBlock;
+import me.choco.LSaddon.utils.CollectorHandler;
 import me.choco.LSaddon.utils.ConfigAccessor;
-import me.choco.locks.LockSecurity;
-import me.choco.locks.utils.general.Metrics;
+import me.choco.LSaddon.utils.Metrics;
+import me.choco.locksecurity.LockSecurity;
 
 public class ChestCollector extends JavaPlugin{
-	
-	 private LockSecurity lockSecurity;
-	 public ConfigAccessor collectors;
-	 
-	 public ArrayList<String> collectorCreationMode = new ArrayList<String>();
-	 public HashMap<Location, Integer> collectorBlocks = new HashMap<Location, Integer>();
-	 private HashMap<String, String[]> collectsCommandTempInfo = new HashMap<String, String[]>();
-	 
+
+	private LockSecurity lockSecurity;
+	public ConfigAccessor collectors;
+
+	public ArrayList<String> collectorCreationMode = new ArrayList<String>();
+	public HashMap<Location, Integer> collectorBlocks = new HashMap<Location, Integer>();
+	private HashMap<String, String[]> collectsCommandTempInfo = new HashMap<String, String[]>();
+
+	private CollectorHandler collectorHandler;
+
 	@Override
 	public void onEnable(){
-		lockSecurity = LockSecurity.getPlugin(this);
+		lockSecurity = LockSecurity.getPlugin();
 		this.getLogger().info("Successfully hooked into LockSecurity.");
 		
+		this.collectorHandler = new CollectorHandler(this);
+
 		//LSChestCollector default config
 		getConfig().options().copyDefaults(true);
-	    saveConfig();
+		saveConfig();
 		//LSChestCollector collectors.yml
 		collectors = new ConfigAccessor(this, "collectors.yml");
 		collectors.loadConfig();
-		
+
 		//Register commands
 		this.getLogger().info("Registering commands");
 		this.getCommand("collects").setExecutor(new CollectsCmd(this));
-		
+
 		//Register events
 		this.getLogger().info("Registering events");
 		Bukkit.getPluginManager().registerEvents(new ClickLockedChest(this), this);
 		Bukkit.getPluginManager().registerEvents(new PickupCollectorItem(this), this);
 		Bukkit.getPluginManager().registerEvents(new UnlockBlock(this), this);
-		
+
 		//Load Metrics
 		if (getConfig().getBoolean("MetricsEnabled")){
 			this.getLogger().info("Enabling Plugin Metrics");
-		    try{
-		        Metrics metrics = new Metrics(this);
-		        metrics.start();
-		    }
-		    catch (IOException e){
-		    	e.printStackTrace();
-		        getLogger().warning("Could not enable Plugin Metrics. If issues continue, please put in a ticket on the "
-		        	+ "LSChestCollector development page");
-		    }
+			try{
+				Metrics metrics = new Metrics(this);
+				metrics.start();
+			}
+			catch (IOException e){
+				e.printStackTrace();
+				getLogger().warning("Could not enable Plugin Metrics. If issues continue, please put in a ticket on the "
+						+ "LSChestCollector development page");
+			}
 		}
-		
+
 		//Add RAM information
 		this.getLogger().info("Storing all Chest Collectors' information in the server RAM");
 		int errors = 0;
@@ -77,7 +82,7 @@ public class ChestCollector extends JavaPlugin{
 				double y = collectors.getConfig().getDouble(key + ".Location.Y");
 				double z = collectors.getConfig().getDouble(key + ".Location.Z");
 				Location location = new Location(world, x, y, z);
-				
+
 				if (!location.getBlock().getType().equals(Material.CHEST) || !location.getBlock().getType().equals(Material.TRAPPED_CHEST)){
 					collectorBlocks.put(location, id);
 				}else{
@@ -104,7 +109,7 @@ public class ChestCollector extends JavaPlugin{
 			this.getLogger().info("Successfully stored all collectors in server RAM. Plugin ready for use!");
 		}
 	}
-	
+
 	@Override
 	public void onDisable(){
 		this.getLogger().info("Clearing all local RAM storage");
@@ -112,23 +117,27 @@ public class ChestCollector extends JavaPlugin{
 		collectorBlocks.clear();
 		collectsCommandTempInfo.clear();
 	}
-	
+
 	public LockSecurity getLockSecurity(){
 		return lockSecurity;
 	}
 	
+	public CollectorHandler getCollectorHandler() {
+		return collectorHandler;
+	}
+
 	public void setCommandItems(String playerName, String[] items){
 		collectsCommandTempInfo.put(playerName, items);
 	}
-	
+
 	public String[] getCommandItems(String playerName){
 		return collectsCommandTempInfo.get(playerName);
 	}
-	
+
 	private String formatLocation(Location location){
 		return location.getWorld().getName() + " x:" + (int)location.getBlockX() + " y:" + (int)location.getBlockY() + " z:" + (int)location.getBlockY();
 	}
-	
+
 	/* TODO Future Version:
 	 * 
 	 * -------------------------------------------------------------------------------------------------------------------------------------

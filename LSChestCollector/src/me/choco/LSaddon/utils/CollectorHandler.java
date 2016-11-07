@@ -12,7 +12,8 @@ import org.bukkit.entity.Player;
 import me.choco.LSaddon.ChestCollector;
 
 public class CollectorHandler {
-	ChestCollector plugin;
+	
+	private ChestCollector plugin;
 	public CollectorHandler(ChestCollector plugin){
 		this.plugin = plugin;
 	}

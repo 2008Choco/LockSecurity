@@ -9,7 +9,8 @@ import org.bukkit.entity.Player;
 import me.choco.LSaddon.ChestCollector;
 
 public class CollectsCmd implements CommandExecutor{
-	ChestCollector plugin;
+	
+	private ChestCollector plugin;
 	public CollectsCmd(ChestCollector plugin){
 		this.plugin = plugin;
 	}

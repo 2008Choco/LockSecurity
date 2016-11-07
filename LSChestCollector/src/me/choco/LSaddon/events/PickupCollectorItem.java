@@ -16,11 +16,12 @@ import me.choco.LSaddon.ChestCollector;
 import me.choco.LSaddon.utils.CollectorHandler;
 
 public class PickupCollectorItem implements Listener{
-	ChestCollector plugin;
-	CollectorHandler collectorHandler;
+	
+	private ChestCollector plugin;
+	private CollectorHandler collectorHandler;
 	public PickupCollectorItem(ChestCollector plugin){
 		this.plugin = plugin;
-		this.collectorHandler = new CollectorHandler(plugin);
+		this.collectorHandler = plugin.getCollectorHandler();
 	}
 	
 	@EventHandler

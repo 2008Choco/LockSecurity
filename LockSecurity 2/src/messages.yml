@@ -1,0 +1,56 @@
+Commands:
+  ForgeKey:
+    NoIDSpecified: "Please specify the ID you would like to forge"
+    GivenKey: "Given forged key with ID %ID%"
+  GiveKey:
+    ReceivedUnsmithedKey: "You have received an unsmithed key"
+    TargetPlayerReceivedKey: "You have received %count% unsmithed key(s) from %player%"
+    PlayerSentKey: "You have given %targetPlayer% %count% unsmithed key(s)"
+  IgnoreLocks:
+    IgnoringLocks: "You are now ignoring all locks"
+    NoLongerIgnoringLocks: "You are no longer ignoring locks"
+  LockInspect:
+    LockInspectEnabled: "Lock inspect has been &aenabled"
+    LockInspectDisabled: "Lock inspect has been &cdisabled"
+    BlockNotLocked: "This block is not locked"
+  LockList:
+    ListIdentifier: "Lock list for all worlds (player %player%)"
+  LockSecurity:
+    SuccessfullyReloaded: "&aReloaded all configuration files"
+  Unlock:
+    UnlockModeEnabled: "Unlock mode enabled. Right click the block you would like to unlock"
+    UnlockModeDisabled: "Unlock mode disabled"
+    BlockUnlocked: "Lock ID %lockID% has been unlocked"
+    NotOwner: "You are not the owner of this block"
+    BlockNotLocked: "Lock ID %lockID% is not valid (Is that ID even registered?)"
+  TransferLock:
+    TransferModeEnabled: "Transfer mode enabled. Right clock on the block you would like to transfer"
+    TransferModeDisabled: "Transfer mode disabled"
+    TransferredBlock: "%type% with LockID %lockID% (KeyID: %keyID%) transferred to %player%"
+  LockNotify:
+    LockNotifyEnabled: "Administrative lock notifications enabled"
+    LockNotifyDisabled: "Administrative lock notifications disabled"
+    LockNotification: "%player% has locked a %type% at x:%x% y:%y% z:%z% in world %world% with LockID %lockID% (KeyID: %keyID%)"
+  General:
+    OnlyPlayers: "Only players may use this command"
+    NoPermission: "You do not have the sufficient permissions to do this"
+    PlayerOffline: "%targetPlayer% is not currently online"
+    MustSpecifyPlayer: "You must specify a player to run this command"
+    InvalidInteger: "%param% is not a number. Please specify an ID"
+    PlayerNeverPlayedBefore: "%targetPlayer% has never played on this server before"
+    DataTransfer:
+      Commencing: "Saving localized data to databse..."
+      SuccessfulTransfer: "&aSuccessfully transfered data to database"
+Events:
+  BlockUnregistered: "%type% Lock ID %id% unregistered"
+  CannotOpen: "This %type% is locked by %player%. You cannot open this"
+  SuccessfullyLockedBlock: "You have locked this block with LockID %lockID% (KeyID: %keyID%)"
+  NoPermissionToLock: "You do not have the sufficient permissions to lock %type%"
+  NoKey: "You do not have the key to open this"
+  LockPickAttempt: "You attempt to pick the lock, but it doesn't work"
+  CannotBreak: "This %type% is locked by %player%. You cannot break this"
+  ReachedLockMaximum: "You cannot lock this block. You have reached the maximum for this world"
+  NotEnoughMoney: "You do not have the sufficient funds to lock a chest"
+  BalanceWithdrawn: "%money% has been withdrawn from your balance"
+  BalanceDeposited: "%money% has been deposited from your balance"
+  DisallowedAction: "You are not allowed to place a %type% next to a locked block owned by %owner%"
