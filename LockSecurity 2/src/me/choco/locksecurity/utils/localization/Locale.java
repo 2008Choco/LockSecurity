@@ -1,22 +1,27 @@
 package me.choco.locksecurity.utils.localization;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import org.apache.commons.io.IOUtils;
-import org.bukkit.plugin.java.JavaPlugin;
+import java.util.stream.Collectors;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
+
+import org.apache.commons.io.IOUtils;
+import org.bukkit.plugin.java.JavaPlugin;
 
 /** 
  * Assists in the creation of multiple localizations and languages,
@@ -27,13 +32,11 @@ import com.google.common.collect.Lists;
 public class Locale {
 
 	private static JavaPlugin plugin;
-	private static final List<Locale> locales = Lists.newArrayList();
+	private static final List<Locale> LOCALES = Lists.newArrayList();
 	
 	private static final Pattern NODE_PATTERN = Pattern.compile("((?:\\w+\\.{1})*(?:\\w+){1})(?:\\s*=\\s*){1}\"(.*)\"");
-	
-	private static final String LOCALE_FOLDER_PATH = plugin.getDataFolder().getAbsolutePath() + File.separator + "locales";
 	private static final String FILE_EXTENSION = ".lang";
-	private static final File LOCALE_FOLDER = new File(LOCALE_FOLDER_PATH);
+	private static File localeFolder;
 	
 	private final Map<String, String> nodes = new HashMap<>();
 	
@@ -48,7 +51,7 @@ public class Locale {
 		this.region = region.toUpperCase();
 		
 		String fileName = name + "_" + region + FILE_EXTENSION;
-		this.file = new File(LOCALE_FOLDER, fileName);
+		this.file = new File(localeFolder, fileName);
 		
 		if (this.reloadMessages()) return;
 		
@@ -71,6 +74,15 @@ public class Locale {
 	 */
 	public String getRegion() {
 		return region;
+	}
+	
+	/**
+	 * Return the entire locale tag (i.e. "en_US")
+	 * 
+	 * @return the language tag
+	 */
+	public String getLanguageTag() {
+		return name + "_" + region;
 	}
 	
 	/**
@@ -156,7 +168,11 @@ public class Locale {
 	public static void init(JavaPlugin plugin) {
 		Locale.plugin = plugin;
 		
-		LOCALE_FOLDER.mkdirs();
+		if (localeFolder == null) {
+			localeFolder = new File(plugin.getDataFolder(), "locales/");
+		}
+		
+		localeFolder.mkdirs();
 		Locale.searchForLocales();
 	}
 	
@@ -164,19 +180,19 @@ public class Locale {
 	 * Find all .lang file locales under the "locales" folder
 	 */
 	public static void searchForLocales() {
-		if (!LOCALE_FOLDER.exists()) LOCALE_FOLDER.mkdirs();
+		if (!localeFolder.exists()) localeFolder.mkdirs();
 		
-		for (File file : LOCALE_FOLDER.listFiles()){
+		for (File file : localeFolder.listFiles()){
 			String name = file.getName();
-			if (!name.endsWith(".lang")) return;
+			if (!name.endsWith(".lang")) continue;
 			
 			String fileName = name.substring(0, name.lastIndexOf('.'));
 			String[] localeValues = fileName.split("_");
 			
 			if (localeValues.length != 2) continue;
-			if (getLocale(localeValues[0] + "_" + localeValues[1]) != null) continue;
+			if (localeExists(localeValues[0] + "_" + localeValues[1])) continue;
 			
-			locales.add(new Locale(localeValues[0], localeValues[1]));
+			LOCALES.add(new Locale(localeValues[0], localeValues[1]));
 		}
 	}
 	
@@ -187,8 +203,8 @@ public class Locale {
 	 * @return locale of the specified name
 	 */
 	public static Locale getLocale(String name) {
-		for (Locale locale : locales)
-			if ((locale.getName() + "_" + locale.getRegion()).equalsIgnoreCase(name)) return locale;
+		for (Locale locale : LOCALES)
+			if (locale.getLanguageTag().equalsIgnoreCase(name)) return locale;
 		return null;
 	}
 	
@@ -199,7 +215,7 @@ public class Locale {
 	 * @return locale of the specified language. Null if not cached
 	 */
 	public static Locale getLocaleByName(String name) {
-		for (Locale locale : locales)
+		for (Locale locale : LOCALES)
 			if (locale.getName().equalsIgnoreCase(name)) return locale;
 		return null;
 	}
@@ -211,9 +227,21 @@ public class Locale {
 	 * @return locale of the specified region. Null if not cached
 	 */
 	public static Locale getLocaleByRegion(String region) {
-		for (Locale locale : locales)
+		for (Locale locale : LOCALES)
 			if (locale.getRegion().equalsIgnoreCase(region)) return locale;
 		return null;
+	}
+	
+	/**
+	 * Check whether a locale exists and is registered or not
+	 * 
+	 * @param name the whole language tag (i.e. "en_US")
+	 * @return true if it exists
+	 */
+	public static boolean localeExists(String name) {
+		for (Locale locale : LOCALES)
+			if (locale.getLanguageTag().equals(name)) return true;
+		return false;
 	}
 	
 	/** 
@@ -222,7 +250,7 @@ public class Locale {
 	 * @return list of all locales
 	 */
 	public static List<Locale> getLocales() {
-		return ImmutableList.copyOf(locales);
+		return ImmutableList.copyOf(LOCALES);
 	}
 	
 	/**
@@ -234,13 +262,15 @@ public class Locale {
 	 * @return true if the operation was successful, false otherwise
 	 */
 	public static boolean saveDefaultLocale(String path, String fileName) {
-		if (!LOCALE_FOLDER.exists()) LOCALE_FOLDER.mkdirs();
+		if (!localeFolder.exists()) localeFolder.mkdirs();
 		
 		if (!fileName.endsWith(".lang"))
 			fileName = (fileName.lastIndexOf(".") == -1 ? fileName : fileName.substring(0, fileName.lastIndexOf('.'))) + FILE_EXTENSION;
 		
-		File destinationFile = new File(LOCALE_FOLDER, fileName);
-		if (destinationFile.exists()) return false;
+		File destinationFile = new File(localeFolder, fileName);
+		if (destinationFile.exists()) {
+			return compareFiles(plugin.getResource(fileName), destinationFile);
+		}
 		
 		try(OutputStream outputStream = new FileOutputStream(destinationFile)){
 			IOUtils.copy(plugin.getResource(fileName), outputStream);
@@ -250,13 +280,12 @@ public class Locale {
 			
 			if (localeValues.length != 2) return false;
 			
-			locales.add(new Locale(localeValues[0], localeValues[1]));
+			LOCALES.add(new Locale(localeValues[0], localeValues[1]));
 			return true;
 		}catch(IOException e){ return false; }
 	}
 	
 	/**
-	 * 
 	 * Save a default locale file from the project source directory, to the locale folder
 	 * 
 	 * @param fileName the name of the file to save
@@ -270,8 +299,41 @@ public class Locale {
 	 * Clear all current locale data
 	 */
 	public static void clearLocaleData() {
-		for (Locale locale : locales)
+		for (Locale locale : LOCALES)
 			locale.getMessageNodeMap().clear();
-		locales.clear();
+		LOCALES.clear();
+	}
+	
+	// Write new changes to existing files, if any at all
+	private static boolean compareFiles(InputStream defaultFile, File existingFile) {
+		boolean changed = false;
+		
+		List<String> defaultLines, existingLines;
+		try(BufferedReader defaultReader = new BufferedReader(new InputStreamReader(defaultFile));
+				BufferedReader existingReader = new BufferedReader(new FileReader(existingFile));
+				BufferedWriter writer = new BufferedWriter(new FileWriter(existingFile, true))) {
+			defaultLines = defaultReader.lines().collect(Collectors.toList());
+			existingLines = existingReader.lines().map(s -> s.split("\\s*=")[0]).collect(Collectors.toList());
+			
+			for (String defaultValue : defaultLines) {
+				if (defaultValue.isEmpty() || defaultValue.startsWith("#")) continue;
+				
+				String key = defaultValue.split("\\s*=")[0];
+				
+				if (!existingLines.contains(key)) {
+					if (!changed) {
+						writer.newLine(); writer.newLine();
+						writer.write("# New messages for " + plugin.getName() + " v" + plugin.getDescription().getVersion());
+					}
+					
+					writer.newLine();
+					writer.write(defaultValue);
+					
+					changed = true;
+				}
+			}
+		} catch (IOException e) { return false; }
+		
+		return changed;
 	}
 }

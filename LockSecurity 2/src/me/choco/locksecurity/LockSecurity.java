@@ -81,6 +81,7 @@ public class LockSecurity extends JavaPlugin {
 		ConfigOption.loadConfigurationValues(this);
 		
 		// Locales
+		Locale.init(this);
 		Locale.saveDefaultLocale("en_CA");
 		Locale.saveDefaultLocale("fr_CA");
 		locale = Locale.getLocale(this.getConfig().getString("Locale", "en_CA"));
@@ -234,8 +235,8 @@ public class LockSecurity extends JavaPlugin {
 	/** 
 	 * Send a message to the specified player with the [LockSecurity] prefix
 	 * 
-	 * @param sender - The user to send the message to
-	 * @param message - The message to send
+	 * @param sender the user to send the message to
+	 * @param message the message to send
 	 */
 	public void sendMessage(CommandSender sender, String message){
 		sender.sendMessage(ChatColor.GOLD + "[" + ChatColor.AQUA + "LockSecurity" + ChatColor.GOLD + "] " + ChatColor.GRAY + message);
