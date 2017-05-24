@@ -5,12 +5,19 @@ import org.bukkit.event.HandlerList;
 import org.bukkit.event.player.PlayerEvent;
 import org.bukkit.inventory.ItemStack;
 
+/**
+ * Called when a player merges two smithed keys together and creates a new key 
+ * with the combined numerical ID's
+ * 
+ * @author Parker Hawke - 2008Choco
+ */
 public class PlayerMergeKeyEvent extends PlayerEvent {
 	
 	private static final HandlerList handlers = new HandlerList();
 	
 	private final ItemStack firstKey, secondKey;
 	private final int[] IDs;
+	
 	public PlayerMergeKeyEvent(Player player, ItemStack firstKey, ItemStack secondKey, int[] IDs) {
 		super(player);
 		this.firstKey = firstKey;
@@ -18,14 +25,29 @@ public class PlayerMergeKeyEvent extends PlayerEvent {
 		this.IDs = IDs;
 	}
 	
+	/**
+	 * Get the first key involved with this merge
+	 * 
+	 * @return the first key
+	 */
 	public ItemStack getFirstKey() {
 		return firstKey;
 	}
 	
+	/**
+	 * Get the second key involved with this merge
+	 * 
+	 * @return the second key
+	 */
 	public ItemStack getSecondKey() {
 		return secondKey;
 	}
 	
+	/**
+	 * Get the new ID's to be assigned to the merged key
+	 * 
+	 * @return the new ID's
+	 */
 	public int[] getIDs() {
 		return IDs;
 	}

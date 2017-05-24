@@ -21,8 +21,10 @@ import me.choco.locksecurity.registration.PlayerRegistry;
 import me.choco.locksecurity.utils.LSPlayer;
 import me.choco.locksecurity.utils.json.JSONSerializable;
 
-/** Represents a block in which contains information about its owner, Lock ID, Key ID
+/** 
+ * Represents a block in which contains information about its owner, Lock ID, Key ID
  * and position in the world. This may take various forms as different types of blocks may be locked
+ * 
  * @author Parker Hawke - 2008Choco
  */
 public class LockedBlock implements JSONSerializable {
@@ -35,6 +37,7 @@ public class LockedBlock implements JSONSerializable {
 	private Location location;
 	private int lockID, keyID;
 	private UUID uuid;
+	
 	public LockedBlock(LSPlayer owner, Location location, int lockID, int keyID) {
 		if (owner == null)
 			throw new IllegalStateException("Locked blocks cannot have a null owner");
@@ -70,9 +73,11 @@ public class LockedBlock implements JSONSerializable {
 			throw new JsonParseException("LockedBlock data parsing failed for LockID=" + lockID);
 	}
 	
-	/** Set the owner of this block. This will also modify the {@link LSPlayer#getOwnedBlocks()} list
+	/** 
+	 * Set the owner of this block. This will also modify the {@link LSPlayer#getOwnedBlocks()} list
 	 * to remove from the old owner's blocks, and add it to the new owner's blocks
-	 * @param owner - The owner to set
+	 * 
+	 * @param owner the owner to set
 	 */
 	public void setOwner(LSPlayer owner) {
 		this.owner.getOwnedBlocks().remove(this);
@@ -81,72 +86,91 @@ public class LockedBlock implements JSONSerializable {
 		this.owner = owner;
 	}
 	
-	/** Get the owner of the block
+	/** 
+	 * Get the owner of the block
+	 * 
 	 * @return the owner of the block
 	 */
 	public LSPlayer getOwner() {
 		return owner;
 	}
 	
-	/** Check if the specified player is the owner of the block
-	 * @param player - The player to check
+	/** 
+	 * Check if the specified player is the owner of the block
+	 * 
+	 * @param player the player to check
 	 * @return true if the player owns this block
 	 */
 	public boolean isOwner(LSPlayer player){
 		return player.equals(owner);
 	}
 	
-	/** Get the location in which this locked block is located
+	/** 
+	 * Get the location in which this locked block is located
+	 * 
 	 * @return the location of the block
 	 */
 	public Location getLocation() {
 		return location;
 	}
 	
-	/** Get the block in which this locked block represents
+	/** 
+	 * Get the block in which this locked block represents
+	 * 
 	 * @return the block this locked block represents
 	 */
 	public Block getBlock() {
 		return location.getBlock();
 	}
 	
-	/** Get the Lock ID value that identifies this block
+	/** 
+	 * Get the Lock ID value that identifies this block
+	 * 
 	 * @return the Lock ID value
 	 */
 	public int getLockID() {
 		return lockID;
 	}
 	
-	/** Get the Key ID value required to open this block
+	/** 
+	 * Get the Key ID value required to open this block
+	 * 
 	 * @return the required Key ID value
 	 */
 	public int getKeyID() {
 		return keyID;
 	}
 	
-	/** Get the unique string of characters that represent this block
+	/** 
+	 * Get the unique string of characters that represent this block
+	 * 
 	 * @return the UUID of the block
 	 */
 	public UUID getUniqueId(){
 		return uuid;
 	}
 	
-	/** Set the secondary component of this block. The secondary component MUST be
+	/** 
+	 * Set the secondary component of this block. The secondary component MUST be
 	 * of the same type and must be a valid contendor, such as DoubleChest or Door components. 
 	 * This locked block and the specified component will be linked together
-	 * @param secondaryComponent - The block to set as a secondary component
+	 * 
+	 * @param secondaryComponent the block to set as a secondary component
 	 * @throws IllegalBlockPositionException if the block is not positioned correctly
 	 */
 	public void setSecondaryComponent(LockedBlock secondaryComponent) {
 		setSecondaryComponent(secondaryComponent, false);
 	}
 	
-	/** Set the secondary component of this block. The secondary component MUST be
+	/** 
+	 * Set the secondary component of this block. The secondary component MUST be
 	 * of the same type and must be a valid contendor, such as DoubleChest or Door components. 
 	 * This locked block and the specified component will be linked together. 
 	 * <br> If forced, the components will be linked regardless of their block position / state
-	 * @param secondaryComponent - The block to set as a secondary component
-	 * @param force - if true, the blocks will be linked together regardless of their position
+	 * 
+	 * @param secondaryComponent the block to set as a secondary component
+	 * @param force if true, the blocks will be linked together regardless of their position
+	 * 
 	 * @throws IllegalBlockPositionException if the block is not positioned correctly (and "force" is false)
 	 */
 	public void setSecondaryComponent(LockedBlock secondaryComponent, boolean force){
@@ -158,23 +182,27 @@ public class LockedBlock implements JSONSerializable {
 			secondaryComponent.setSecondaryComponent(this);
 	}
 	
-	private static final BlockFace[] faces = new BlockFace[]{ BlockFace.NORTH, BlockFace.SOUTH, BlockFace.EAST, BlockFace.WEST };
-	private static final BlockFace[] facesDoors = new BlockFace[]{ BlockFace.UP, BlockFace.DOWN };
+	private static final BlockFace[] FACES = new BlockFace[]{ BlockFace.NORTH, BlockFace.SOUTH, BlockFace.EAST, BlockFace.WEST };
+	private static final BlockFace[] FACES_DOORS = new BlockFace[]{ BlockFace.UP, BlockFace.DOWN };
 	
-	/** Check whether a block can successfully be a secondary component or not
-	 * @param block - The block to check
+	/** 
+	 * Check whether a block can successfully be a secondary component or not
+	 * 
+	 * @param block the block to check
 	 * @return true if it can be a secondary component
 	 */
 	public boolean canBeSecondaryComponent(LockedBlock block){
 		if (!this.getBlock().getType().equals(block.getBlock().getType())) return false;
 		
 		Material material = this.getBlock().getType();
-		for (BlockFace face : material.name().contains("DOOR") ? facesDoors : faces)
+		for (BlockFace face : material.name().contains("DOOR") ? FACES_DOORS : FACES)
 			if (this.getBlock().getRelative(face).equals(block.getBlock())) return true;
 		return false;
 	}
 	
-	/** Get the secondary component for this locked block (if any)
+	/** 
+	 * Get the secondary component for this locked block (if any)
+	 * 
 	 * @return the secondary component. null if none is set
 	 * @see {@link #hasSecondaryComponent()}
 	 */
@@ -182,16 +210,20 @@ public class LockedBlock implements JSONSerializable {
 		return secondaryComponent;
 	}
 	
-	/** Check whether this block has a secondary component or not
+	/** 
+	 * Check whether this block has a secondary component or not
+	 * 
 	 * @return true if this block has a secondary component
 	 */
 	public boolean hasSecondaryComponent(){
 		return this.secondaryComponent != null;
 	}
 	
-	/** Check whether the specified smithedkey is a valid key or not. A key is 
+	/** 
+	 * Check whether the specified smithedkey is a valid key or not. A key is 
 	 * considered valid if its Key ID is similar to that of this block
-	 * @param key - The key to check
+	 * 
+	 * @param key the key to check
 	 * @return true if the Key ID values are similar
 	 */
 	public boolean isValidKey(ItemStack key){
@@ -203,8 +235,10 @@ public class LockedBlock implements JSONSerializable {
 		return false;
 	}
 	
-	/** Display information to a player in the chat about this locked block
-	 * @param player - The player to display information to
+	/** 
+	 * Display information to a player in the chat about this locked block
+	 * 
+	 * @param player the player to display information to
 	 */
 	public void displayInformation(Player player){
 		player.sendMessage(ChatColor.GOLD + "- - - - - - " + ChatColor.DARK_AQUA + "Lock information " + ChatColor.GOLD + "- - - - - -");

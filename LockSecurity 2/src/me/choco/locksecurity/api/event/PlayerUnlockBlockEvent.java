@@ -7,7 +7,9 @@ import me.choco.locksecurity.api.LockedBlock;
 import me.choco.locksecurity.api.event.variant.LSPlayerEvent;
 import me.choco.locksecurity.utils.LSPlayer;
 
-/** Called when a player successfully unlocks a block
+/** 
+ * Called when a player successfully unlocks a block
+ * 
  * @author Parker Hawke - 2008Choco
  */
 public class PlayerUnlockBlockEvent extends LSPlayerEvent implements Cancellable {
@@ -17,6 +19,7 @@ public class PlayerUnlockBlockEvent extends LSPlayerEvent implements Cancellable
 	
 	private final LockedBlock block;
 	private final boolean byCommand;
+	
 	public PlayerUnlockBlockEvent(LSPlayer player, LockedBlock block, boolean byCommand) {
 		super(player);
 		this.block = block;
@@ -27,14 +30,18 @@ public class PlayerUnlockBlockEvent extends LSPlayerEvent implements Cancellable
 		this(player, block, false);
 	}
 	
-	/** Get the block involved with this event
+	/** 
+	 * Get the block involved with this event
+	 * 
 	 * @return the locked block to be unlocked
 	 */
 	public LockedBlock getBlock() {
 		return block;
 	}
 	
-	/** Whether the block was unlocked by command or not
+	/** 
+	 * Whether the block was unlocked by command or not
+	 * 
 	 * @return true if the block was unlocked by command
 	 */
 	public boolean isByCommand() {
