@@ -20,6 +20,7 @@ public class BlockBreakListener implements Listener {
 	private LockSecurity plugin;
 	private PlayerRegistry playerRegistry;
 	private LockedBlockManager lockedBlockManager;
+	
 	public BlockBreakListener(LockSecurity plugin) {
 		this.plugin = plugin;
 		this.playerRegistry = plugin.getPlayerRegistry();

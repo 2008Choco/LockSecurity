@@ -18,6 +18,7 @@ public class LockInspectCmd implements CommandExecutor {
 	private LockSecurity plugin;
 	private PlayerRegistry playerRegistry;
 	private LockedBlockManager lockedBlockManager;
+	
 	public LockInspectCmd(LockSecurity plugin) {
 		this.plugin = plugin;
 		this.playerRegistry = plugin.getPlayerRegistry();

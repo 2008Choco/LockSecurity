@@ -12,6 +12,7 @@ import me.choco.locksecurity.registration.LockedBlockManager;
 public class WorldDataUnloader implements Listener {
 	
 	private LockedBlockManager manager;
+	
 	public WorldDataUnloader(LockSecurity plugin) {
 		this.manager = plugin.getLockedBlockManager();
 	}

@@ -30,11 +30,10 @@ import me.choco.locksecurity.utils.LSPlayer;
 
 public class BlockClickListener implements Listener {
 	
-	private LockSecurity plugin;
 	private LockedBlockManager lockedBlockManager;
 	private PlayerRegistry playerRegistry;
+	
 	public BlockClickListener(LockSecurity plugin) {
-		this.plugin = plugin;
 		this.lockedBlockManager = plugin.getLockedBlockManager();
 		this.playerRegistry = plugin.getPlayerRegistry();
 	}
@@ -187,9 +186,10 @@ public class BlockClickListener implements Listener {
 		player.getInventory().addItem(KeyFactory.buildKey(KeyType.SMITHED).withIDs(keyID).build());
 	}
 	
-	private static final BlockFace[] faces = new BlockFace[]{ BlockFace.NORTH, BlockFace.SOUTH, BlockFace.EAST, BlockFace.WEST };
+	private static final BlockFace[] FACES = new BlockFace[]{ BlockFace.NORTH, BlockFace.SOUTH, BlockFace.EAST, BlockFace.WEST };
+	
 	private Block getAdjacentChest(Block block){
-		for (BlockFace face : faces){
+		for (BlockFace face : FACES){
 			Block relative = block.getRelative(face);
 			if (relative.getType().equals(block.getType())) return relative;
 		}

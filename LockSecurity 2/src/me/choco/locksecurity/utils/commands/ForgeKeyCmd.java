@@ -12,6 +12,7 @@ import me.choco.locksecurity.api.KeyFactory.KeyType;
 public class ForgeKeyCmd implements CommandExecutor {
 	
 	private LockSecurity plugin;
+	
 	public ForgeKeyCmd(LockSecurity plugin) {
 		this.plugin = plugin;
 	}

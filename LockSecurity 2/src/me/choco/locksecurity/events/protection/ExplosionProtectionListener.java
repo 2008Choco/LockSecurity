@@ -14,6 +14,7 @@ import me.choco.locksecurity.registration.LockedBlockManager;
 public class ExplosionProtectionListener implements Listener {
 	
 	private LockedBlockManager lockedBlockManager;
+	
 	public ExplosionProtectionListener(LockSecurity plugin) {
 		this.lockedBlockManager = plugin.getLockedBlockManager();
 	}

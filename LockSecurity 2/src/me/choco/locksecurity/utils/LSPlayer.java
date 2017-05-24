@@ -18,14 +18,15 @@ import me.choco.locksecurity.registration.LockedBlockManager;
 import me.choco.locksecurity.utils.json.JSONSerializable;
 import me.choco.locksecurity.utils.json.JSONUtils;
 
-/** A wrapper class for the OfflinePlayer interface containing information about a player's
+/** 
+ * A wrapper class for the OfflinePlayer interface containing information about a player's
  * LockSecurity details such as (but not limited to); their data file, their owned blocks, their
  * active modes ({@link LSMode}), etc.
- * <br>
- * <br><b>NOTE: </b>
- * <br>Information regarding owned locked blocks is a record of what locked blocks currently exist.
- * Not all owned blocks are registered in the {@link LockedBlockManager}, meaning
- * unregistered blocks will be ignored in a locked block lookup / protection listener
+ * <p>
+ * <b>NOTE:</b> Information regarding owned locked blocks is a record of what locked blocks 
+ * currently exist. Not all owned blocks are registered in the {@link LockedBlockManager}, 
+ * meaning unregistered blocks will be ignored in a locked block lookup / protection listener
+ * 
  * @author Parker Hawke - 2008Choco
  */
 public class LSPlayer implements JSONSerializable {
@@ -40,6 +41,7 @@ public class LSPlayer implements JSONSerializable {
 	private LSPlayer toTransferTo;
 	
 	private OfflinePlayer player;
+	
 	public LSPlayer(OfflinePlayer player) {
 		this.player = player;
 		
@@ -52,24 +54,28 @@ public class LSPlayer implements JSONSerializable {
 		}
 	}
 	
-	/** Get the player this object represents
+	/** 
+	 * Get the player this object represents
+	 * 
 	 * @return the player
 	 */
 	public OfflinePlayer getPlayer() {
 		return player;
 	}
 	
-	/** Get a set of all blocks owned by this player
+	/** 
+	 * Get a set of all blocks owned by this player
+	 * 
 	 * @return a set of all owned blocks
-	 * @see {@link LockedBlockManager}
 	 */
 	public Set<LockedBlock> getOwnedBlocks() {
 		return ownedBlocks;
 	}
 	
-	/** Add a block to this player's ownership. This does not register the block
-	 * @param block - The block to add to ownership
-	 * @see {@link LockedBlockManager#registerBlock(LockedBlock)}
+	/** 
+	 * Add a block to this player's ownership. This does not register the block
+	 * 
+	 * @param block the block to add to ownership
 	 */
 	public void addBlockToOwnership(LockedBlock block){
 		if (!block.getOwner().equals(this))
@@ -79,39 +85,47 @@ public class LSPlayer implements JSONSerializable {
 		this.ownedBlocks.add(block);
 	}
 	
-	/** Remove a block from this players ownership
-	 * @param block - The block to remove
+	/** 
+	 * Remove a block from this players ownership
+	 * 
+	 * @param block the block to remove
 	 */
 	public void removeBlockFromOwnership(LockedBlock block){
 		ownedBlocks.remove(block);
 	}
 	
-	/** Check if the player owns the specified block or not
-	 * @param block - The block to check
+	/** 
+	 * Check if the player owns the specified block or not
+	 * 
+	 * @param block the block to check
 	 * @return true if the player owns this block
-	 * @see {@link LockedBlock#isOwner(LSPlayer)}
 	 */
 	public boolean ownsBlock(LockedBlock block){
 		return ownedBlocks.contains(block);
 	}
 	
-	/** Enable a mode for the player
-	 * @param mode - the mode to enable
+	/** 
+	 * Enable a mode for the player
+	 * 
+	 * @param mode the mode to enable
 	 */
 	public void enableMode(LSMode mode){
 		this.activeModes.add(mode);
 	}
 	
-	/** Disable a mode for the player
-	 * @param mode - The mode to disable
+	/** 
+	 * Disable a mode for the player
+	 * 
+	 * @param mode the mode to disable
 	 */
 	public void disableMode(LSMode mode){
 		this.activeModes.remove(mode);
 	}
 	
-	/** Toggle the mode either enabled or disabled, depending on
-	 * it's current state
-	 * @param mode - The mode to toggle
+	/** 
+	 * Toggle the mode either enabled or disabled, depending on it's current state
+	 * 
+	 * @param mode the mode to toggle
 	 * @return true if set enabled, false if set disabled
 	 */
 	public boolean toggleMode(LSMode mode){
@@ -121,30 +135,46 @@ public class LSPlayer implements JSONSerializable {
 		return this.isModeActive(mode);
 	}
 	
-	/** Check if a mode is currently active for this player
-	 * @param mode - The mode to check
+	/** 
+	 * Check if a mode is currently active for this player
+	 * 
+	 * @param mode the mode to check
 	 * @return true if the specified mode is active
 	 */
 	public boolean isModeActive(LSMode mode){
 		return this.activeModes.contains(mode);
 	}
 	
-	/** Get a set of all currently active modes for this player
+	/** 
+	 * Get a set of all currently active modes for this player
+	 * 
 	 * @return a set of active modes
 	 */
 	public Set<LSMode> getActiveModes() {
 		return activeModes;
 	}
 	
+	/**
+	 * Set the player that this player is going to transfer an active block to
+	 * 
+	 * @param toTransferTo the player to transfer to
+	 */
 	public void setToTransferTo(LSPlayer toTransferTo) {
 		this.toTransferTo = toTransferTo;
 	}
 	
+	/**
+	 * Get the player that is in progress of being transfered to
+	 * 
+	 * @return the transfer to target
+	 */
 	public LSPlayer getToTransferTo() {
 		return toTransferTo;
 	}
 	
-	/** Get the JSON data file that keeps track of offline information for this user
+	/** 
+	 * Get the JSON data file that keeps track of offline information for this user
+	 * 
 	 * @return the player's JSON data file
 	 */
 	public File getJSONDataFile() {

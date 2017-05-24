@@ -18,13 +18,14 @@ public class DoubleChestProtectionListener implements Listener {
 	private LockSecurity plugin;
 	private PlayerRegistry playerRegistry;
 	private LockedBlockManager lockedBlockManager;
+	
 	public DoubleChestProtectionListener(LockSecurity plugin) {
 		this.plugin = plugin;
 		this.playerRegistry = plugin.getPlayerRegistry();
 		this.lockedBlockManager = plugin.getLockedBlockManager();
 	}
 	
-	private static final BlockFace[] faces = {BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST};
+	private static final BlockFace[] FACES = {BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST};
 	
 	@EventHandler
 	public void onPlaceBlock(BlockPlaceEvent event){
@@ -32,7 +33,7 @@ public class DoubleChestProtectionListener implements Listener {
 		Block block = event.getBlock();
 		
 		if (block.getType().name().contains("CHEST")){
-			for (BlockFace face : faces){
+			for (BlockFace face : FACES){
 				Block relative = block.getRelative(face);
 				
 				if (!relative.getType().equals(block.getType()) || !lockedBlockManager.isRegistered(block)) continue;

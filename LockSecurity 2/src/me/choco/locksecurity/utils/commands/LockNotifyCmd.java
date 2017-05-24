@@ -15,6 +15,7 @@ public class LockNotifyCmd implements CommandExecutor {
 
 	private LockSecurity plugin;
 	private PlayerRegistry playerRegistry;
+	
 	public LockNotifyCmd(LockSecurity plugin) {
 		this.plugin = plugin;
 		this.playerRegistry = plugin.getPlayerRegistry();

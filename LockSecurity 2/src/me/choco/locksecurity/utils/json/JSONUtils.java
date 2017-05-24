@@ -18,14 +18,19 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
-/** Utilities related to the reading and writing of JSON objects to and from files
+/** 
+ * Utilities related to the reading and writing of JSON objects to and from files
+ * 
  * @author Parker Hawke - 2008Choco
  */
 public class JSONUtils {
 	
-	/** Read JSON information from a file
-	 * @param file - The file to read from
+	/** 
+	 * Read JSON information from a file
+	 * 
+	 * @param file the file to read from
 	 * @return the JSON object that was read from file
+	 * 
 	 * @throws IllegalArgumentException if a file type other than .json is provided
 	 */
 	public static JSONObject readJSON(File file){
@@ -46,8 +51,10 @@ public class JSONUtils {
 		return null;
 	}
 	
-	/** Write JSON information to a file using {@link Gson}'s pretty print
-	 * @param file - The file to write to
+	/** 
+	 * Write JSON information to a file using {@link Gson}'s pretty print
+	 * 
+	 * @param file the file to write to
 	 */
 	public static void writeJSON(File file, JSONObject data){
 		// Clear file information

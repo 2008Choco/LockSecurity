@@ -12,6 +12,7 @@ import me.choco.locksecurity.api.KeyFactory;
 public class GiveKeyCmd implements CommandExecutor {
 	
 	private LockSecurity plugin;
+	
 	public GiveKeyCmd(LockSecurity plugin) {
 		this.plugin = plugin;
 	}

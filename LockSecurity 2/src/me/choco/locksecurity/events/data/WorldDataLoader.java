@@ -16,6 +16,7 @@ public class WorldDataLoader implements Listener {
 	
 	private LockedBlockManager manager;
 	private PlayerRegistry playerRegistry;
+	
 	public WorldDataLoader(LockSecurity plugin) {
 		this.manager = plugin.getLockedBlockManager();
 		this.playerRegistry = plugin.getPlayerRegistry();

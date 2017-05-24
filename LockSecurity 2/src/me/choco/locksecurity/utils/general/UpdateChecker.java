@@ -18,6 +18,7 @@ public class UpdateChecker {
 
 	private final Plugin plugin;
 	private final String pluginID;
+	
 	public UpdateChecker(Plugin plugin, String pluginName) {
 		this.plugin = plugin;
 		this.pluginID = pluginName;
@@ -28,15 +29,19 @@ public class UpdateChecker {
 		this(plugin, String.valueOf(pluginID));
 	}
 	
-	/** Get the identification used to determine this plugins information
+	/** 
+	 * Get the identification used to determine this plugins information
+	 * 
 	 * @return the plugin identification
 	 */
 	public String getPluginID() {
 		return pluginID;
 	}
 	
-	/** Query an update to the http://www.spiget.org website to
-	 * retrieve new version information
+	/** 
+	 * Query an update to the http://www.spiget.org website to retrieve 
+	 * new version information
+	 * 
 	 * @return true if the query was successfully
 	 */
 	public boolean queryUpdateCheck(){
@@ -76,7 +81,9 @@ public class UpdateChecker {
 		}catch(IOException | ParseException | NumberFormatException e){ return false; }
 	}
 	
-	/** Check whether an update is required or not
+	/** 
+	 * Check whether an update is required or not
+	 * 
 	 * @return true if an update is required
 	 */
 	public boolean requiresUpdate(){

@@ -6,10 +6,10 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.UUID;
 
-import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;
@@ -73,17 +73,6 @@ public class LockSecurity extends JavaPlugin {
 	
 	@Override
 	public void onEnable() {
-		if (getJavaVersion() < 1.8){
-			this.getLogger().severe("\n" + 
-					StringUtils.repeat("=", 60) + "\n" +
-					"            Java 8 is REQUIRED to run LockSecurity 2 \n" +
-					"    Please speak to your server hosting company to get Java updated \n" + 
-					"                   Disabling LockSecurity 2...       \n" + 
-					StringUtils.repeat("=", 60));
-			Bukkit.getPluginManager().disablePlugin(this);
-			return;
-		}
-
 		// Default values
 		instance = this;
 		this.playerdataDir = new File(this.getDataFolder().getAbsolutePath() + File.separator + "playerdata");
@@ -99,9 +88,9 @@ public class LockSecurity extends JavaPlugin {
 		// Transfer old data if necessary
 		if (!playerdataDir.exists()){
 			if (new File(this.getDataFolder().getAbsolutePath() + File.separator + "lockinfo.db").exists())
-				TransferUtils.fromDatabase();
+				TransferUtils.fromDatabase(this);
 			else if (new File(this.getDataFolder().getAbsolutePath() + File.separator + "locked.yml").exists())
-				TransferUtils.fromFile();
+				TransferUtils.fromFile(this);
 			
 			if (this.playerdataDir.mkdirs()) this.getLogger().info(locale.getMessage("enable.generate.playerdir"));
 		}
@@ -152,16 +141,16 @@ public class LockSecurity extends JavaPlugin {
 		// Register crafting recipes
 		this.getLogger().info(locale.getMessage("enable.registration.recipes"));
 		ItemStack unsmithedKey = KeyFactory.getUnsmithedkey();
-		Bukkit.getServer().addRecipe(new ShapedRecipe(unsmithedKey).shape("B  ", " I ", "  P").setIngredient('B', Material.IRON_FENCE).setIngredient('I', Material.IRON_INGOT).setIngredient('P', Material.WOOD));
-		Bukkit.getServer().addRecipe(new ShapedRecipe(unsmithedKey).shape(" B ", " I ", " P ").setIngredient('B', Material.IRON_FENCE).setIngredient('I', Material.IRON_INGOT).setIngredient('P', Material.WOOD));
-		Bukkit.getServer().addRecipe(new ShapedRecipe(unsmithedKey).shape("  B", " I ", "P  ").setIngredient('B', Material.IRON_FENCE).setIngredient('I', Material.IRON_INGOT).setIngredient('P', Material.WOOD));
-		Bukkit.getServer().addRecipe(new ShapedRecipe(unsmithedKey).shape("   ", "BIP", "   ").setIngredient('B', Material.IRON_FENCE).setIngredient('I', Material.IRON_INGOT).setIngredient('P', Material.WOOD));
-		Bukkit.getServer().addRecipe(new ShapedRecipe(unsmithedKey).shape("   ", "PIB", "   ").setIngredient('B', Material.IRON_FENCE).setIngredient('I', Material.IRON_INGOT).setIngredient('P', Material.WOOD));
-		Bukkit.getServer().addRecipe(new ShapedRecipe(unsmithedKey).shape("  P", " I ", "B  ").setIngredient('B', Material.IRON_FENCE).setIngredient('I', Material.IRON_INGOT).setIngredient('P', Material.WOOD));
-		Bukkit.getServer().addRecipe(new ShapedRecipe(unsmithedKey).shape(" P ", " I ", " B ").setIngredient('B', Material.IRON_FENCE).setIngredient('I', Material.IRON_INGOT).setIngredient('P', Material.WOOD));
-		Bukkit.getServer().addRecipe(new ShapedRecipe(unsmithedKey).shape("P  ", " I ", "  B").setIngredient('B', Material.IRON_FENCE).setIngredient('I', Material.IRON_INGOT).setIngredient('P', Material.WOOD));
-		Bukkit.getServer().addRecipe(new ShapelessRecipe(new ItemBuilder(Material.BEDROCK).setName("SINGLE").build()).addIngredient(1, Material.TRIPWIRE_HOOK));
-		Bukkit.getServer().addRecipe(new ShapelessRecipe(new ItemBuilder(Material.BEDROCK).setName("DUAL").build()).addIngredient(2, Material.TRIPWIRE_HOOK));
+		Bukkit.getServer().addRecipe(new ShapedRecipe(new NamespacedKey(this, "unsmithedkey1"), unsmithedKey).shape("B  ", " I ", "  P").setIngredient('B', Material.IRON_FENCE).setIngredient('I', Material.IRON_INGOT).setIngredient('P', Material.WOOD));
+		Bukkit.getServer().addRecipe(new ShapedRecipe(new NamespacedKey(this, "unsmithedkey2"), unsmithedKey).shape(" B ", " I ", " P ").setIngredient('B', Material.IRON_FENCE).setIngredient('I', Material.IRON_INGOT).setIngredient('P', Material.WOOD));
+		Bukkit.getServer().addRecipe(new ShapedRecipe(new NamespacedKey(this, "unsmithedkey3"), unsmithedKey).shape("  B", " I ", "P  ").setIngredient('B', Material.IRON_FENCE).setIngredient('I', Material.IRON_INGOT).setIngredient('P', Material.WOOD));
+		Bukkit.getServer().addRecipe(new ShapedRecipe(new NamespacedKey(this, "unsmithedkey4"), unsmithedKey).shape("   ", "BIP", "   ").setIngredient('B', Material.IRON_FENCE).setIngredient('I', Material.IRON_INGOT).setIngredient('P', Material.WOOD));
+		Bukkit.getServer().addRecipe(new ShapedRecipe(new NamespacedKey(this, "unsmithedkey5"), unsmithedKey).shape("   ", "PIB", "   ").setIngredient('B', Material.IRON_FENCE).setIngredient('I', Material.IRON_INGOT).setIngredient('P', Material.WOOD));
+		Bukkit.getServer().addRecipe(new ShapedRecipe(new NamespacedKey(this, "unsmithedkey6"), unsmithedKey).shape("  P", " I ", "B  ").setIngredient('B', Material.IRON_FENCE).setIngredient('I', Material.IRON_INGOT).setIngredient('P', Material.WOOD));
+		Bukkit.getServer().addRecipe(new ShapedRecipe(new NamespacedKey(this, "unsmithedkey7"), unsmithedKey).shape(" P ", " I ", " B ").setIngredient('B', Material.IRON_FENCE).setIngredient('I', Material.IRON_INGOT).setIngredient('P', Material.WOOD));
+		Bukkit.getServer().addRecipe(new ShapedRecipe(new NamespacedKey(this, "unsmithedkey8"), unsmithedKey).shape("P  ", " I ", "  B").setIngredient('B', Material.IRON_FENCE).setIngredient('I', Material.IRON_INGOT).setIngredient('P', Material.WOOD));
+		Bukkit.getServer().addRecipe(new ShapelessRecipe(new NamespacedKey(this, "keyclear"), new ItemBuilder(Material.BEDROCK).setName("SINGLE").build()).addIngredient(1, Material.TRIPWIRE_HOOK));
+		Bukkit.getServer().addRecipe(new ShapelessRecipe(new NamespacedKey(this, "keycombine"), new ItemBuilder(Material.BEDROCK).setName("DUAL").build()).addIngredient(2, Material.TRIPWIRE_HOOK));
 		
 		// Load all registered data
 		this.getLogger().info(locale.getMessage("enable.load.jsondata"));
@@ -215,28 +204,36 @@ public class LockSecurity extends JavaPlugin {
 		Locale.clearLocaleData();
 	}
 	
-	/** Get an instance of the LockSecurity class. This is for API usage
+	/** 
+	 * Get an instance of the LockSecurity class. This is for API usage
+	 * 
 	 * @return an instance of LockSecurity
 	 */
 	public static LockSecurity getPlugin(){
 		return instance;
 	}
 	
-	/** Get the main instance of the {@link PlayerRegistry} class
+	/** 
+	 * Get the main instance of the {@link PlayerRegistry} class
+	 * 
 	 * @return the PlayerRegistry class
 	 */
 	public PlayerRegistry getPlayerRegistry() {
 		return playerRegistry;
 	}
 	
-	/** Get the main instance of the {@link LockedBlockManager} class
+	/** 
+	 * Get the main instance of the {@link LockedBlockManager} class
+	 * 
 	 * @return the LockedBlockManager class
 	 */
 	public LockedBlockManager getLockedBlockManager() {
 		return lockedBlockManager;
 	}
 	
-	/** Send a message to the specified player with the [LockSecurity] prefix
+	/** 
+	 * Send a message to the specified player with the [LockSecurity] prefix
+	 * 
 	 * @param sender - The user to send the message to
 	 * @param message - The message to send
 	 */
@@ -244,17 +241,12 @@ public class LockSecurity extends JavaPlugin {
 		sender.sendMessage(ChatColor.GOLD + "[" + ChatColor.AQUA + "LockSecurity" + ChatColor.GOLD + "] " + ChatColor.GRAY + message);
 	}
 	
-	/** Get the current plugin localization to receive messages
+	/** 
+	 * Get the current plugin localization to receive messages
+	 * 
 	 * @return current locale
 	 */
 	public Locale getLocale() {
 		return locale;
-	}
-	
-	private static double getJavaVersion(){
-	    String version = System.getProperty("java.version");
-	    int pos = version.indexOf('.');
-	    pos = version.indexOf('.', pos+1);
-	    return Double.parseDouble (version.substring (0, pos));
 	}
 }

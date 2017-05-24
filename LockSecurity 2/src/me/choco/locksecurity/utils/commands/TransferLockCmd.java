@@ -17,6 +17,7 @@ public class TransferLockCmd implements CommandExecutor {
 	
 	private LockSecurity plugin;
 	private PlayerRegistry playerRegistry;
+	
 	public TransferLockCmd(LockSecurity plugin) {
 		this.plugin = plugin;
 		this.playerRegistry = plugin.getPlayerRegistry();

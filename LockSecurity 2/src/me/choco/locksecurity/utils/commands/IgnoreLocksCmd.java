@@ -15,6 +15,7 @@ public class IgnoreLocksCmd implements CommandExecutor {
 	
 	private LockSecurity plugin;
 	private PlayerRegistry playerRegistry;
+	
 	public IgnoreLocksCmd(LockSecurity plugin) {
 		this.plugin = plugin;
 		this.playerRegistry = plugin.getPlayerRegistry();

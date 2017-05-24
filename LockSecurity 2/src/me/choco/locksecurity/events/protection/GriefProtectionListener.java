@@ -18,6 +18,7 @@ public class GriefProtectionListener implements Listener {
 	
 	private LockSecurity plugin;
 	private LockedBlockManager lockedBlockManager;
+	
 	public GriefProtectionListener(LockSecurity plugin) {
 		this.plugin = plugin;
 		this.lockedBlockManager = plugin.getLockedBlockManager();
