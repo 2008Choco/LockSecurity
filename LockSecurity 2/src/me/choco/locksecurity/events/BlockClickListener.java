@@ -30,7 +30,6 @@ import me.choco.locksecurity.utils.LSPlayer;
 
 public class BlockClickListener implements Listener {
 	
-	@SuppressWarnings("unused")
 	private LockSecurity plugin;
 	private LockedBlockManager lockedBlockManager;
 	private PlayerRegistry playerRegistry;

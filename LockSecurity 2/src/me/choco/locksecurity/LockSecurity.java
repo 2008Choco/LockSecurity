@@ -31,15 +31,15 @@ import me.choco.locksecurity.events.protection.KeyPlaceProtectionListener;
 import me.choco.locksecurity.registration.LockedBlockManager;
 import me.choco.locksecurity.registration.PlayerRegistry;
 import me.choco.locksecurity.utils.AutoSaveLoop;
-import me.choco.locksecurity.utils.LSConfig;
+import me.choco.locksecurity.utils.ConfigOption;
 import me.choco.locksecurity.utils.LSPlayer;
 import me.choco.locksecurity.utils.commands.ForgeKeyCmd;
 import me.choco.locksecurity.utils.commands.GiveKeyCmd;
 import me.choco.locksecurity.utils.commands.LockSecurityCmd;
-import me.choco.locksecurity.utils.general.ConfigAccessor;
 import me.choco.locksecurity.utils.general.ItemBuilder;
 import me.choco.locksecurity.utils.general.UpdateChecker;
 import me.choco.locksecurity.utils.json.JSONUtils;
+import me.choco.locksecurity.utils.localization.Locale;
 
 public class LockSecurity extends JavaPlugin {
 	
@@ -69,7 +69,7 @@ public class LockSecurity extends JavaPlugin {
 	private LockedBlockManager lockedBlockManager;
 	
 	public File playerdataDir, infoFile;
-	public ConfigAccessor messages;
+	private Locale locale;
 	
 	@Override
 	public void onEnable() {
@@ -84,12 +84,17 @@ public class LockSecurity extends JavaPlugin {
 			return;
 		}
 
-		String testJSON = "";
-		
+		// Default values
 		instance = this;
 		this.playerdataDir = new File(this.getDataFolder().getAbsolutePath() + File.separator + "playerdata");
 		this.infoFile = new File(this.getDataFolder().getAbsolutePath() + File.separator + "plugin.info");
-		this.messages = new ConfigAccessor(this, "messages.yml");
+		this.saveDefaultConfig();
+		ConfigOption.loadConfigurationValues(this);
+		
+		// Locales
+		Locale.saveDefaultLocale("en_CA");
+		Locale.saveDefaultLocale("fr_CA");
+		locale = Locale.getLocale(this.getConfig().getString("Locale", "en_CA"));
 		
 		// Transfer old data if necessary
 		if (!playerdataDir.exists()){
@@ -98,14 +103,10 @@ public class LockSecurity extends JavaPlugin {
 			else if (new File(this.getDataFolder().getAbsolutePath() + File.separator + "locked.yml").exists())
 				TransferUtils.fromFile();
 			
-			if (this.playerdataDir.mkdirs()) this.getLogger().info("Successfully created playerdata directory");
+			if (this.playerdataDir.mkdirs()) this.getLogger().info(locale.getMessage("enable.generate.playerdir"));
 		}
 		
-		// Save configuration file(s)
-		saveDefaultConfig();
-		LSConfig.loadValues();
-		this.messages.loadConfig();
-		this.messages.saveDefaultConfig();
+		// Save data file(s)
 		if (!this.infoFile.exists()){
 			try{
 				this.infoFile.createNewFile();
@@ -115,16 +116,16 @@ public class LockSecurity extends JavaPlugin {
 				writer.close();
 			}catch(IOException e){ e.printStackTrace(); }
 			
-			this.getLogger().info("Successfully created new plugin information file");
+			this.getLogger().info(locale.getMessage("enable.generate.infofile"));
 		}
 		
-		// Instanstiate necessary variables
-		this.getLogger().info("Instantiating necessary variables");
+		// Instantiate necessary variables
+		this.getLogger().info(locale.getMessage("enable.registration.variables"));
 		this.playerRegistry = new PlayerRegistry(this);
 		this.lockedBlockManager = new LockedBlockManager(this);
 		
 		// Register events
-		this.getLogger().info("Registering events");
+		this.getLogger().info(locale.getMessage("enable.registration.events"));
 		
 		    /* General/Lock-Based listeners */
 		Bukkit.getPluginManager().registerEvents(new BlockClickListener(this), this);
@@ -143,13 +144,13 @@ public class LockSecurity extends JavaPlugin {
 		
 		
 		// Register commands
-		this.getLogger().info("Registering commands");
+		this.getLogger().info(locale.getMessage("enable.registration.commands"));
 		this.getCommand("locksecurity").setExecutor(new LockSecurityCmd(this));
 		this.getCommand("forgekey").setExecutor(new ForgeKeyCmd(this));
 		this.getCommand("givekey").setExecutor(new GiveKeyCmd(this));
 		
 		// Register crafting recipes
-		this.getLogger().info("Registering crafting recipes");
+		this.getLogger().info(locale.getMessage("enable.registration.recipes"));
 		ItemStack unsmithedKey = KeyFactory.getUnsmithedkey();
 		Bukkit.getServer().addRecipe(new ShapedRecipe(unsmithedKey).shape("B  ", " I ", "  P").setIngredient('B', Material.IRON_FENCE).setIngredient('I', Material.IRON_INGOT).setIngredient('P', Material.WOOD));
 		Bukkit.getServer().addRecipe(new ShapedRecipe(unsmithedKey).shape(" B ", " I ", " P ").setIngredient('B', Material.IRON_FENCE).setIngredient('I', Material.IRON_INGOT).setIngredient('P', Material.WOOD));
@@ -163,7 +164,7 @@ public class LockSecurity extends JavaPlugin {
 		Bukkit.getServer().addRecipe(new ShapelessRecipe(new ItemBuilder(Material.BEDROCK).setName("DUAL").build()).addIngredient(2, Material.TRIPWIRE_HOOK));
 		
 		// Load all registered data
-		this.getLogger().info("Loading player JSON data from file");
+		this.getLogger().info(locale.getMessage("enable.load.jsondata"));
 		for (File file : playerdataDir.listFiles()){
 			OfflinePlayer rawPlayer = Bukkit.getOfflinePlayer(UUID.fromString(file.getName().replace(".json", "")));
 			
@@ -186,20 +187,20 @@ public class LockSecurity extends JavaPlugin {
 		
 		UpdateChecker checker = new UpdateChecker(this, 12650);
 		if (checker.queryUpdateCheck() && checker.requiresUpdate()){
-			System.out.println("AN UPDATE IS REQUIRED");
+			System.out.println(locale.getMessage("enable.load.update"));
 		}
 	}
 	
 	@Override
 	public void onDisable() {
 		if (autosave != null){
-			this.getLogger().info("Forcing a registry save");
+			this.getLogger().info(locale.getMessage("disable.savedata"));
 			this.autosave.run();
 			this.autosave.cancel();
 		}
 		
 		if (playerRegistry != null){
-			this.getLogger().info("Clearing localized data");
+			this.getLogger().info(locale.getMessage("disable.cleardata"));
 			for (LSPlayer player : playerRegistry.getPlayers().values()){
 				player.getOwnedBlocks().clear();
 				player.getActiveModes().clear();
@@ -210,6 +211,8 @@ public class LockSecurity extends JavaPlugin {
 		
 		if (lockedBlockManager != null)
 			this.lockedBlockManager.getLockedBlocks().clear();
+		
+		Locale.clearLocaleData();
 	}
 	
 	/** Get an instance of the LockSecurity class. This is for API usage
@@ -239,6 +242,13 @@ public class LockSecurity extends JavaPlugin {
 	 */
 	public void sendMessage(CommandSender sender, String message){
 		sender.sendMessage(ChatColor.GOLD + "[" + ChatColor.AQUA + "LockSecurity" + ChatColor.GOLD + "] " + ChatColor.GRAY + message);
+	}
+	
+	/** Get the current plugin localization to receive messages
+	 * @return current locale
+	 */
+	public Locale getLocale() {
+		return locale;
 	}
 	
 	private static double getJavaVersion(){

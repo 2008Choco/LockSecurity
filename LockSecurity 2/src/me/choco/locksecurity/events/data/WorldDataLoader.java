@@ -43,7 +43,5 @@ public class WorldDataLoader implements Listener {
 		if (world.getPlayers().size() == 0){
 			manager.loadDataForWorld(world);
 		}
-		
-		// TODO: TEST THIS. JOIN EVENTS MAY CONSIDER IT AS 0 PLAYERS RATHER THAN 1
 	}
 }

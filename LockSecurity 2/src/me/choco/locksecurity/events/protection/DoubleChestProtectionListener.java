@@ -15,9 +15,11 @@ import me.choco.locksecurity.utils.LSPlayer;
 
 public class DoubleChestProtectionListener implements Listener {
 	
+	private LockSecurity plugin;
 	private PlayerRegistry playerRegistry;
 	private LockedBlockManager lockedBlockManager;
 	public DoubleChestProtectionListener(LockSecurity plugin) {
+		this.plugin = plugin;
 		this.playerRegistry = plugin.getPlayerRegistry();
 		this.lockedBlockManager = plugin.getLockedBlockManager();
 	}
@@ -39,9 +41,9 @@ public class DoubleChestProtectionListener implements Listener {
 				LockedBlock lBlock = lockedBlockManager.getLockedBlock(block);
 				if (!lBlock.getOwner().equals(lPlayer)){
 					event.setCancelled(true);
-//					plugin.sendPathMessage(player, plugin.messages.getConfig().getString("Events.DisallowedAction")
-//							.replace("%type%", block.getType().name())
-//							.replace("%owner%", lBlock.getOwner().getName()));
+					plugin.sendMessage(player, plugin.getLocale().getMessage("event.lock.cannotplace")
+							.replace("%type%", block.getType().name())
+							.replace("%player%", lBlock.getOwner().getPlayer().getName()));
 					return;
 				}
 				

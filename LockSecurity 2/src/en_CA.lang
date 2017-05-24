@@ -1,0 +1,80 @@
+#Upon plugin enable
+
+enable.generate.infofile = "Successfully created new plugin information file"
+enable.generate.playerdir = "Successfully created playerdata directory"
+
+enable.load.jsondata = "Loading player JSON data from file"
+enable.load.update = "AN UPDATE IS REQUIRED"
+
+enable.registration.commands = "Registering commands"
+enable.registration.recipes = "Registering crafting recipes"
+enable.registration.events = "Registering events"
+enable.registration.variables = "Instantiating necessary variables"
+
+
+#Upon plugin disable
+
+disable.savedata = "Forcing a registry save"
+disable.cleardata = "Clearing localized data"
+
+
+#Event messages
+
+event.key.attemptpick = "You attempt to pick the lock, but it doesn't work"
+event.key.none = "You do not have the key to open this"
+
+event.lock.cannotbreak = "This %type% is locked by %player%. You cannot break this"
+event.lock.cannotopen = "This %type% is locked by %player%. You cannot open this"
+event.lock.cannotplace = "You are not allowed to place a %type% next to a locked block owned by %player%"
+event.lock.nopermission = "You do not have the sufficient privileges to lock %type%"
+event.lock.registered = "You have locked this block with LockID %lockID% (KeyID: %keyID%)"
+event.lock.unregistered = "%type% Lock ID %id% unregistered"
+
+event.player.maxlocks = "You cannot lock this block. You have reached the maximum for this world"
+event.player.money.deposited = "%amount% has been deposited to your balance"
+event.player.money.insufficient = "You have insufficient funds to lock a %type%"
+event.player.money.withdrawn = "%amount% has been withdrawn from your balance"
+
+
+#Command messages
+
+command.forgekey.givenkey = "Given forged key with ID %ID%"
+command.forgekey.noid = "Please specify the ID you would like to forge"
+
+command.general.datatransfer.commencing = "Saving localized data to database..."
+command.general.datatransfer.successful = "&aSuccessfully transfered data to database"
+command.general.invalidinteger = "%param% is not a number. Please specify an ID"
+command.general.neverplayed = "%target% has never played on this server before"
+command.general.nopermission = "You do not have the sufficient permissions to do this"
+command.general.onlyplayers = "Only players may use this command"
+command.general.playeroffline = "%target% is not currently online"
+command.general.specifyplayer = "You must specify a player to run this command"
+
+command.givekey.receivedkey = "You have received an unsmithed"
+command.givekey.receivedkey.target = "You have received %count% unsmithed key(s) from %player%"
+command.givekey.sentkey = "You have given %target% %count% unsmithed key(s)"
+
+command.ignorelocks.disabled = "You are no longer ignoring locks"
+command.ignorelocks.enabled = "You are now ignoring all locks"
+
+command.lockinspect.disabled = "Lock inspect has been &cdisabled"
+command.lockinspect.enabled = "Lock inspect has been &aenabled"
+command.lockinspect.notlocked = "This block is not locked"
+
+command.locklist.identifier = "Lock list for all worlds (player: %player%)"
+
+command.locknotify.disabled = "Administrative lock notifications disabled"
+command.locknotify.enabled = "Administrative lock notifications enabled"
+command.locknotify.notification = "%player% has locked a %type% at x:%x% y:%y% z:%z% in world %world% with LockID %lockID% (KeyID: %keyID%)"
+
+command.locksecurity.reloaded = "&aReloaded all configuration files"
+
+command.transferlock.disabled = "Transfer mode disabled"
+command.transferlock.enabled = "Transfer mode enabled. Right click on the block you would like to transfer"
+command.transferlock.transferred = "%type% with LockID %lockID% (KeyID: %keyID%) transferred to %player%"
+
+command.unlock.disabled = "Unlock mode disabled"
+command.unlock.enabled = "Unlock mode enabled. Right click the  block you would like to unlock"
+command.unlock.notlocked = "Lock ID %lockID% is not valid (Is that ID registered?)"
+command.unlock.notowner = "You are not the owner of this block"
+command.unlock.unlocked = "Lock ID %lockID% has been unlocked"

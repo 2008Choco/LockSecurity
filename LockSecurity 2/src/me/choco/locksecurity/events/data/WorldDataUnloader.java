@@ -34,7 +34,5 @@ public class WorldDataUnloader implements Listener {
 		if (world.getPlayers().size() == 1){
 			manager.unloadDataForWorld(world);
 		}
-		
-		// TODO: TEST THIS. LEAVE EVENTS MAY CONSIDER IT AS 1 PLAYER RATHER THAN 0
 	}
 }

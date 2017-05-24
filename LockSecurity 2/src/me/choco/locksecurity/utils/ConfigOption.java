@@ -6,10 +6,9 @@ import org.bukkit.configuration.file.FileConfiguration;
 
 import me.choco.locksecurity.LockSecurity;
 
-public class LSConfig {
+public class ConfigOption {
 	
-	private static final LockSecurity plugin = LockSecurity.getPlugin();
-	
+	public static String LOCALE;
 	public static int RECIPE_YIELDS = 1;
 	public static boolean ENABLE_NOTIFY_ON_LOGIN = true;
 	
@@ -28,9 +27,10 @@ public class LSConfig {
 	public static boolean DISPLAY_WITHDRAW_MSG = true;
 	public static boolean DISPLAY_DEPOSIT_MSG = true;
 	
-	public static void loadValues(){
+	public static void loadConfigurationValues(LockSecurity plugin){
 		FileConfiguration config = plugin.getConfig();
 		
+		LOCALE = config.getString("Locale", "en_CA");
 		RECIPE_YIELDS = config.getInt("RecipeYields", 1);
 		ENABLE_NOTIFY_ON_LOGIN = config.getBoolean("EnableNotifyOnLogin", true);
 		
@@ -41,11 +41,13 @@ public class LSConfig {
 		DISPLAY_LOCKED_SMOKE_PARTICLE = config.getBoolean("Aesthetics.DisplayLockedSmokeParticle", true);
 		
 		IS_VAULT_ENABLED = Bukkit.getPluginManager().getPlugin("Vault") != null;
-		COST_TO_LOCK = config.getDouble("Vault.CostToLock");
-		UNLOCK_REWARD = config.getDouble("Vault.UnlockReward");
-		DISPLAY_WITHDRAW_MSG = config.getBoolean("Vault.DisplayWithdrawMsg");
-		DISPLAY_DEPOSIT_MSG = config.getBoolean("Vault.DisplayDepositMsg");
+		COST_TO_LOCK = config.getDouble("Vault.CostToLock", 100);
+		UNLOCK_REWARD = config.getDouble("Vault.UnlockReward", 75);
+		DISPLAY_WITHDRAW_MSG = config.getBoolean("Vault.DisplayWithdrawMsg", true);
+		DISPLAY_DEPOSIT_MSG = config.getBoolean("Vault.DisplayDepositMsg", true);
 	}
+	
+	private static final LockSecurity plugin = LockSecurity.getPlugin();
 	
 	public static int getMaxLocksForWorld(World world){
 		return plugin.getConfig().getInt("MaximumLocks." + world.getName(), -1);
