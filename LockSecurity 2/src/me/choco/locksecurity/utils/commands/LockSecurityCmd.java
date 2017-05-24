@@ -7,6 +7,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import me.choco.locksecurity.LockSecurity;
+import me.choco.locksecurity.utils.ConfigOption;
 
 public class LockSecurityCmd implements CommandExecutor {
 	
@@ -27,6 +28,7 @@ public class LockSecurityCmd implements CommandExecutor {
 		if (args.length >= 1){
 			if (args[0].equalsIgnoreCase("reload")){
 				plugin.reloadConfig();
+				ConfigOption.loadConfigurationValues(plugin);
 				plugin.sendMessage(sender, ChatColor.GREEN + "Configuration file successfully reloaded");
 			}
 			

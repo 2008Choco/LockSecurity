@@ -16,8 +16,10 @@ import me.choco.locksecurity.registration.LockedBlockManager;
 
 public class GriefProtectionListener implements Listener {
 	
+	private LockSecurity plugin;
 	private LockedBlockManager lockedBlockManager;
 	public GriefProtectionListener(LockSecurity plugin) {
+		this.plugin = plugin;
 		this.lockedBlockManager = plugin.getLockedBlockManager();
 	}
 	
@@ -36,9 +38,9 @@ public class GriefProtectionListener implements Listener {
 		Block block = event.getBlock().getRelative(BlockFace.UP);
 		if (lockedBlockManager.isRegistered(block)){
 			event.setCancelled(true);
-//			plugin.sendPathMessage(event.getPlayer(), plugin.messages.getConfig().getString("Events.CannotBreak")
-//					.replace("%type%", block.getType().name())
-//					.replace("%player%", plugin.getLocalizedData().getLockedBlock(block).getOwner().getName()));
+			plugin.sendMessage(event.getPlayer(), plugin.getLocale().getMessage("event.lock.cannotbreak")
+					.replace("%type%", block.getType().name())
+					.replace("%player%", this.lockedBlockManager.getLockedBlock(block).getOwner().getPlayer().getName()));
 		}
 	}
 	
