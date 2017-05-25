@@ -18,6 +18,7 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 
 import org.apache.commons.io.IOUtils;
@@ -37,6 +38,8 @@ public class Locale {
 	private static final Pattern NODE_PATTERN = Pattern.compile("((?:\\w+\\.{1})*(?:\\w+){1})(?:\\s*=\\s*){1}\"(.*)\"");
 	private static final String FILE_EXTENSION = ".lang";
 	private static File localeFolder;
+	
+	private static String defaultLocale;
 	
 	private final Map<String, String> nodes = new HashMap<>();
 	
@@ -59,7 +62,8 @@ public class Locale {
 	}
 	
 	/**
-	 * Get the name of the language that this locale is based on
+	 * Get the name of the language that this locale is based on.
+	 * (i.e. "en" for English, or "fr" for French)
 	 * 
 	 * @return the name of the language
 	 */
@@ -68,7 +72,8 @@ public class Locale {
 	}
 	
 	/**
-	 * Get the name of the region that this locale is from
+	 * Get the name of the region that this locale is from.
+	 * (i.e. "US" for United States or "CA" for Canada)
 	 * 
 	 * @return the name of the region
 	 */
@@ -122,11 +127,11 @@ public class Locale {
 	 * @return node-message map
 	 */
 	public Map<String, String> getMessageNodeMap() {
-		return nodes;
+		return ImmutableMap.copyOf(nodes);
 	}
 	
 	/** 
-	 * Clear the previous message cache, and load new messages directly from file
+	 * Clear the previous message cache and load new messages directly from file
 	 * 
 	 * @return reload messages from file
 	 */
@@ -141,7 +146,7 @@ public class Locale {
 		try(BufferedReader reader = new BufferedReader(new FileReader(file))){
 			String line;
 			for (int lineNumber = 0; (line = reader.readLine()) != null; lineNumber++){
-				if (line.trim().length() == 0 || line.startsWith("#") /* Comment */) continue;
+				if (line.isEmpty() || line.startsWith("#") /* Comment */) continue;
 				
 				Matcher matcher = NODE_PATTERN.matcher(line);
 				if (!matcher.find()){
@@ -149,9 +154,7 @@ public class Locale {
 					continue;
 				}
 				
-				String node = matcher.group(1);
-				String value = matcher.group(2);
-				nodes.put(node, value);
+				nodes.put(matcher.group(1), matcher.group(2));
 			}
 		}catch(IOException e){
 			e.printStackTrace();
@@ -161,7 +164,10 @@ public class Locale {
 	}
 	
 	/** 
-	 * Initialize the locale class to generate information and search for localizations
+	 * Initialize the locale class to generate information and search for localizations.
+	 * This must be called before any other methods in the Locale class can be invoked.
+	 * Note that this will also call {@link #searchForLocales()}, so there is no need to
+	 * invoke it for yourself after the initialization
 	 * 
 	 * @param plugin the plugin instance
 	 */
@@ -193,6 +199,7 @@ public class Locale {
 			if (localeExists(localeValues[0] + "_" + localeValues[1])) continue;
 			
 			LOCALES.add(new Locale(localeValues[0], localeValues[1]));
+			plugin.getLogger().info("Found and loaded locale \"" + fileName + "\"");
 		}
 	}
 	
@@ -264,7 +271,7 @@ public class Locale {
 	public static boolean saveDefaultLocale(String path, String fileName) {
 		if (!localeFolder.exists()) localeFolder.mkdirs();
 		
-		if (!fileName.endsWith(".lang"))
+		if (!fileName.endsWith(FILE_EXTENSION))
 			fileName = (fileName.lastIndexOf(".") == -1 ? fileName : fileName.substring(0, fileName.lastIndexOf('.'))) + FILE_EXTENSION;
 		
 		File destinationFile = new File(localeFolder, fileName);
@@ -281,6 +288,8 @@ public class Locale {
 			if (localeValues.length != 2) return false;
 			
 			LOCALES.add(new Locale(localeValues[0], localeValues[1]));
+			if (defaultLocale == null) defaultLocale = fileName;
+			
 			return true;
 		}catch(IOException e){ return false; }
 	}
@@ -306,6 +315,12 @@ public class Locale {
 	
 	// Write new changes to existing files, if any at all
 	private static boolean compareFiles(InputStream defaultFile, File existingFile) {
+		// Look for default
+		if (defaultFile == null) {
+			defaultFile = plugin.getResource(defaultLocale != null ? defaultLocale : "en_US");
+			if (defaultFile == null) return false; // No default at all
+		}
+		
 		boolean changed = false;
 		
 		List<String> defaultLines, existingLines;
