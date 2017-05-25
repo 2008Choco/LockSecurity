@@ -1,0 +1,80 @@
+#Upon plugin enable
+
+enable.generate.infofile = "Créer un nouveau fichier d'information avec succès"
+enable.generate.playerdir = "Créer le "playerdata" directoire avec succès"
+
+enable.load.jsondata = "Loading player JSON data from file"
+enable.load.update = "UN NOUVELLE VERISON EST DISPONIBLE!"
+
+enable.registration.commands = "Enregistrant les commandes"
+enable.registration.recipes = "Enregistrant les recettes"
+enable.registration.events = "Enregistrant les évenements"
+enable.registration.variables = "Crée des variables nécéssaire."
+
+
+#Upon plugin disable
+
+disable.savedata = "Forcer un enregistrement"
+disable.cleardata = "Supprimé l'information localizé"
+
+
+#Event messages
+
+event.key.attemptpick = "Tu essai de crocheter la serrure, mais sa ne fonctionne pas"
+event.key.none = "Vous ne possédez pas le clé pour ouvrir ceci"
+
+event.lock.cannotbreak = "Cette %type% est fermé par %player%. Tu ne peut pas le brisé"
+event.lock.cannotopen = "Cette %type% est fermé par %player%. Tu ne peut pas l'ouvrir"
+event.lock.cannotplace = "Tu n'est pas permis de placé un %type% à côté d'un bloc fermé par %player%"
+event.lock.nopermission = "Vous n'avez pas les permissions suffisant pour barré un %type%"
+event.lock.registered = "Vous avez barré cette bloc avec le LockID %lockID% (KeyID: %keyID%)"
+event.lock.unregistered = "%type% avec le Lock ID %id% n'est plus régistré"
+
+event.player.maxlocks = "Tu ne peut pas barré ce bloc. Vous avez atteint le maximum pour ce monde çi"
+event.player.money.deposited = "%amount% était déposé dans votre solde"
+event.player.money.insufficient = "Vous n'avez pas de fonds suffisant pour barré un %type%"
+event.player.money.withdrawn = "%amount% était retiré de ton solde"
+
+
+#Command messages
+
+command.forgekey.givenkey = "Donnez un clé forgé avec un ID de %ID%"
+command.forgekey.noid = "S'il vous plaît spécifié l'identification dont tu veut forgé"
+
+command.general.datatransfer.commencing = "Enrégistrant l'information au fichiers..."
+command.general.datatransfer.successful = "&aTerminé avec succès!"
+command.general.invalidinteger = "%param% n'est pas un chiffre. S'il vous plaît spécifié un identification"
+command.general.neverplayed = "%target% n'as jamais jouer sur cette serveur"
+command.general.nopermission = "Tu manque les permissions suffisant pour cette commande"
+command.general.onlyplayers = "Seulement les joueurs peut utilisé cette commande"
+command.general.playeroffline = "%target% n'est pas en ligne a ce moment"
+command.general.specifyplayer = "Tu faut spécifié un joueur pour executé cette commande"
+
+command.givekey.receivedkey = "Vous avez recu une nouvelle clée"
+command.givekey.receivedkey.target = "Vous avez recu %count% nouvelle(s) clée(s) de %player%"
+command.givekey.sentkey = "Vous avez donné %target% %count% nouvelle(s) clée(s)"
+
+command.ignorelocks.disabled = "Tu n'ignore plus les serrures"
+command.ignorelocks.enabled = "Tu ignore maintenant tous les serrures"
+
+command.lockinspect.disabled = "L'inspection des serrures &cdésactivé"
+command.lockinspect.enabled = "L'inspection des serrures est &aactivé"
+command.lockinspect.notlocked = "Cette bloc n'est pas barré"
+
+command.locklist.identifier = "Liste de serrures pour tous les mondes (joueur: %player%)"
+
+command.locknotify.disabled = "Notifications administratif désactivé"
+command.locknotify.enabled = "Notifications administratif activé"
+command.locknotify.notification = "%player% avait barré un %type% à x:%x% y:%y% z:%z% dans le monde %world% avec LockID %lockID% (KeyID: %keyID%)"
+
+command.locksecurity.reloaded = "&aRechargé les fichiers de configuration"
+
+command.transferlock.disabled = "Mode de transfert désactivé"
+command.transferlock.enabled = "Mode de transfert activé. Cliqué sur le bloc dont tu veut transferré"
+command.transferlock.transferred = "%type% avec LockID %lockID% (KeyID: %keyID%) transferré à %player%"
+
+command.unlock.disabled = "Mode de débloque désactivé"
+command.unlock.enabled = "Mode de débloque activé. Cliqué sur le bloc dont tu veut ouvrir"
+command.unlock.notlocked = "LockID %lockID% n'est pas valide (Est-ce que c'est enrégistré?)"
+command.unlock.notowner = "Vous ne possédez pas cette bloque"
+command.unlock.unlocked = "LockID %lockID% n'est plus barré"
