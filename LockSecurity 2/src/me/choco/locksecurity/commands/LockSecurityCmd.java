@@ -25,6 +25,7 @@ public class LockSecurityCmd implements CommandExecutor {
 		if (args.length >= 1){
 			if (args[0].equalsIgnoreCase("reload")){
 				plugin.reloadConfig();
+				plugin.getLocale().reloadMessages();
 				ConfigOption.loadConfigurationValues(plugin);
 				plugin.sendMessage(sender, plugin.getLocale().getMessage("command.locksecurity.reloaded"));
 			}

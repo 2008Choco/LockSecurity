@@ -54,7 +54,7 @@ public class LockListCmd implements CommandExecutor {
 	}
 	
 	private void displayLockInformation(CommandSender sender, LSPlayer player){
-		sender.sendMessage(plugin.getLocale().getMessage("command.locklist.identifier")
+		sender.sendMessage(ChatColor.translateAlternateColorCodes('&', plugin.getLocale().getMessage("command.locklist.identifier"))
 				.replace("%player%", player.getPlayer().getName()));
 		for (LockedBlock block : player.getOwnedBlocks()){
 			Location location = block.getLocation();
