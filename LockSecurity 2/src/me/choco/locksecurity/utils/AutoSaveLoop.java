@@ -15,8 +15,6 @@ import me.choco.locksecurity.utils.json.JSONUtils;
 
 public class AutoSaveLoop extends BukkitRunnable {
 	
-	boolean initialStart = true;
-	
 	private LockSecurity plugin;
 	private PlayerRegistry playerRegistry;
 	private LockedBlockManager lockedBlockManager;
@@ -29,11 +27,6 @@ public class AutoSaveLoop extends BukkitRunnable {
 	
 	@Override
 	public void run() {
-		if (initialStart){
-			initialStart = false;
-			return;
-		}
-		
 		if (playerRegistry != null){
 			for (LSPlayer player : playerRegistry.getPlayers().values())
 				JSONUtils.writeJSON(player.getJSONDataFile(), player.write(new JSONObject()));

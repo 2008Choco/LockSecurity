@@ -54,17 +54,11 @@ public class LockSecurity extends JavaPlugin {
 	 *       * Write transfered LockID and KeyID data to the info file
 	 *    - Permission nodes
 	 *    - Utilize configuration options
-	 *    - Send all messages
 	 *    
 	 *    - MAKE SURE I'VE DOCUMENTED EVERYTHING I'VE WRITTEN
 	 *    
 	 * LEFT TO TEST:
-	 *   - Commands:
-	 *      * /lockinspect <lockID>
-	 *      * /locklist
-	 *      * /transferlock
 	 *    - All API event calls (This should be testable through ChestCollectors)
-	 *    - All LSMode features
 	 */
 	
 	private static LockSecurity instance;
@@ -182,7 +176,7 @@ public class LockSecurity extends JavaPlugin {
 		}
 		
 		this.autosave = new AutoSaveLoop(this);
-		this.autosave.runTaskTimerAsynchronously(this, 0L, 6000L);
+		this.autosave.runTaskTimerAsynchronously(this, 6000L, 6000L);
 		
 		UpdateChecker checker = new UpdateChecker(this, 12650);
 		if (checker.queryUpdateCheck() && checker.requiresUpdate()){
