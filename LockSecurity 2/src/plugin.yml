@@ -20,12 +20,8 @@ commands:
         aliases: [ignorelock, il]
     locklist:
         description: Get the list of locks that you own
-        usage: /<command>
+        usage: /<command> [player]
         aliases: [lockslist, locks]
-    locklistother:
-        description: Get the list of locks that another player owns
-        usage: /<command> <player>
-        aliases: [lockslistother, otherlocklist, otherlockslist]
     forgekey:
         description: Forge a locked key with the specified ID
         usage: /<command> <id>
