@@ -63,7 +63,7 @@ command.lockinspect.disabled = "L'inspection des serrures &cdésactivé"
 command.lockinspect.enabled = "L'inspection des serrures est &aactivé"
 command.lockinspect.notlocked = "Cette bloc n'est pas barré"
 
-command.locklist.identifier = "Liste de serrures pour tous les mondes (joueur: %player%)"
+command.locklist.identifier = "&eListe de serrures pour tous les mondes (joueur: %player%)"
 
 command.locknotify.disabled = "Notifications administratif désactivé"
 command.locknotify.enabled = "Notifications administratif activé"

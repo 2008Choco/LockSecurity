@@ -248,7 +248,7 @@ public class LockSecurity extends JavaPlugin {
 	 * @param message the message to send
 	 */
 	public void sendMessage(CommandSender sender, String message){
-		sender.sendMessage(ChatColor.GOLD + "[" + ChatColor.AQUA + "LockSecurity" + ChatColor.GOLD + "] " + ChatColor.GRAY + message);
+		sender.sendMessage(ChatColor.GOLD + "[" + ChatColor.AQUA + "LockSecurity" + ChatColor.GOLD + "] " + ChatColor.GRAY + ChatColor.translateAlternateColorCodes('&', message));
 	}
 	
 	/** 

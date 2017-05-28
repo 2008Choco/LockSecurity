@@ -63,7 +63,7 @@ command.lockinspect.disabled = "Lock inspect has been &cdisabled"
 command.lockinspect.enabled = "Lock inspect has been &aenabled"
 command.lockinspect.notlocked = "This block is not locked"
 
-command.locklist.identifier = "Lock list for all worlds (player: %player%)"
+command.locklist.identifier = "&eLock list for all worlds (player: %player%)"
 
 command.locknotify.disabled = "Administrative lock notifications disabled"
 command.locknotify.enabled = "Administrative lock notifications enabled"
