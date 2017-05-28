@@ -1,4 +1,4 @@
-package me.choco.locksecurity.utils.commands;
+package me.choco.locksecurity.commands;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
