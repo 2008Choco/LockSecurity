@@ -1,7 +1,6 @@
 package me.choco.locksecurity.commands;
 
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -26,12 +25,12 @@ public class TransferLockCmd implements CommandExecutor {
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 		if (!(sender instanceof Player)){
-			plugin.sendMessage(sender, "You are not permitted to run this command as a console");
+			plugin.sendMessage(sender, plugin.getLocale().getMessage("command.general.onlyplayers"));
 			return true;
 		}
 		
 		if (args.length == 0){
-			plugin.sendMessage(sender, "Please specify a player to transfer to");
+			plugin.sendMessage(sender, plugin.getLocale().getMessage("command.general.specifyplayer"));
 			return true;
 		}
 		
@@ -41,13 +40,16 @@ public class TransferLockCmd implements CommandExecutor {
 		@SuppressWarnings("deprecation")
 		OfflinePlayer target = Bukkit.getOfflinePlayer(args[0]);
 		if (!target.hasPlayedBefore()){
-			plugin.sendMessage(player, args[0] + " has not played on this server before");
+			plugin.sendMessage(sender, plugin.getLocale().getMessage("command.general.neverplayed")
+					.replace("%target%", args[0]));
 			return true;
 		}
 		
 		lsPlayer.setToTransferTo(playerRegistry.getPlayer(target));
-		plugin.sendMessage(player, LSMode.TRANSFER_LOCK.getName() + " mode " + 
-				(lsPlayer.toggleMode(LSMode.TRANSFER_LOCK) ? ChatColor.GREEN + "Enabled" : ChatColor.RED + "Disabled"));
+
+		plugin.sendMessage(player, plugin.getLocale().getMessage(lsPlayer.toggleMode(LSMode.TRANSFER_LOCK)
+				? "command.transferlock.enabled"
+				: "command.transferlock.disabled"));
 		return true;
 	}
 }

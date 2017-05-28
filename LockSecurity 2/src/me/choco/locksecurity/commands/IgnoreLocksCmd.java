@@ -1,6 +1,5 @@
 package me.choco.locksecurity.commands;
 
-import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -24,15 +23,16 @@ public class IgnoreLocksCmd implements CommandExecutor {
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 		if (!(sender instanceof Player)){
-			plugin.sendMessage(sender, "The console is not permitted to ignore locks");
+			plugin.sendMessage(sender, plugin.getLocale().getMessage("command.general.onlyplayers"));
 			return true;
 		}
 		
 		Player player = (Player) sender;
 		LSPlayer lsPlayer = playerRegistry.getPlayer(player);
 		
-		plugin.sendMessage(player, LSMode.IGNORE_LOCKS.getName() + " mode " + 
-				(lsPlayer.toggleMode(LSMode.IGNORE_LOCKS) ? ChatColor.GREEN + "Enabled" : ChatColor.RED + "Disabled"));
+		plugin.sendMessage(sender, plugin.getLocale().getMessage(lsPlayer.toggleMode(LSMode.IGNORE_LOCKS) 
+				? "command.ignorelocks.enabled" 
+				: "command.ignorelocks.disabled"));
 		return true;
 	}
 }

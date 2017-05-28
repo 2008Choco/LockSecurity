@@ -32,18 +32,20 @@ public class LockListCmd implements CommandExecutor {
 		if (args.length >= 1){
 			target = Bukkit.getOfflinePlayer(args[0]);
 			if (target == null){
-				plugin.sendMessage(sender, args[0] + " is not currently online");
+				plugin.sendMessage(sender, plugin.getLocale().getMessage("command.general.playeroffline")
+						.replace("%target%", args[0]));
 				return true;
 			}
 			
 			if (!target.hasPlayedBefore()){
-				plugin.sendMessage(sender, args[0] + " has never played on this server before");
+				plugin.sendMessage(sender, plugin.getLocale().getMessage("command.general.neverplayed")
+						.replace("%target%", args[0]));
 				return true;
 			}
 		}
 		
 		if (target == null){
-			plugin.sendMessage(sender, "The console does not have any blocks to list. Please specify a player");
+			plugin.sendMessage(sender, plugin.getLocale().getMessage("command.general.onlyplayers"));
 			return true;
 		}
 		
@@ -52,7 +54,8 @@ public class LockListCmd implements CommandExecutor {
 	}
 	
 	private void displayLockInformation(CommandSender sender, LSPlayer player){
-		sender.sendMessage(ChatColor.YELLOW + "Lock list for all worlds (player %player%):");
+		sender.sendMessage(plugin.getLocale().getMessage("command.locklist.identifier")
+				.replace("%player%", player.getPlayer().getName()));
 		for (LockedBlock block : player.getOwnedBlocks()){
 			Location location = block.getLocation();
 			sender.sendMessage(ChatColor.YELLOW + "[ID: " + block.getLockID() + "] " + 

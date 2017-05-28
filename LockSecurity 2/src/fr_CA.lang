@@ -43,7 +43,9 @@ command.forgekey.noid = "S'il vous plaît spécifié l'identification dont tu veut 
 
 command.general.datatransfer.commencing = "Enrégistrant l'information au fichiers..."
 command.general.datatransfer.successful = "&aTerminé avec succès!"
-command.general.invalidinteger = "%param% n'est pas un chiffre. S'il vous plaît spécifié un identification"
+command.general.invalidlockid = "%ID% est un Lock ID invalide"
+command.general.invalidinteger = "%param% n'est pas un chiffre. S'il vous plaît spécifié une chiffre"
+command.general.idnotlocked = "Il n'y a pas de bloc barré avec le Lock ID %ID%"
 command.general.neverplayed = "%target% n'as jamais jouer sur cette serveur"
 command.general.nopermission = "Tu manque les permissions suffisant pour cette commande"
 command.general.onlyplayers = "Seulement les joueurs peut utilisé cette commande"
@@ -75,6 +77,5 @@ command.transferlock.transferred = "%type% avec LockID %lockID% (KeyID: %keyID%)
 
 command.unlock.disabled = "Mode de débloque désactivé"
 command.unlock.enabled = "Mode de débloque activé. Cliqué sur le bloc dont tu veut ouvrir"
-command.unlock.notlocked = "LockID %lockID% n'est pas valide (Est-ce que c'est enrégistré?)"
 command.unlock.notowner = "Vous ne possédez pas cette bloque"
 command.unlock.unlocked = "LockID %lockID% n'est plus barré"

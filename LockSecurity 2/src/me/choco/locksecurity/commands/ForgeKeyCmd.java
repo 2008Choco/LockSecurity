@@ -24,7 +24,12 @@ public class ForgeKeyCmd implements CommandExecutor {
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 		if (!(sender instanceof Player)){
-			plugin.sendMessage(sender, "You are not permitted to run this command as a console");
+			plugin.sendMessage(sender, plugin.getLocale().getMessage("command.general.onlyplayers"));
+			return true;
+		}
+		
+		if (args.length == 0) {
+			plugin.sendMessage(sender, plugin.getLocale().getMessage("command.forgekey.noid"));
 			return true;
 		}
 		
@@ -40,14 +45,17 @@ public class ForgeKeyCmd implements CommandExecutor {
 					if (ID.equals("")) continue;
 					IDs[i] = Integer.parseInt(ID);
 				}catch(NumberFormatException e){
-					plugin.sendMessage(player, "Invalid integer parse exception; unknown value: \"" + ID + "\"");
+					plugin.sendMessage(player, plugin.getLocale().getMessage("command.general.invalidinteger")
+							.replace("%param%", ID));
 					return true;
 				}
 			}
 			
 			player.getInventory().addItem(KeyFactory.buildKey(KeyType.SMITHED).withIDs(IDs).build());
-			plugin.sendMessage(player, "Given forged key with ID" + (IDs.length > 1 ? "s " : " ") + args[0]);
-		}else{ plugin.sendMessage(player, "/forgekey <id>,[id],[id]..."); }
+			plugin.sendMessage(player, plugin.getLocale().getMessage("command.forgekey.givenkey")
+					.replace("ID", args[0]));
+		}
+		
 		return true;
 	}
 }

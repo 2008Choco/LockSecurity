@@ -1,7 +1,6 @@
 package me.choco.locksecurity.commands;
 
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -30,7 +29,7 @@ public class UnlockCmd implements CommandExecutor {
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 		if (!(sender instanceof Player)){
-			plugin.sendMessage(sender, "The console is not permitted to unlock locks");
+			plugin.sendMessage(sender, plugin.getLocale().getMessage("command.general.onlyplayers"));
 			return true;
 		}
 		
@@ -42,19 +41,21 @@ public class UnlockCmd implements CommandExecutor {
 			try{
 				lockID = Integer.parseInt(args[0]);
 			}catch(NumberFormatException e){
-				plugin.sendMessage(player, "Invalid Lock ID provided, \"" + args[0] + "\"");
+				plugin.sendMessage(player, plugin.getLocale().getMessage("command.general.invalidlockid")
+						.replace("%ID%", args[0]));
 				return true;
 			}
 			
 			LockedBlock lBlock = lockedBlockManager.getLockedBlock(lockID);
 			
 			if (lBlock == null){
-				plugin.sendMessage(player, "No block is currently locked with the Lock ID " + lockID);
+				plugin.sendMessage(player, plugin.getLocale().getMessage("command.general.idnotlocked")
+						.replace("%ID%", String.valueOf(lockID)));
 				return true;
 			}
 			
 			if (!lsPlayer.ownsBlock(lBlock)){
-				plugin.sendMessage(player, "You cannot unlock a block that you do not own");
+				plugin.sendMessage(player, plugin.getLocale().getMessage("command.unlock.notowner"));
 				return true;
 			}
 			
@@ -65,12 +66,14 @@ public class UnlockCmd implements CommandExecutor {
 			
 			if (lockedBlockManager.isRegistered(lBlock)) lockedBlockManager.unregisterBlock(lBlock);
 			lBlock.getOwner().removeBlockFromOwnership(lBlock);
-			plugin.sendMessage(player, "Successfully unlocked block with the Lock ID " + lockID);
+			plugin.sendMessage(player, plugin.getLocale().getMessage("command.unlock.unlocked")
+					.replace("%lockID%", String.valueOf(lockID)));
 			return true;
 		}
 		
-		plugin.sendMessage(player, LSMode.UNLOCK.getName() + " mode " + 
-				(lsPlayer.toggleMode(LSMode.UNLOCK) ? ChatColor.GREEN + "Enabled" : ChatColor.RED + "Disabled"));
+		plugin.sendMessage(player, plugin.getLocale().getMessage(lsPlayer.toggleMode(LSMode.UNLOCK)
+				? "command.unlock.enabled"
+				: "command.unlock.disabled"));
 		return true;
 	}
 }

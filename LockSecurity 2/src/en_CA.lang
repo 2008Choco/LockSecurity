@@ -43,14 +43,16 @@ command.forgekey.noid = "Please specify the ID you would like to forge"
 
 command.general.datatransfer.commencing = "Saving localized data to database..."
 command.general.datatransfer.successful = "&aSuccessfully transfered data to database"
-command.general.invalidinteger = "%param% is not a number. Please specify an ID"
+command.general.idnotlocked = "No block is currently locked with the Lock ID %ID%"
+command.general.invalidinteger = "%param% is not a number. Please specify a number"
+command.general.invalidlockid = "Invalid Lock ID provided, %ID%"
 command.general.neverplayed = "%target% has never played on this server before"
 command.general.nopermission = "You do not have the sufficient permissions to do this"
 command.general.onlyplayers = "Only players may use this command"
 command.general.playeroffline = "%target% is not currently online"
 command.general.specifyplayer = "You must specify a player to run this command"
 
-command.givekey.receivedkey = "You have received an unsmithed"
+command.givekey.receivedkey = "You have received %count% unsmithed key(s)"
 command.givekey.receivedkey.target = "You have received %count% unsmithed key(s) from %player%"
 command.givekey.sentkey = "You have given %target% %count% unsmithed key(s)"
 
@@ -75,6 +77,5 @@ command.transferlock.transferred = "%type% with LockID %lockID% (KeyID: %keyID%)
 
 command.unlock.disabled = "Unlock mode disabled"
 command.unlock.enabled = "Unlock mode enabled. Right click the  block you would like to unlock"
-command.unlock.notlocked = "Lock ID %lockID% is not valid (Is that ID registered?)"
 command.unlock.notowner = "You are not the owner of this block"
 command.unlock.unlocked = "Lock ID %lockID% has been unlocked"

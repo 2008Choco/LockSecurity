@@ -1,6 +1,5 @@
 package me.choco.locksecurity.commands;
 
-import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -28,7 +27,7 @@ public class LockInspectCmd implements CommandExecutor {
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 		if (!(sender instanceof Player)){
-			plugin.sendMessage(sender, "The console is not permitted to inspect locks");
+			plugin.sendMessage(sender, plugin.getLocale().getMessage("command.general.onlyplayers"));
 			return true;
 		}
 		
@@ -40,13 +39,15 @@ public class LockInspectCmd implements CommandExecutor {
 			try{
 				lockID = Integer.parseInt(args[0]);
 			}catch(NumberFormatException e){
-				plugin.sendMessage(player, "Invalid Lock ID provided, \"" + args[0] + "\"");
+				plugin.sendMessage(player, plugin.getLocale().getMessage("command.general.invalidlockid")
+						.replace("%ID%", args[0]));
 			}
 			
 			LockedBlock lBlock = lockedBlockManager.getLockedBlock(lockID);
 			
 			if (lBlock == null){
-				plugin.sendMessage(player, "No block is currently locked with the Lock ID " + lockID);
+				plugin.sendMessage(player, plugin.getLocale().getMessage("command.general.idnotlocked")
+						.replace("%ID%", String.valueOf(lockID)));
 				return true;
 			}
 			
@@ -54,8 +55,9 @@ public class LockInspectCmd implements CommandExecutor {
 			return true;
 		}
 		
-		plugin.sendMessage(player, LSMode.LOCK_INSPECT.getName() + " mode " + 
-				(lsPlayer.toggleMode(LSMode.LOCK_INSPECT) ? ChatColor.GREEN + "Enabled" : ChatColor.RED + "Disabled"));
+		plugin.sendMessage(player, plugin.getLocale().getMessage(lsPlayer.toggleMode(LSMode.LOCK_INSPECT)
+				? "command.lockinspect.enabled"
+				: "command.lockinspect.disabled"));
 		return true;
 	}
 }

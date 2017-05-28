@@ -29,7 +29,8 @@ public class GiveKeyCmd implements CommandExecutor {
 		if (args.length >= 1){
 			target = Bukkit.getPlayer(args[0]);
 			if (target == null){
-				plugin.sendMessage(sender, args[0] + " is not currently online");
+				plugin.sendMessage(sender, plugin.getLocale().getMessage("command.general.playeroffline")
+						.replace("%target%", args[0]));
 				return true;
 			}
 			
@@ -37,21 +38,27 @@ public class GiveKeyCmd implements CommandExecutor {
 				try{
 					amount = Integer.parseInt(args[1]);
 				}catch(NumberFormatException e){
-					plugin.sendMessage(sender, "The amount of keys must be an integer value");
+					plugin.sendMessage(sender, plugin.getLocale().getMessage("command.general.invalidinteger")
+							.replace("%param%", args[1]));
 					return true;
 				}
 			}
 		}
 		
 		if (target == null){
-			plugin.sendMessage(sender, "The console cannot receive keys. Please specify a player");
+			plugin.sendMessage(sender, plugin.getLocale().getMessage("command.general.specifyplayer"));
 			return true;
 		}
 		
-		boolean isSelf = target.equals(sender), plural = (amount > 1);
+		boolean isSelf = target.equals(sender);
 		if (!isSelf && args.length == 1)
-			plugin.sendMessage(sender, "You have given " + target.getName() + " " + amount + " unsmithed key" + (plural ? "s" : ""));
-		plugin.sendMessage(target, "You have received " + amount + " unsmithed key" + (plural ? "s" : "") + (!isSelf ? " from " + sender.getName() : ""));
+			plugin.sendMessage(sender, plugin.getLocale().getMessage("command.givekey.sentkey")
+					.replace("%target%", target.getName())
+					.replace("%count%", String.valueOf(amount)));
+		
+		plugin.sendMessage(target, plugin.getLocale().getMessage(isSelf ? "command.givekey.receivedkey" : "command.givekey.receivedkey.target")
+				.replace("%count%", String.valueOf(amount))
+				.replace("%target%", sender.getName()));
 		
 		target.getInventory().addItem(KeyFactory.getUnsmithedKey(amount));
 		return true;
