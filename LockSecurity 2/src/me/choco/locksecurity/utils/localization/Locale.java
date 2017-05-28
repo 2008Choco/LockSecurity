@@ -309,7 +309,7 @@ public class Locale {
 	 */
 	public static void clearLocaleData() {
 		for (Locale locale : LOCALES)
-			locale.getMessageNodeMap().clear();
+			locale.nodes.clear();
 		LOCALES.clear();
 	}
 	
