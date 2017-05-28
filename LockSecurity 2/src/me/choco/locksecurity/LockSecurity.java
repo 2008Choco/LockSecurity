@@ -4,8 +4,10 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.UUID;
 
+import org.apache.commons.io.FileUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -35,7 +37,13 @@ import me.choco.locksecurity.utils.ConfigOption;
 import me.choco.locksecurity.utils.LSPlayer;
 import me.choco.locksecurity.utils.commands.ForgeKeyCmd;
 import me.choco.locksecurity.utils.commands.GiveKeyCmd;
+import me.choco.locksecurity.utils.commands.IgnoreLocksCmd;
+import me.choco.locksecurity.utils.commands.LockInspectCmd;
+import me.choco.locksecurity.utils.commands.LockListCmd;
+import me.choco.locksecurity.utils.commands.LockNotifyCmd;
 import me.choco.locksecurity.utils.commands.LockSecurityCmd;
+import me.choco.locksecurity.utils.commands.TransferLockCmd;
+import me.choco.locksecurity.utils.commands.UnlockCmd;
 import me.choco.locksecurity.utils.general.ItemBuilder;
 import me.choco.locksecurity.utils.general.UpdateChecker;
 import me.choco.locksecurity.utils.json.JSONUtils;
@@ -84,7 +92,7 @@ public class LockSecurity extends JavaPlugin {
 		Locale.init(this);
 		Locale.saveDefaultLocale("en_CA");
 		Locale.saveDefaultLocale("fr_CA");
-		locale = Locale.getLocale(this.getConfig().getString("Locale", "en_CA"));
+		this.locale = Locale.getLocale(this.getConfig().getString("Locale", "en_CA"));
 		
 		// Transfer old data if necessary
 		if (!playerdataDir.exists()){
@@ -100,10 +108,7 @@ public class LockSecurity extends JavaPlugin {
 		if (!this.infoFile.exists()){
 			try{
 				this.infoFile.createNewFile();
-				
-				BufferedWriter writer = new BufferedWriter(new FileWriter(infoFile));
-				writer.write("nextLockID=1\nnextKeyID=1");
-				writer.close();
+				FileUtils.write(infoFile, "nextLockID=1\nnextKeyID=1", Charset.defaultCharset());
 			}catch(IOException e){ e.printStackTrace(); }
 			
 			this.getLogger().info(locale.getMessage("enable.generate.infofile"));
@@ -138,6 +143,12 @@ public class LockSecurity extends JavaPlugin {
 		this.getCommand("locksecurity").setExecutor(new LockSecurityCmd(this));
 		this.getCommand("forgekey").setExecutor(new ForgeKeyCmd(this));
 		this.getCommand("givekey").setExecutor(new GiveKeyCmd(this));
+		this.getCommand("ignorelocks").setExecutor(new IgnoreLocksCmd(this));
+		this.getCommand("lockinspect").setExecutor(new LockInspectCmd(this));
+		this.getCommand("locklist").setExecutor(new LockListCmd(this));
+		this.getCommand("locknotify").setExecutor(new LockNotifyCmd(this));
+		this.getCommand("transferlock").setExecutor(new TransferLockCmd(this));
+		this.getCommand("unlock").setExecutor(new UnlockCmd(this));
 		
 		// Register crafting recipes
 		this.getLogger().info(locale.getMessage("enable.registration.recipes"));
