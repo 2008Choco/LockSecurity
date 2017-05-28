@@ -40,12 +40,12 @@ public class LSPlayer implements JSONSerializable {
 	
 	private LSPlayer toTransferTo;
 	
-	private OfflinePlayer player;
+	private UUID player;
 	
-	public LSPlayer(OfflinePlayer player) {
-		this.player = player;
+	public LSPlayer(UUID uuid) {
+		this.player = uuid;
 		
-		this.jsonDataFile = new File(plugin.playerdataDir + File.separator + player.getUniqueId() + ".json");
+		this.jsonDataFile = new File(plugin.playerdataDir + File.separator + uuid + ".json");
 		if (!jsonDataFile.exists()){
 			try{
 				jsonDataFile.createNewFile();
@@ -54,13 +54,17 @@ public class LSPlayer implements JSONSerializable {
 		}
 	}
 	
+	public LSPlayer(OfflinePlayer player) {
+		this(player.getUniqueId());
+	}
+	
 	/** 
 	 * Get the player this object represents
 	 * 
 	 * @return the player
 	 */
 	public OfflinePlayer getPlayer() {
-		return player;
+		return Bukkit.getOfflinePlayer(player);
 	}
 	
 	/** 
@@ -184,7 +188,7 @@ public class LSPlayer implements JSONSerializable {
 	@SuppressWarnings("unchecked")
 	@Override
 	public JSONObject write(JSONObject data) {
-		data.put("uuid", player.getUniqueId().toString());
+		data.put("uuid", player.toString());
 		
 		JSONArray activeModesData = new JSONArray();
 		for (LSMode mode : this.activeModes){
@@ -204,7 +208,7 @@ public class LSPlayer implements JSONSerializable {
 
 	@Override
 	public boolean read(JSONObject data) {
-		this.player = Bukkit.getOfflinePlayer(UUID.fromString((String) data.get("uuid")));
+		this.player = UUID.fromString((String) data.get("uuid"));
 		
 		JSONArray activeModesData = (JSONArray) data.get("activeModes");
 		for (int i = 0; i < activeModesData.size(); i++){
