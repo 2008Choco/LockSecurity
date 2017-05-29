@@ -2,12 +2,13 @@ package me.choco.locksecurity.registration;
 
 import java.io.File;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
-import org.bukkit.Bukkit;
+import com.google.common.collect.ImmutableMap;
+
 import org.bukkit.OfflinePlayer;
 
 import me.choco.locksecurity.LockSecurity;
@@ -22,7 +23,7 @@ import me.choco.locksecurity.utils.LSPlayer;
  */
 public class PlayerRegistry {
 	
-	private final Map<OfflinePlayer, LSPlayer> players = new HashMap<>();
+	private final Map<UUID, LSPlayer> players = new HashMap<>();
 	
 	private LockSecurity plugin;
 	
@@ -37,10 +38,10 @@ public class PlayerRegistry {
 	 * @param player the player to register
 	 */
 	public void registerPlayer(OfflinePlayer player){
-		if (players.containsKey(player)) return;
+		if (players.containsKey(player.getUniqueId())) return;
 		
 		LSPlayer lsPlayer = new LSPlayer(player);
-		players.put(player, lsPlayer);
+		players.put(player.getUniqueId(), lsPlayer);
 	}
 	
 	/** 
@@ -49,26 +50,44 @@ public class PlayerRegistry {
 	 * @param player the player to register
 	 */
 	public void registerPlayer(LSPlayer player){
-		this.players.put(player.getPlayer(), player);
+		this.players.put(player.getUUID(), player);
 	}
 	
 	/** 
-	 * Unregister a player from the player registry (if existant)
+	 * Unregister a player UUID from the player registry (if registered)
+	 * 
+	 * @param uuid the uuid to unregister
+	 */
+	public void unregisterPlayer(UUID uuid) {
+		this.players.remove(uuid);
+	}
+	
+	/** 
+	 * Unregister a player from the player registry (if registered)
 	 * 
 	 * @param player the player to unregister
 	 */
 	public void unregisterPlayer(OfflinePlayer player){
-		if (!players.containsKey(player)) return;
-		players.remove(player);
+		this.unregisterPlayer(player.getUniqueId());
 	}
 	
 	/** 
-	 * Unregister an LSPlayer from the player registry (if existant)
+	 * Unregister an LSPlayer from the player registry (if registered)
 	 * 
 	 * @param player the player to unregister
 	 */
 	public void unregisterPlayer(LSPlayer player){
-		unregisterPlayer(player.getPlayer());
+		this.unregisterPlayer(player.getUUID());
+	}
+	
+	/**
+	 * Check if a player's UUID is currently registered in the registry or not
+	 * 
+	 * @param uuid the UUID to check
+	 * @return true if the player is registered
+	 */
+	public boolean isRegistered(UUID uuid) {
+		return players.containsKey(uuid);
 	}
 	
 	/** 
@@ -78,17 +97,7 @@ public class PlayerRegistry {
 	 * @return true if the player is registered
 	 */
 	public boolean isRegistered(OfflinePlayer player){
-		return players.containsKey(player);
-	}
-	
-	/** 
-	 * Get an LSPlayer instance from the specified player object
-	 * 
-	 * @param player the player to get an instance from
-	 * @return the LSPlayer instance. null if not registered
-	 */
-	public LSPlayer getPlayer(OfflinePlayer player){
-		return players.get(player);
+		return this.isRegistered(player.getUniqueId());
 	}
 	
 	/**
@@ -98,7 +107,17 @@ public class PlayerRegistry {
 	 * @return the LSPlayer instance. null if not registered
 	 */
 	public LSPlayer getPlayer(UUID uuid) {
-		return this.getPlayer(Bukkit.getOfflinePlayer(uuid));
+		return players.get(uuid);
+	}
+	
+	/** 
+	 * Get an LSPlayer instance from the specified player object
+	 * 
+	 * @param player the player to get an instance from
+	 * @return the LSPlayer instance. null if not registered
+	 */
+	public LSPlayer getPlayer(OfflinePlayer player){
+		return this.getPlayer(player.getUniqueId());
 	}
 	
 	/** 
@@ -108,10 +127,9 @@ public class PlayerRegistry {
 	 * @return a set of all players in the specified mode
 	 */
 	public Set<LSPlayer> getPlayersInMode(LSMode mode){
-		Set<LSPlayer> players = new HashSet<>();
-		for (LSPlayer player : this.players.values())
-			if (player.getActiveModes().contains(mode)) players.add(player);
-		return players;
+		return this.players.values().stream()
+				.filter(p -> p.isModeActive(mode))
+				.collect(Collectors.toSet());
 	}
 	
 	/** 
@@ -123,7 +141,6 @@ public class PlayerRegistry {
 	 * @return true if the player has a JSON data file
 	 */
 	public boolean hasJSONDataFile(OfflinePlayer player){
-		if (isRegistered(player)) return true;
 		return new File(plugin.playerdataDir + File.separator + player.getUniqueId().toString() + ".json").exists();
 	}
 	
@@ -132,7 +149,14 @@ public class PlayerRegistry {
 	 * 
 	 * @return a map of all registered players
 	 */
-	public Map<OfflinePlayer, LSPlayer> getPlayers() {
-		return players;
+	public Map<UUID, LSPlayer> getPlayers() {
+		return ImmutableMap.copyOf(players);
+	}
+	
+	/**
+	 * Clear all players from the registry
+	 */
+	public void clearPlayerRegistry() {
+		this.players.clear();
 	}
 }
