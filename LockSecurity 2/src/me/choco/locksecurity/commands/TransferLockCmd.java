@@ -29,6 +29,11 @@ public class TransferLockCmd implements CommandExecutor {
 			return true;
 		}
 		
+		if (!sender.hasPermission("locks.transferlock")) {
+			plugin.sendMessage(sender, plugin.getLocale().getMessage("command.general.nopermission"));
+			return true;
+		}
+		
 		if (args.length == 0){
 			plugin.sendMessage(sender, plugin.getLocale().getMessage("command.general.specifyplayer"));
 			return true;

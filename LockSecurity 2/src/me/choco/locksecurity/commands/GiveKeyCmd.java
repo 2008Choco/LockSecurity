@@ -24,6 +24,12 @@ public class GiveKeyCmd implements CommandExecutor {
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 		Player target = (sender instanceof Player ? (Player) sender : null);
+		
+		if (!sender.hasPermission("locks.givekey")) {
+			plugin.sendMessage(sender, plugin.getLocale().getMessage("command.general.nopermission"));
+			return true;
+		}
+		
 		int amount = 1;
 		
 		if (args.length >= 1){

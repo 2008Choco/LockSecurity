@@ -27,6 +27,11 @@ public class LockNotifyCmd implements CommandExecutor {
 			return true;
 		}
 		
+		if (!sender.hasPermission("locks.locknotify")) {
+			plugin.sendMessage(sender, plugin.getLocale().getMessage("command.general.nopermission"));
+			return true;
+		}
+		
 		Player player = (Player) sender;
 		LSPlayer lsPlayer = playerRegistry.getPlayer(player);
 

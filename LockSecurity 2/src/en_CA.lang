@@ -35,6 +35,9 @@ event.player.money.deposited = "%amount% has been deposited to your balance"
 event.player.money.insufficient = "You have insufficient funds to lock a %type%"
 event.player.money.withdrawn = "%amount% has been withdrawn from your balance"
 
+event.unlock.nopermission.self = "You do not have sufficient privileges to unlock a %type%"
+event.unlock.nopermission.other = "You do not have the sufficient privileges to unlock a %type% owned by %player%"
+
 
 #Command messages
 

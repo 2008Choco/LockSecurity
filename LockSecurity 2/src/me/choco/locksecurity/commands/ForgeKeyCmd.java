@@ -28,6 +28,11 @@ public class ForgeKeyCmd implements CommandExecutor {
 			return true;
 		}
 		
+		if (!sender.hasPermission("locks.forgekey")) {
+			plugin.sendMessage(sender, plugin.getLocale().getMessage("command.general.nopermission"));
+			return true;
+		}
+		
 		if (args.length == 0) {
 			plugin.sendMessage(sender, plugin.getLocale().getMessage("command.forgekey.noid"));
 			return true;

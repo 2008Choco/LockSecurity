@@ -85,7 +85,7 @@ permissions:
         description: Alllow access to /unlock <id>
         default: op
     
-    locks.adminunlock:
+    locks.admin:
         description: Allow the ability to unlock any block, even if you are not the owner
         default: op
     locks.transferlock:

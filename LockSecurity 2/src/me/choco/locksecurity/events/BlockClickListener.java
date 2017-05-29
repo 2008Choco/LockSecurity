@@ -30,10 +30,12 @@ import me.choco.locksecurity.utils.LSPlayer;
 
 public class BlockClickListener implements Listener {
 	
+	private LockSecurity plugin;
 	private LockedBlockManager lockedBlockManager;
 	private PlayerRegistry playerRegistry;
 	
 	public BlockClickListener(LockSecurity plugin) {
+		this.plugin = plugin;
 		this.lockedBlockManager = plugin.getLockedBlockManager();
 		this.playerRegistry = plugin.getPlayerRegistry();
 	}
@@ -75,6 +77,18 @@ public class BlockClickListener implements Listener {
 			// Unlock mode
 			if (lsPlayer.isModeActive(LSMode.UNLOCK)){
 				event.setCancelled(true);
+				
+				if (!player.hasPermission("locks.unlock.self")) {
+					plugin.sendMessage(player, plugin.getLocale().getMessage("event.unlock.nopermission.self")
+							.replace("%type%", block.getType().name()));
+					return;
+				}
+				if (!player.hasPermission("locks.unlock.admin")) {
+					plugin.sendMessage(player, plugin.getLocale().getMessage("event.unlock.nopermission.other")
+							.replace("%type%", block.getType().name())
+							.replace("%player%", lBlock.getOwner().getPlayer().getName()));
+					return;
+				}
 				
 				lockedBlockManager.unregisterBlock(lBlock);
 				lsPlayer.removeBlockFromOwnership(lBlock);
@@ -125,6 +139,13 @@ public class BlockClickListener implements Listener {
 			}
 			
 			if (!KeyFactory.isUnsmithedKey(key)) return;
+			
+			if (!player.hasPermission("locks.lock")) {
+				plugin.sendMessage(player, plugin.getLocale().getMessage("event.lock.nopermission")
+						.replace("%type%", block.getType().name()));
+				event.setCancelled(true);
+				return;
+			}
 			
 			// PlayerLockBlockEvent
 			PlayerLockBlockEvent plbe = new PlayerLockBlockEvent(lsPlayer, block, lockedBlockManager.getNextLockID(), lockedBlockManager.getNextKeyID());

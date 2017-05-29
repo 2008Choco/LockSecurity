@@ -49,6 +49,16 @@ public class LockListCmd implements CommandExecutor {
 			return true;
 		}
 		
+		// Permission check
+		if (args.length == 0 && !sender.hasPermission("locks.locklist")) {
+			plugin.sendMessage(sender, plugin.getLocale().getMessage("command.general.nopermission"));
+			return true;
+		}
+		else if (args.length >= 1 && sender.hasPermission("locks.locklistother")) {
+			plugin.sendMessage(sender, plugin.getLocale().getMessage("command.general.nopermission"));
+			return true;
+		}
+		
 		this.displayLockInformation(sender, playerRegistry.getPlayer(target));
 		return true;
 	}

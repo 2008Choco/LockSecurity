@@ -35,6 +35,9 @@ event.player.money.deposited = "%amount% était déposé dans votre solde"
 event.player.money.insufficient = "Vous n'avez pas de fonds suffisant pour barré un %type%"
 event.player.money.withdrawn = "%amount% était retiré de ton solde"
 
+event.unlock.nopermission.self = "Tu manque les permissions suffisant pour ouvrir cette %type%"
+event.unlock.nopermission.other = "Tu manque les permissions suffisant pour ouvrir cette %type% qui appartient à %player%"
+
 
 #Command messages
 

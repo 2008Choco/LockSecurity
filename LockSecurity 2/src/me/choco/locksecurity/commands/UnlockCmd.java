@@ -37,6 +37,11 @@ public class UnlockCmd implements CommandExecutor {
 		LSPlayer lsPlayer = playerRegistry.getPlayer(player);
 		
 		if (args.length >= 1){
+			if (!sender.hasPermission("locks.unlock.id") || !sender.hasPermission("locks.unlock.admin")) {
+				plugin.sendMessage(sender, plugin.getLocale().getMessage("command.general.nopermission"));
+				return true;
+			}
+			
 			int lockID = 0;
 			try{
 				lockID = Integer.parseInt(args[0]);
@@ -54,7 +59,7 @@ public class UnlockCmd implements CommandExecutor {
 				return true;
 			}
 			
-			if (!lsPlayer.ownsBlock(lBlock)){
+			if (!lsPlayer.ownsBlock(lBlock) && !sender.hasPermission("locks.unlock.admin")){
 				plugin.sendMessage(player, plugin.getLocale().getMessage("command.unlock.notowner"));
 				return true;
 			}
@@ -68,6 +73,11 @@ public class UnlockCmd implements CommandExecutor {
 			lBlock.getOwner().removeBlockFromOwnership(lBlock);
 			plugin.sendMessage(player, plugin.getLocale().getMessage("command.unlock.unlocked")
 					.replace("%lockID%", String.valueOf(lockID)));
+			return true;
+		}
+		
+		if (!sender.hasPermission("locks.unlock.self")) {
+			plugin.sendMessage(sender, plugin.getLocale().getMessage("command.general.nopermission"));
 			return true;
 		}
 		

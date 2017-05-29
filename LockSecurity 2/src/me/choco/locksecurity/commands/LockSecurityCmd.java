@@ -24,6 +24,11 @@ public class LockSecurityCmd implements CommandExecutor {
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 		if (args.length >= 1){
 			if (args[0].equalsIgnoreCase("reload")){
+				if (!sender.hasPermission("locks.reload")) {
+					plugin.sendMessage(sender, plugin.getLocale().getMessage("command.general.nopermission"));
+					return true;
+				}
+				
 				plugin.reloadConfig();
 				plugin.getLocale().reloadMessages();
 				ConfigOption.loadConfigurationValues(plugin);
