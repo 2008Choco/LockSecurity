@@ -81,6 +81,7 @@ public class LockSecurity extends JavaPlugin {
 		instance = this;
 		this.playerdataDir = new File(this.getDataFolder().getAbsolutePath() + File.separator + "playerdata");
 		this.infoFile = new File(this.getDataFolder().getAbsolutePath() + File.separator + "plugin.info");
+		this.playerRegistry = new PlayerRegistry(this);
 		this.saveDefaultConfig();
 		ConfigOption.loadConfigurationValues(this);
 		
@@ -110,9 +111,6 @@ public class LockSecurity extends JavaPlugin {
 			this.getLogger().info("Successfully created new plugin information file");
 		}
 		
-		// Instantiate necessary variables
-		this.getLogger().info("Instantiating necessary fields...");
-		this.playerRegistry = new PlayerRegistry(this);
 		this.lockedBlockManager = new LockedBlockManager(this);
 		
 		// Register events
