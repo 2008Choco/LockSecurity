@@ -92,7 +92,7 @@ public class LockSecurity extends JavaPlugin {
 		
 		// Transfer old data if necessary
 		if (!playerdataDir.exists()) {
-			if (this.playerdataDir.mkdirs()) this.getLogger().info(locale.getMessage("enable.generate.playerdir"));
+			if (this.playerdataDir.mkdirs()) this.getLogger().info("Successfully created new playerdata directory");
 			
 			if (new File(this.getDataFolder(), "lockinfo.db").exists())
 				TransferUtils.fromDatabase(this);
@@ -107,16 +107,16 @@ public class LockSecurity extends JavaPlugin {
 				FileUtils.write(infoFile, "nextLockID=1\nnextKeyID=1", Charset.defaultCharset());
 			} catch (IOException e) { e.printStackTrace(); }
 			
-			this.getLogger().info(locale.getMessage("enable.generate.infofile"));
+			this.getLogger().info("Successfully created new plugin information file");
 		}
 		
 		// Instantiate necessary variables
-		this.getLogger().info(locale.getMessage("enable.registration.variables"));
+		this.getLogger().info("Instantiating necessary fields...");
 		this.playerRegistry = new PlayerRegistry(this);
 		this.lockedBlockManager = new LockedBlockManager(this);
 		
 		// Register events
-		this.getLogger().info(locale.getMessage("enable.registration.events"));
+		this.getLogger().info("Registering events...");
 		
 		    /* General/Lock-Based listeners */
 		Bukkit.getPluginManager().registerEvents(new BlockClickListener(this), this);
@@ -135,7 +135,7 @@ public class LockSecurity extends JavaPlugin {
 		
 		
 		// Register commands
-		this.getLogger().info(locale.getMessage("enable.registration.commands"));
+		this.getLogger().info("Registering plugin commands...");
 		this.getCommand("locksecurity").setExecutor(new LockSecurityCmd(this));
 		this.getCommand("forgekey").setExecutor(new ForgeKeyCmd(this));
 		this.getCommand("givekey").setExecutor(new GiveKeyCmd(this));
@@ -147,7 +147,7 @@ public class LockSecurity extends JavaPlugin {
 		this.getCommand("unlock").setExecutor(new UnlockCmd(this));
 		
 		// Register crafting recipes
-		this.getLogger().info(locale.getMessage("enable.registration.recipes"));
+		this.getLogger().info("Registering custom crafting recipes...");
 		ItemStack unsmithedKey = KeyFactory.getUnsmithedkey();
 		Bukkit.getServer().addRecipe(new ShapedRecipe(new NamespacedKey(this, "unsmithedkey1"), unsmithedKey).shape("B  ", " I ", "  P").setIngredient('B', Material.IRON_FENCE).setIngredient('I', Material.IRON_INGOT).setIngredient('P', Material.WOOD));
 		Bukkit.getServer().addRecipe(new ShapedRecipe(new NamespacedKey(this, "unsmithedkey2"), unsmithedKey).shape(" B ", " I ", " P ").setIngredient('B', Material.IRON_FENCE).setIngredient('I', Material.IRON_INGOT).setIngredient('P', Material.WOOD));
@@ -161,7 +161,7 @@ public class LockSecurity extends JavaPlugin {
 		Bukkit.getServer().addRecipe(new ShapelessRecipe(new NamespacedKey(this, "keycombine"), new ItemBuilder(Material.BEDROCK).setName("DUAL").build()).addIngredient(2, Material.TRIPWIRE_HOOK));
 		
 		// Load all registered data
-		this.getLogger().info(locale.getMessage("enable.load.jsondata"));
+		this.getLogger().info(locale.getMessage("Loading player JSON data from file. This may take a while"));
 		for (File file : playerdataDir.listFiles()) {
 			OfflinePlayer rawPlayer = Bukkit.getOfflinePlayer(UUID.fromString(file.getName().replace(".json", "")));
 			
@@ -184,20 +184,20 @@ public class LockSecurity extends JavaPlugin {
 		
 		UpdateChecker checker = new UpdateChecker(this, 12650);
 		if (checker.queryUpdateCheck() && checker.requiresUpdate()) {
-			System.out.println(locale.getMessage("enable.load.update"));
+			this.getLogger().info(locale.getMessage("An update is available for download on SpigotMC!"));
 		}
 	}
 	
 	@Override
 	public void onDisable() {
 		if (autosave != null) {
-			this.getLogger().info(locale.getMessage("disable.savedata"));
+			this.getLogger().info("Forcing one final registry save...");
 			this.autosave.run();
 			this.autosave.cancel();
 		}
 		
 		if (playerRegistry != null) {
-			this.getLogger().info(locale.getMessage("disable.cleardata"));
+			this.getLogger().info("Clearing all localized data");
 			this.playerRegistry.getPlayers().values().forEach(LSPlayer::clearLocalData);
 			this.playerRegistry.clearPlayerRegistry();
 		}
