@@ -5,7 +5,9 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
+import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 
 import me.choco.locksecurity.LockSecurity;
@@ -87,6 +89,16 @@ public class PlayerRegistry {
 	 */
 	public LSPlayer getPlayer(OfflinePlayer player){
 		return players.get(player);
+	}
+	
+	/**
+	 * Get an LSPlayer instance from the specified player UUID
+	 * 
+	 * @param uuid the UUID to get an instace from
+	 * @return the LSPlayer instance. null if not registered
+	 */
+	public LSPlayer getPlayer(UUID uuid) {
+		return this.getPlayer(Bukkit.getOfflinePlayer(uuid));
 	}
 	
 	/** 

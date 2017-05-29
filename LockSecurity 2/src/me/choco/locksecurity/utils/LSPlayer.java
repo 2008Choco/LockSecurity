@@ -6,10 +6,11 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
 
 import me.choco.locksecurity.LockSecurity;
 import me.choco.locksecurity.api.LockedBlock;
@@ -40,16 +41,16 @@ public class LSPlayer implements JSONSerializable {
 	
 	private LSPlayer toTransferTo;
 	
-	private UUID player;
+	private UUID uuid;
 	
 	public LSPlayer(UUID uuid) {
-		this.player = uuid;
+		this.uuid = uuid;
 		
 		this.jsonDataFile = new File(plugin.playerdataDir + File.separator + uuid + ".json");
 		if (!jsonDataFile.exists()){
 			try{
 				jsonDataFile.createNewFile();
-				JSONUtils.writeJSON(jsonDataFile, this.write(new JSONObject()));
+				JSONUtils.writeJSON(jsonDataFile, this.write(new JsonObject()));
 			}catch(IOException e){};
 		}
 	}
@@ -64,7 +65,7 @@ public class LSPlayer implements JSONSerializable {
 	 * @return the player
 	 */
 	public OfflinePlayer getPlayer() {
-		return Bukkit.getOfflinePlayer(player);
+		return Bukkit.getOfflinePlayer(uuid);
 	}
 	
 	/** 
@@ -185,42 +186,41 @@ public class LSPlayer implements JSONSerializable {
 		return jsonDataFile;
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
-	public JSONObject write(JSONObject data) {
-		data.put("uuid", player.toString());
+	public JsonObject write(JsonObject data) {
+		data.addProperty("uuid", uuid.toString());
 		
-		JSONArray activeModesData = new JSONArray();
+		JsonArray activeModesData = new JsonArray();
 		for (LSMode mode : this.activeModes){
 			activeModesData.add(mode.getName());
 		}
 		
-		data.put("activeModes", activeModesData);
+		data.add("activeModes", activeModesData);
 		
-		JSONArray ownedBlocksData = new JSONArray();
+		JsonArray ownedBlocksData = new JsonArray();
 		for (LockedBlock block : this.ownedBlocks){
-			ownedBlocksData.add(block.write(new JSONObject()));
+			ownedBlocksData.add(block.write(new JsonObject()));
 		}
 		
-		data.put("ownedBlocks", ownedBlocksData);
+		data.add("ownedBlocks", ownedBlocksData);
 		return data;
 	}
 
 	@Override
-	public boolean read(JSONObject data) {
-		this.player = UUID.fromString((String) data.get("uuid"));
+	public boolean read(JsonObject data) {
+		this.uuid = UUID.fromString(data.get("uuid").getAsString());
 		
-		JSONArray activeModesData = (JSONArray) data.get("activeModes");
+		JsonArray activeModesData = data.getAsJsonArray("activeModes");
 		for (int i = 0; i < activeModesData.size(); i++){
-			LSMode mode = LSMode.getByName((String) activeModesData.get(i));
+			LSMode mode = LSMode.getByName(activeModesData.get(i).getAsString());
 			if (mode == null) continue;
 			
 			this.activeModes.add(mode);
 		}
 		
-		JSONArray ownedBlocksData = (JSONArray) data.get("ownedBlocks");
+		JsonArray ownedBlocksData = data.getAsJsonArray("ownedBlocks");
 		for (int i = 0; i < ownedBlocksData.size(); i++){
-			JSONObject blockData = (JSONObject) ownedBlocksData.get(i);
+			JsonObject blockData = ownedBlocksData.get(i).getAsJsonObject();
 			LockedBlock block = new LockedBlock(blockData);
 			
 			this.ownedBlocks.add(block);

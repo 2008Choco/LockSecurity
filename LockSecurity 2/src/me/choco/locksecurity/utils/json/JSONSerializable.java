@@ -1,5 +1,7 @@
 package me.choco.locksecurity.utils.json;
 
+import com.google.gson.JsonObject;
+
 import org.json.simple.JSONObject;
 
 /** 
@@ -18,7 +20,7 @@ public interface JSONSerializable {
 	 * @param data the JSON data object to modify
 	 * @return the modified JSON data object
 	 */
-	public JSONObject write(JSONObject data);
+	public JsonObject write(JsonObject data);
 	
 	/** 
 	 * Read information from a JSONObject provided as a parameter. Any
@@ -28,6 +30,6 @@ public interface JSONSerializable {
 	 * @param data the JSON data object to read
 	 * @return true if the reading was successful
 	 */
-	public boolean read(JSONObject data);
+	public boolean read(JsonObject data);
 	
 }

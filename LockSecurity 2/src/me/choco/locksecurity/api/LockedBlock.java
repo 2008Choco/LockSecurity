@@ -2,6 +2,9 @@ package me.choco.locksecurity.api;
 
 import java.util.UUID;
 
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -11,9 +14,6 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.json.simple.JSONObject;
-
-import com.google.gson.JsonParseException;
 
 import me.choco.locksecurity.LockSecurity;
 import me.choco.locksecurity.api.exception.IllegalBlockPositionException;
@@ -68,7 +68,7 @@ public class LockedBlock implements JSONSerializable {
 		this(owner, block.getLocation(), lockID, keyID, secondaryComponent);
 	}
 	
-	public LockedBlock(JSONObject data){
+	public LockedBlock(JsonObject data){
 		if (!this.read(data))
 			throw new JsonParseException("LockedBlock data parsing failed for LockID=" + lockID);
 	}
@@ -248,42 +248,40 @@ public class LockedBlock implements JSONSerializable {
 		player.sendMessage(ChatColor.GOLD + "Location: " + ChatColor.AQUA + location.getWorld().getName() + " x:" + location.getBlockX() + " y:" + location.getBlockY() + " z:" + location.getBlockZ());
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
-	public JSONObject write(JSONObject data) {
-		if (!data.isEmpty()) return data;
+	public JsonObject write(JsonObject data) {
+		if (data.size() > 0) return data;
 		
-		data.put("uuid", uuid.toString());
-		data.put("lockID", lockID);
-		data.put("keyID", keyID);
-		data.put("owner", owner.getPlayer().getUniqueId().toString());
+		data.addProperty("uuid", uuid.toString());
+		data.addProperty("lockID", lockID);
+		data.addProperty("keyID", keyID);
+		data.addProperty("owner", owner.getPlayer().getUniqueId().toString());
 		
-		JSONObject locationData = new JSONObject();
-		locationData.put("world", this.location.getWorld().getName());
-		locationData.put("x", this.location.getBlockX());
-		locationData.put("y", this.location.getBlockY());
-		locationData.put("z", this.location.getBlockZ());
+		JsonObject locationData = new JsonObject();
+		locationData.addProperty("world", this.location.getWorld().getName());
+		locationData.addProperty("x", this.location.getBlockX());
+		locationData.addProperty("y", this.location.getBlockY());
+		locationData.addProperty("z", this.location.getBlockZ());
 		
-		data.put("location", locationData);
-		if (secondaryComponent != null) data.put("secondaryComponent", secondaryComponent.getUniqueId().toString());
+		data.add("location", locationData);
+		if (secondaryComponent != null) data.addProperty("secondaryComponent", secondaryComponent.getUniqueId().toString());
 		return data;
 	}
 
 	@Override
-	public boolean read(JSONObject data) {
-		this.uuid = UUID.fromString((String) data.get("uuid"));
-		this.lockID = ((Long) data.get("lockID")).intValue();
-		this.keyID = ((Long) data.get("keyID")).intValue();
-		this.owner = playerRegistry.getPlayer(Bukkit.getOfflinePlayer(UUID.fromString((String) data.get("owner"))));
+	public boolean read(JsonObject data) {
+		this.uuid = UUID.fromString(data.get("uuid").getAsString());
+		this.lockID = data.get("lockID").getAsInt();
+		this.keyID = data.get("keyID").getAsInt();
+		this.owner = playerRegistry.getPlayer(UUID.fromString(data.get("owner").getAsString()));
 		
-		JSONObject locationData = (JSONObject) data.get("location");
-		World world = Bukkit.getWorld((String) locationData.get("world"));
-		if (world == null)
-			return false;
+		JsonObject locationData = data.getAsJsonObject("location");
+		World world = Bukkit.getWorld(locationData.get("world").getAsString());
+		if (world == null) return false;
 		
-		int x = ((Long) locationData.get("x")).intValue();
-		int y = ((Long) locationData.get("y")).intValue();
-		int z = ((Long) locationData.get("z")).intValue();
+		int x = locationData.get("x").getAsInt();
+		int y = locationData.get("y").getAsInt();
+		int z = locationData.get("z").getAsInt();
 		this.location = new Location(world, x, y, z);
 		
 		return true;

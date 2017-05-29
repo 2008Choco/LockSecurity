@@ -9,14 +9,10 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
-
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+
+import me.choco.locksecurity.LockSecurity;
 
 /** 
  * Utilities related to the reading and writing of JSON objects to and from files
@@ -29,49 +25,35 @@ public class JSONUtils {
 	 * Read JSON information from a file
 	 * 
 	 * @param file the file to read from
-	 * @return the JSON object that was read from file
+	 * @return the JsonObject that was read from file. Empty JsonObject if unable to read
 	 * 
-	 * @throws IllegalArgumentException if a file type other than .json is provided
+	 * @throws IllegalArgumentException if the file extension is not .json
 	 */
-	public static JSONObject readJSON(File file){
+	public static JsonObject readJSON(File file){
 		if (!file.getName().endsWith(".json"))
 			throw new IllegalArgumentException("File type provided is not .json extended");
 		
-		try(BufferedReader reader = new BufferedReader(new FileReader(file))){
-			StringBuilder jsonRawBuilder = new StringBuilder();
-			
-			String line;
-			while ((line = reader.readLine()) != null)
-				jsonRawBuilder.append(line);
-			String jsonRaw = jsonRawBuilder.toString();
-			
-			JSONParser parser = new JSONParser();
-			return (JSONObject) parser.parse(jsonRaw);
-		}catch(IOException | ParseException e){ e.printStackTrace(); }
-		return null;
+		try(BufferedReader reader = new BufferedReader(new FileReader(file))) {
+			return LockSecurity.GSON.fromJson(reader, JsonObject.class);
+		} catch (IOException e) { }
+		
+		return new JsonObject();
 	}
 	
 	/** 
 	 * Write JSON information to a file using {@link Gson}'s pretty print
 	 * 
 	 * @param file the file to write to
+	 * @param data the data to write
 	 */
-	public static void writeJSON(File file, JSONObject data){
+	public static void writeJSON(File file, JsonObject data){
 		// Clear file information
-		try { 
-			PrintWriter fileClearer = new PrintWriter(file);
-			fileClearer.close();
-		} catch (FileNotFoundException e) { e.printStackTrace(); }
+		try(PrintWriter writer = new PrintWriter(file)) {}
+		catch (FileNotFoundException e) { e.printStackTrace(); }
 		
 		// Rewrite file information
-		try(BufferedWriter writer = new BufferedWriter(new FileWriter(file))){
-			JsonParser parser = new JsonParser();
-	        JsonObject json = parser.parse(data.toJSONString()).getAsJsonObject();
-
-	        Gson gson = new GsonBuilder().setPrettyPrinting().create();
-	        String prettyJson = gson.toJson(json);
-	        
-	        writer.write(prettyJson);
-		}catch(IOException e){ e.printStackTrace(); }
+		try(BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
+	        writer.write(LockSecurity.GSON.toJson(data));
+		} catch (IOException e) { e.printStackTrace(); }
 	}
 }

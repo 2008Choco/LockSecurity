@@ -5,8 +5,9 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 
+import com.google.gson.JsonObject;
+
 import org.bukkit.scheduler.BukkitRunnable;
-import org.json.simple.JSONObject;
 
 import me.choco.locksecurity.LockSecurity;
 import me.choco.locksecurity.registration.LockedBlockManager;
@@ -29,7 +30,7 @@ public class AutoSaveLoop extends BukkitRunnable {
 	public void run() {
 		if (playerRegistry != null){
 			for (LSPlayer player : playerRegistry.getPlayers().values())
-				JSONUtils.writeJSON(player.getJSONDataFile(), player.write(new JSONObject()));
+				JSONUtils.writeJSON(player.getJSONDataFile(), player.write(new JsonObject()));
 		}
 		
 		if (lockedBlockManager != null){

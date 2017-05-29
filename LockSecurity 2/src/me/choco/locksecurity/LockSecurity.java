@@ -5,6 +5,9 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.UUID;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
 import org.apache.commons.io.FileUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -62,6 +65,7 @@ public class LockSecurity extends JavaPlugin {
 	 */
 	
 	private static LockSecurity instance;
+	public static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
 	
 	private AutoSaveLoop autosave;
 	
