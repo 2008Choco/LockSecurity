@@ -4,8 +4,10 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Set;
+import java.util.stream.Collectors;
+
+import com.google.common.collect.ImmutableSet;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -34,13 +36,9 @@ public class LockedBlockManager {
 	
 	private int nextLockID = -1, nextKeyID = -1;
 	
-	private final Set<LockedBlock> lockedBlocks = new HashSet<>();
-	
-	private PlayerRegistry playerRegistry;
+	private final Set<LockedBlock> lockedBlocks = new HashSet<>(), unloadedBlocks = new HashSet<>();
 	
 	public LockedBlockManager(LockSecurity plugin) {
-		this.playerRegistry = plugin.getPlayerRegistry();
-		
 		// Read Lock / Key ID values
 		try(BufferedReader reader = new BufferedReader(new FileReader(plugin.infoFile))){
 			String line;
@@ -131,10 +129,9 @@ public class LockedBlockManager {
 	 * @return the locked block with the given Lock ID. Null if not found
 	 */
 	public LockedBlock getLockedBlock(int lockID){
-		for (LSPlayer player : playerRegistry.getPlayers().values())
-			for (LockedBlock lBlock : player.getOwnedBlocks())
-				if (lBlock.getLockID() == lockID) return lBlock;
-		return null;
+		return this.lockedBlocks.stream()
+			.filter(b -> b.getLockID() == lockID)
+			.findFirst().orElse(null);
 	}
 	
 	/** 
@@ -143,22 +140,19 @@ public class LockedBlockManager {
 	 * @return a set of registered blocks
 	 */
 	public Set<LockedBlock> getLockedBlocks() {
-		return lockedBlocks;
+		return ImmutableSet.copyOf(lockedBlocks);
 	}
 	
 	/** 
-	 * Get a set of all locked block objects with the given Key ID (Including 
-	 * those that are unregistered)
+	 * Get a set of all locked block objects with the given Key ID
 	 * 
 	 * @param keyID the Key ID to search
 	 * @return a set of all registered blocks with the given Key ID
 	 */
 	public Set<LockedBlock> getLockedBlocks(int keyID){
-		Set<LockedBlock> blocks = new HashSet<>();
-		for (LSPlayer player : playerRegistry.getPlayers().values())
-			for (LockedBlock lBlock : player.getOwnedBlocks())
-				if (lBlock.getKeyID() == keyID) blocks.add(lBlock);
-		return blocks;
+		return this.lockedBlocks.stream()
+				.filter(b -> b.getKeyID() == keyID)
+				.collect(Collectors.toSet());
 	}
 	
 	/** 
@@ -219,7 +213,7 @@ public class LockedBlockManager {
 	 * @return the next key ID
 	 */
 	public int getNextKeyID(){
-		return getNextLockID(false);
+		return getNextKeyID(false);
 	}
 	
 	/** 
@@ -237,32 +231,35 @@ public class LockedBlockManager {
 	}
 	
 	/** 
-	 * Register all existing locked blocks contained in the specified world.
+	 * Load all existing locked blocks contained in the specified world.
 	 * This information is based on registered players in the {@link PlayerRegistry}
 	 * 
 	 * @param world the world to load from
 	 */
 	public void loadDataForWorld(World world){
-		for (LSPlayer player : playerRegistry.getPlayers().values()){
-			for (LockedBlock block : player.getOwnedBlocks()){
-				if (!block.getLocation().getWorld().equals(world)) continue;
-				this.lockedBlocks.add(block);
-			}
-		}
+		this.lockedBlocks.stream()
+			.filter(b -> b.getLocation().getWorld() == world)
+			.forEach(b -> unloadedBlocks.add(b));
+		this.lockedBlocks.removeIf(b -> b.getLocation().getWorld() == world);
 	}
 	
 	/** 
-	 * Unregister all registered locked blocks contained in the specified world.
+	 * Unload all registered locked blocks contained in the specified world.
 	 * 
 	 * @param world the world to unload from
 	 */
 	public void unloadDataForWorld(World world){
-		Iterator<LockedBlock> it = this.lockedBlocks.iterator();
-		while (it.hasNext()){
-			LockedBlock block = it.next();
-			if (!block.getLocation().getWorld().equals(world)) continue;
-			
-			it.remove();
-		}
+		this.unloadedBlocks.stream()
+			.filter(b -> b.getLocation().getWorld() == world)
+			.forEach(b -> lockedBlocks.add(b));
+		this.unloadedBlocks.removeIf(b -> b.getLocation().getWorld() == world);
+	}
+	
+	/**
+	 * Clear all block data from memory
+	 */
+	public void clearLockedBlockData() {
+		this.lockedBlocks.clear();
+		this.unloadedBlocks.clear();
 	}
 }
