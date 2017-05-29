@@ -37,8 +37,11 @@ public class LockedBlockManager {
 	private int nextLockID = -1, nextKeyID = -1;
 	
 	private final Set<LockedBlock> lockedBlocks = new HashSet<>(), unloadedBlocks = new HashSet<>();
+	private final PlayerRegistry playerRegistry;
 	
 	public LockedBlockManager(LockSecurity plugin) {
+		this.playerRegistry = plugin.getPlayerRegistry();
+		
 		// Read Lock / Key ID values
 		try(BufferedReader reader = new BufferedReader(new FileReader(plugin.infoFile))){
 			String line;
@@ -237,10 +240,18 @@ public class LockedBlockManager {
 	 * @param world the world to load from
 	 */
 	public void loadDataForWorld(World world){
-		this.lockedBlocks.stream()
+		// Add blocks in the player's data
+		this.playerRegistry.getPlayers().values()
+			.forEach(p -> p.getOwnedBlocks().stream()
+				.filter(b -> b.getLocation().getWorld() == world)
+				.forEach(b -> lockedBlocks.add(b))
+			);
+		
+		// Add all unloaded blocks to memory
+		this.unloadedBlocks.stream()
 			.filter(b -> b.getLocation().getWorld() == world)
-			.forEach(b -> unloadedBlocks.add(b));
-		this.lockedBlocks.removeIf(b -> b.getLocation().getWorld() == world);
+			.forEach(b -> lockedBlocks.add(b));
+		this.unloadedBlocks.removeIf(b -> b.getLocation().getWorld() == world);
 	}
 	
 	/** 
@@ -249,10 +260,10 @@ public class LockedBlockManager {
 	 * @param world the world to unload from
 	 */
 	public void unloadDataForWorld(World world){
-		this.unloadedBlocks.stream()
+		this.lockedBlocks.stream()
 			.filter(b -> b.getLocation().getWorld() == world)
-			.forEach(b -> lockedBlocks.add(b));
-		this.unloadedBlocks.removeIf(b -> b.getLocation().getWorld() == world);
+			.forEach(b -> unloadedBlocks.add(b));
+		this.lockedBlocks.removeIf(b -> b.getLocation().getWorld() == world);
 	}
 	
 	/**
