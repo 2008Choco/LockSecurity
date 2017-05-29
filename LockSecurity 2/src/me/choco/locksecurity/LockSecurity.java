@@ -198,16 +198,12 @@ public class LockSecurity extends JavaPlugin {
 		
 		if (playerRegistry != null){
 			this.getLogger().info(locale.getMessage("disable.cleardata"));
-			for (LSPlayer player : playerRegistry.getPlayers().values()){
-				player.getOwnedBlocks().clear();
-				player.getActiveModes().clear();
-			}
-			
-			this.playerRegistry.getPlayers().clear();
+			this.playerRegistry.getPlayers().values().forEach(LSPlayer::clearLocalData);
+			this.playerRegistry.clearPlayerRegistry();
 		}
 		
 		if (lockedBlockManager != null)
-			this.lockedBlockManager.getLockedBlocks().clear();
+			this.lockedBlockManager.clearLockedBlockData();
 		
 		Locale.clearLocaleData();
 	}

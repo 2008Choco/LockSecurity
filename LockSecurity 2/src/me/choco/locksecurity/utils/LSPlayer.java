@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
+import com.google.common.collect.ImmutableSet;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
@@ -68,13 +69,22 @@ public class LSPlayer implements JSONSerializable {
 		return Bukkit.getOfflinePlayer(uuid);
 	}
 	
+	/**
+	 * Get the UUID associated with this LSPlayer
+	 * 
+	 * @return the associated UUID
+	 */
+	public UUID getUUID() {
+		return uuid;
+	}
+	
 	/** 
 	 * Get a set of all blocks owned by this player
 	 * 
 	 * @return a set of all owned blocks
 	 */
 	public Set<LockedBlock> getOwnedBlocks() {
-		return ownedBlocks;
+		return ImmutableSet.copyOf(ownedBlocks);
 	}
 	
 	/** 
@@ -156,7 +166,7 @@ public class LSPlayer implements JSONSerializable {
 	 * @return a set of active modes
 	 */
 	public Set<LSMode> getActiveModes() {
-		return activeModes;
+		return ImmutableSet.copyOf(activeModes);
 	}
 	
 	/**
@@ -184,6 +194,15 @@ public class LSPlayer implements JSONSerializable {
 	 */
 	public File getJSONDataFile() {
 		return jsonDataFile;
+	}
+	
+	/**
+	 * Clear all localized data for this player
+	 */
+	public void clearLocalData() {
+		this.activeModes.clear();
+		this.ownedBlocks.clear();
+		this.toTransferTo = null;
 	}
 
 	@Override
