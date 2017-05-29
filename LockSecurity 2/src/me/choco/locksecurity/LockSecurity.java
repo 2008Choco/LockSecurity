@@ -92,12 +92,12 @@ public class LockSecurity extends JavaPlugin {
 		
 		// Transfer old data if necessary
 		if (!playerdataDir.exists()) {
-			if (new File(this.getDataFolder().getAbsolutePath() + File.separator + "lockinfo.db").exists())
-				TransferUtils.fromDatabase(this);
-			else if (new File(this.getDataFolder().getAbsolutePath() + File.separator + "locked.yml").exists())
-				TransferUtils.fromFile(this);
-			
 			if (this.playerdataDir.mkdirs()) this.getLogger().info(locale.getMessage("enable.generate.playerdir"));
+			
+			if (new File(this.getDataFolder(), "lockinfo.db").exists())
+				TransferUtils.fromDatabase(this);
+			else if (new File(this.getDataFolder(), "locked.yml").exists())
+				TransferUtils.fromFile(this);
 		}
 		
 		// Save data file(s)
