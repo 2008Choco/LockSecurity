@@ -18,62 +18,62 @@ public class ConfigAccessor {
     private File configFile;
     private FileConfiguration fileConfiguration;
  
-	public ConfigAccessor(JavaPlugin plugin, String fileName){
+	public ConfigAccessor(JavaPlugin plugin, String fileName) {
         this.plugin = plugin;
         this.fileName = fileName;
         this.configFile = new File(plugin.getDataFolder(), fileName);
     }
 	
-	public ConfigAccessor(JavaPlugin plugin, String path, String fileName){
+	public ConfigAccessor(JavaPlugin plugin, String path, String fileName) {
         this.plugin = plugin;
         this.fileName = fileName;
         this.configFile = new File(path, fileName);
     }
  
-    public void reloadConfig(){        
-        fileConfiguration = YamlConfiguration.loadConfiguration(configFile);
+    public void reloadConfig() {        
+    	this.fileConfiguration = YamlConfiguration.loadConfiguration(configFile);
  
         // Look for defaults in the jar
         InputStream defConfigStream = plugin.getResource(fileName);
-        if (defConfigStream != null){
+        if (defConfigStream != null) {
         	YamlConfiguration defConfig = YamlConfiguration.loadConfiguration(new InputStreamReader(defConfigStream));
-            fileConfiguration.setDefaults(defConfig);
+        	this.fileConfiguration.setDefaults(defConfig);
         }
     }
  
-    public FileConfiguration getConfig(){
-        if (fileConfiguration == null){
+    public FileConfiguration getConfig() {
+        if (fileConfiguration == null) {
             this.reloadConfig();
         }
         return fileConfiguration;
     }
  
-    public void saveConfig(){
-        if (fileConfiguration == null || configFile == null){
+    public void saveConfig() {
+        if (fileConfiguration == null || configFile == null) {
             return;
         }else{
             try{
-                getConfig().save(configFile);
-            }catch (IOException ex){
-                plugin.getLogger().log(Level.SEVERE, "Could not save config to " + configFile, ex);
+                this.getConfig().save(configFile);
+            }catch (IOException ex) {
+            	this.plugin.getLogger().log(Level.SEVERE, "Could not save config to " + configFile, ex);
             }
         }
     }
     
-    public void saveDefaultConfig(){
-        if (!configFile.exists()){            
+    public void saveDefaultConfig() {
+        if (!configFile.exists()) {            
             this.plugin.saveResource(fileName, false);
         }
     }
 	
-	public void loadConfig(){
-		fileConfiguration = getConfig();
-		fileConfiguration.options().copyDefaults(true);
+	public void loadConfig() {
+		this.fileConfiguration = this.getConfig();
+		this.fileConfiguration.options().copyDefaults(true);
 			
-		if(new File(plugin.getDataFolder() + "/" + fileName).exists()){			
+		if(new File(plugin.getDataFolder() + "/" + fileName).exists()) {			
 			System.out.println("[" + plugin.getName() + "] " + fileName + " loaded.");	
 		}else{
-			saveDefaultConfig();
+			this.saveDefaultConfig();
 			System.out.println("[" + plugin.getName() + "] " + fileName + " created and loaded.");
 		}
 	}

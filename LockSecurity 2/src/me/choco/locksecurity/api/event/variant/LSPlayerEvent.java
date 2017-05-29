@@ -11,7 +11,7 @@ import me.choco.locksecurity.utils.LSPlayer;
  */
 public abstract class LSPlayerEvent extends Event {
 
-	private LSPlayer player;
+	private final LSPlayer player;
 	
 	public LSPlayerEvent(LSPlayer player) {
 		this.player = player;
@@ -22,7 +22,7 @@ public abstract class LSPlayerEvent extends Event {
 	 * 
 	 * @return the player
 	 */
-	public LSPlayer getPlayer(){
+	public LSPlayer getPlayer() {
 		return player;
 	}
 }

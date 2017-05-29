@@ -91,7 +91,7 @@ public class LockSecurity extends JavaPlugin {
 		this.locale = Locale.getLocale(this.getConfig().getString("Locale", "en_CA"));
 		
 		// Transfer old data if necessary
-		if (!playerdataDir.exists()){
+		if (!playerdataDir.exists()) {
 			if (new File(this.getDataFolder().getAbsolutePath() + File.separator + "lockinfo.db").exists())
 				TransferUtils.fromDatabase(this);
 			else if (new File(this.getDataFolder().getAbsolutePath() + File.separator + "locked.yml").exists())
@@ -101,11 +101,11 @@ public class LockSecurity extends JavaPlugin {
 		}
 		
 		// Save data file(s)
-		if (!this.infoFile.exists()){
+		if (!this.infoFile.exists()) {
 			try{
 				this.infoFile.createNewFile();
 				FileUtils.write(infoFile, "nextLockID=1\nnextKeyID=1", Charset.defaultCharset());
-			}catch(IOException e){ e.printStackTrace(); }
+			} catch (IOException e) { e.printStackTrace(); }
 			
 			this.getLogger().info(locale.getMessage("enable.generate.infofile"));
 		}
@@ -162,7 +162,7 @@ public class LockSecurity extends JavaPlugin {
 		
 		// Load all registered data
 		this.getLogger().info(locale.getMessage("enable.load.jsondata"));
-		for (File file : playerdataDir.listFiles()){
+		for (File file : playerdataDir.listFiles()) {
 			OfflinePlayer rawPlayer = Bukkit.getOfflinePlayer(UUID.fromString(file.getName().replace(".json", "")));
 			
 			LSPlayer player = new LSPlayer(rawPlayer);
@@ -172,8 +172,8 @@ public class LockSecurity extends JavaPlugin {
 		}
 		
 		// Load data for worlds that are already loaded (In case of a reload)
-		if (Bukkit.getOnlinePlayers().size() != 0){
-			for (World world : Bukkit.getWorlds()){
+		if (Bukkit.getOnlinePlayers().size() != 0) {
+			for (World world : Bukkit.getWorlds()) {
 				if (world.getPlayers().size() == 0) continue;
 				this.lockedBlockManager.loadDataForWorld(world);
 			}
@@ -183,20 +183,20 @@ public class LockSecurity extends JavaPlugin {
 		this.autosave.runTaskTimerAsynchronously(this, 6000L, 6000L);
 		
 		UpdateChecker checker = new UpdateChecker(this, 12650);
-		if (checker.queryUpdateCheck() && checker.requiresUpdate()){
+		if (checker.queryUpdateCheck() && checker.requiresUpdate()) {
 			System.out.println(locale.getMessage("enable.load.update"));
 		}
 	}
 	
 	@Override
 	public void onDisable() {
-		if (autosave != null){
+		if (autosave != null) {
 			this.getLogger().info(locale.getMessage("disable.savedata"));
 			this.autosave.run();
 			this.autosave.cancel();
 		}
 		
-		if (playerRegistry != null){
+		if (playerRegistry != null) {
 			this.getLogger().info(locale.getMessage("disable.cleardata"));
 			this.playerRegistry.getPlayers().values().forEach(LSPlayer::clearLocalData);
 			this.playerRegistry.clearPlayerRegistry();
@@ -213,7 +213,7 @@ public class LockSecurity extends JavaPlugin {
 	 * 
 	 * @return an instance of LockSecurity
 	 */
-	public static LockSecurity getPlugin(){
+	public static LockSecurity getPlugin() {
 		return instance;
 	}
 	
@@ -241,7 +241,7 @@ public class LockSecurity extends JavaPlugin {
 	 * @param sender the user to send the message to
 	 * @param message the message to send
 	 */
-	public void sendMessage(CommandSender sender, String message){
+	public void sendMessage(CommandSender sender, String message) {
 		sender.sendMessage(ChatColor.GOLD + "[" + ChatColor.AQUA + "LockSecurity" + ChatColor.GOLD + "] " + ChatColor.GRAY + ChatColor.translateAlternateColorCodes('&', message));
 	}
 	

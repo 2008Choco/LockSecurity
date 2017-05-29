@@ -16,8 +16,8 @@ import me.choco.locksecurity.registration.LockedBlockManager;
 
 public class GriefProtectionListener implements Listener {
 	
-	private LockSecurity plugin;
-	private LockedBlockManager lockedBlockManager;
+	private final LockSecurity plugin;
+	private final LockedBlockManager lockedBlockManager;
 	
 	public GriefProtectionListener(LockSecurity plugin) {
 		this.plugin = plugin;
@@ -25,19 +25,19 @@ public class GriefProtectionListener implements Listener {
 	}
 	
 	@EventHandler(priority = EventPriority.HIGH)
-	public void onZombieBreakLockedDoor(EntityBreakDoorEvent event){
+	public void onZombieBreakLockedDoor(EntityBreakDoorEvent event) {
 		if (lockedBlockManager.isRegistered(event.getBlock())) event.setCancelled(true);
 	}
 	
 	@EventHandler
-	public void onBlockBurn(BlockBurnEvent event){
+	public void onBlockBurn(BlockBurnEvent event) {
 		if (lockedBlockManager.isRegistered(event.getBlock())) event.setCancelled(true);
 	}
 	
 	@EventHandler
-	public void onDestroyBlockBeneathDoor(BlockBreakEvent event){
+	public void onDestroyBlockBeneathDoor(BlockBreakEvent event) {
 		Block block = event.getBlock().getRelative(BlockFace.UP);
-		if (lockedBlockManager.isRegistered(block)){
+		if (lockedBlockManager.isRegistered(block)) {
 			event.setCancelled(true);
 			plugin.sendMessage(event.getPlayer(), plugin.getLocale().getMessage("event.lock.cannotbreak")
 					.replace("%type%", block.getType().name())
@@ -46,12 +46,12 @@ public class GriefProtectionListener implements Listener {
 	}
 	
 	@EventHandler
-	public void onRedstonePowerDoor(BlockRedstoneEvent event){
+	public void onRedstonePowerDoor(BlockRedstoneEvent event) {
 		if (lockedBlockManager.isRegistered(event.getBlock())) event.setNewCurrent(0);
 	}
 	
 	@EventHandler
-	public void onHopperPullItem(InventoryMoveItemEvent event){
+	public void onHopperPullItem(InventoryMoveItemEvent event) {
 		if (lockedBlockManager.isRegistered(event.getSource().getLocation().getBlock())) event.setCancelled(true);
 	}
 }

@@ -14,9 +14,9 @@ import me.choco.locksecurity.utils.LSPlayer;
 
 public class LockInspectCmd implements CommandExecutor {
 	
-	private LockSecurity plugin;
-	private PlayerRegistry playerRegistry;
-	private LockedBlockManager lockedBlockManager;
+	private final LockSecurity plugin;
+	private final PlayerRegistry playerRegistry;
+	private final LockedBlockManager lockedBlockManager;
 	
 	public LockInspectCmd(LockSecurity plugin) {
 		this.plugin = plugin;
@@ -26,7 +26,7 @@ public class LockInspectCmd implements CommandExecutor {
 	
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
-		if (!(sender instanceof Player)){
+		if (!(sender instanceof Player)) {
 			plugin.sendMessage(sender, plugin.getLocale().getMessage("command.general.onlyplayers"));
 			return true;
 		}
@@ -39,18 +39,18 @@ public class LockInspectCmd implements CommandExecutor {
 		Player player = (Player) sender;
 		LSPlayer lsPlayer = playerRegistry.getPlayer(player);
 		
-		if (args.length >= 1){
+		if (args.length >= 1) {
 			int lockID = -1;
 			try{
 				lockID = Integer.parseInt(args[0]);
-			}catch(NumberFormatException e){
+			}catch(NumberFormatException e) {
 				plugin.sendMessage(player, plugin.getLocale().getMessage("command.general.invalidlockid")
 						.replace("%ID%", args[0]));
 			}
 			
 			LockedBlock lBlock = lockedBlockManager.getLockedBlock(lockID);
 			
-			if (lBlock == null){
+			if (lBlock == null) {
 				plugin.sendMessage(player, plugin.getLocale().getMessage("command.general.idnotlocked")
 						.replace("%ID%", String.valueOf(lockID)));
 				return true;

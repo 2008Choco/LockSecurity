@@ -16,8 +16,8 @@ import me.choco.locksecurity.utils.LSPlayer;
 
 public class LockListCmd implements CommandExecutor {
 	
-	private LockSecurity plugin;
-	private PlayerRegistry playerRegistry;
+	private final LockSecurity plugin;
+	private final PlayerRegistry playerRegistry;
 	
 	public LockListCmd(LockSecurity plugin) {
 		this.plugin = plugin;
@@ -29,22 +29,22 @@ public class LockListCmd implements CommandExecutor {
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 		OfflinePlayer target = (sender instanceof Player ? (Player) sender : null);
 		
-		if (args.length >= 1){
+		if (args.length >= 1) {
 			target = Bukkit.getOfflinePlayer(args[0]);
-			if (target == null){
+			if (target == null) {
 				plugin.sendMessage(sender, plugin.getLocale().getMessage("command.general.playeroffline")
 						.replace("%target%", args[0]));
 				return true;
 			}
 			
-			if (!target.hasPlayedBefore()){
+			if (!target.hasPlayedBefore()) {
 				plugin.sendMessage(sender, plugin.getLocale().getMessage("command.general.neverplayed")
 						.replace("%target%", args[0]));
 				return true;
 			}
 		}
 		
-		if (target == null){
+		if (target == null) {
 			plugin.sendMessage(sender, plugin.getLocale().getMessage("command.general.onlyplayers"));
 			return true;
 		}
@@ -63,10 +63,10 @@ public class LockListCmd implements CommandExecutor {
 		return true;
 	}
 	
-	private void displayLockInformation(CommandSender sender, LSPlayer player){
+	private void displayLockInformation(CommandSender sender, LSPlayer player) {
 		sender.sendMessage(ChatColor.translateAlternateColorCodes('&', plugin.getLocale().getMessage("command.locklist.identifier"))
 				.replace("%player%", player.getPlayer().getName()));
-		for (LockedBlock block : player.getOwnedBlocks()){
+		for (LockedBlock block : player.getOwnedBlocks()) {
 			Location location = block.getLocation();
 			sender.sendMessage(ChatColor.YELLOW + "[ID: " + block.getLockID() + "] " + 
 					location.getWorld().getName() + 

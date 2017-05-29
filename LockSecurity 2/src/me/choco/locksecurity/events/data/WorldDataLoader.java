@@ -14,8 +14,8 @@ import me.choco.locksecurity.utils.LSPlayer;
 
 public class WorldDataLoader implements Listener {
 	
-	private LockedBlockManager manager;
-	private PlayerRegistry playerRegistry;
+	private final LockedBlockManager manager;
+	private final PlayerRegistry playerRegistry;
 	
 	public WorldDataLoader(LockSecurity plugin) {
 		this.manager = plugin.getLockedBlockManager();
@@ -23,17 +23,17 @@ public class WorldDataLoader implements Listener {
 	}
 	
 	@EventHandler
-	public void onLoadWorld(PlayerChangedWorldEvent event){
+	public void onLoadWorld(PlayerChangedWorldEvent event) {
 		World world = event.getPlayer().getWorld();
 		
 		// The world is freshly loaded. Time to load data
-		if (world.getPlayers().size() == 1){
+		if (world.getPlayers().size() == 1) {
 			manager.loadDataForWorld(world);
 		}
 	}
 	
 	@EventHandler
-	public void onJoinAndLoadWorld(PlayerJoinEvent event){
+	public void onJoinAndLoadWorld(PlayerJoinEvent event) {
 		Player player = event.getPlayer();
 		if (!playerRegistry.hasJSONDataFile(player))
 			playerRegistry.registerPlayer(new LSPlayer(player));
@@ -41,7 +41,7 @@ public class WorldDataLoader implements Listener {
 		World world = player.getWorld();
 		
 		// The world is freshly loaded. Time to load data
-		if (world.getPlayers().size() == 0){
+		if (world.getPlayers().size() == 0) {
 			manager.loadDataForWorld(world);
 		}
 	}

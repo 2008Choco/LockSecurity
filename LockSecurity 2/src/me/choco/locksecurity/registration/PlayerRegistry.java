@@ -25,7 +25,7 @@ public class PlayerRegistry {
 	
 	private final Map<UUID, LSPlayer> players = new HashMap<>();
 	
-	private LockSecurity plugin;
+	private final LockSecurity plugin;
 	
 	public PlayerRegistry(LockSecurity plugin) {
 		this.plugin = plugin;
@@ -37,7 +37,7 @@ public class PlayerRegistry {
 	 * 
 	 * @param player the player to register
 	 */
-	public void registerPlayer(OfflinePlayer player){
+	public void registerPlayer(OfflinePlayer player) {
 		if (players.containsKey(player.getUniqueId())) return;
 		
 		LSPlayer lsPlayer = new LSPlayer(player);
@@ -49,7 +49,7 @@ public class PlayerRegistry {
 	 * 
 	 * @param player the player to register
 	 */
-	public void registerPlayer(LSPlayer player){
+	public void registerPlayer(LSPlayer player) {
 		this.players.put(player.getUUID(), player);
 	}
 	
@@ -67,7 +67,7 @@ public class PlayerRegistry {
 	 * 
 	 * @param player the player to unregister
 	 */
-	public void unregisterPlayer(OfflinePlayer player){
+	public void unregisterPlayer(OfflinePlayer player) {
 		this.unregisterPlayer(player.getUniqueId());
 	}
 	
@@ -76,7 +76,7 @@ public class PlayerRegistry {
 	 * 
 	 * @param player the player to unregister
 	 */
-	public void unregisterPlayer(LSPlayer player){
+	public void unregisterPlayer(LSPlayer player) {
 		this.unregisterPlayer(player.getUUID());
 	}
 	
@@ -96,7 +96,7 @@ public class PlayerRegistry {
 	 * @param player the player to check
 	 * @return true if the player is registered
 	 */
-	public boolean isRegistered(OfflinePlayer player){
+	public boolean isRegistered(OfflinePlayer player) {
 		return this.isRegistered(player.getUniqueId());
 	}
 	
@@ -116,7 +116,7 @@ public class PlayerRegistry {
 	 * @param player the player to get an instance from
 	 * @return the LSPlayer instance. null if not registered
 	 */
-	public LSPlayer getPlayer(OfflinePlayer player){
+	public LSPlayer getPlayer(OfflinePlayer player) {
 		return this.getPlayer(player.getUniqueId());
 	}
 	
@@ -126,7 +126,7 @@ public class PlayerRegistry {
 	 * @param mode the mode to reference
 	 * @return a set of all players in the specified mode
 	 */
-	public Set<LSPlayer> getPlayersInMode(LSMode mode){
+	public Set<LSPlayer> getPlayersInMode(LSMode mode) {
 		return this.players.values().stream()
 				.filter(p -> p.isModeActive(mode))
 				.collect(Collectors.toSet());
@@ -140,7 +140,7 @@ public class PlayerRegistry {
 	 * @param player the player to check
 	 * @return true if the player has a JSON data file
 	 */
-	public boolean hasJSONDataFile(OfflinePlayer player){
+	public boolean hasJSONDataFile(OfflinePlayer player) {
 		return new File(plugin.playerdataDir + File.separator + player.getUniqueId().toString() + ".json").exists();
 	}
 	

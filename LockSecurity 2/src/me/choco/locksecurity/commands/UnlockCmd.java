@@ -16,9 +16,9 @@ import me.choco.locksecurity.utils.LSPlayer;
 
 public class UnlockCmd implements CommandExecutor {
 	
-	private LockSecurity plugin;
-	private PlayerRegistry playerRegistry;
-	private LockedBlockManager lockedBlockManager;
+	private final LockSecurity plugin;
+	private final PlayerRegistry playerRegistry;
+	private final LockedBlockManager lockedBlockManager;
 	
 	public UnlockCmd(LockSecurity plugin) {
 		this.plugin = plugin;
@@ -28,7 +28,7 @@ public class UnlockCmd implements CommandExecutor {
 	
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
-		if (!(sender instanceof Player)){
+		if (!(sender instanceof Player)) {
 			plugin.sendMessage(sender, plugin.getLocale().getMessage("command.general.onlyplayers"));
 			return true;
 		}
@@ -36,7 +36,7 @@ public class UnlockCmd implements CommandExecutor {
 		Player player = (Player) sender;
 		LSPlayer lsPlayer = playerRegistry.getPlayer(player);
 		
-		if (args.length >= 1){
+		if (args.length >= 1) {
 			if (!sender.hasPermission("locks.unlock.id") || !sender.hasPermission("locks.unlock.admin")) {
 				plugin.sendMessage(sender, plugin.getLocale().getMessage("command.general.nopermission"));
 				return true;
@@ -45,7 +45,7 @@ public class UnlockCmd implements CommandExecutor {
 			int lockID = 0;
 			try{
 				lockID = Integer.parseInt(args[0]);
-			}catch(NumberFormatException e){
+			}catch(NumberFormatException e) {
 				plugin.sendMessage(player, plugin.getLocale().getMessage("command.general.invalidlockid")
 						.replace("%ID%", args[0]));
 				return true;
@@ -53,13 +53,13 @@ public class UnlockCmd implements CommandExecutor {
 			
 			LockedBlock lBlock = lockedBlockManager.getLockedBlock(lockID);
 			
-			if (lBlock == null){
+			if (lBlock == null) {
 				plugin.sendMessage(player, plugin.getLocale().getMessage("command.general.idnotlocked")
 						.replace("%ID%", String.valueOf(lockID)));
 				return true;
 			}
 			
-			if (!lsPlayer.ownsBlock(lBlock) && !sender.hasPermission("locks.unlock.admin")){
+			if (!lsPlayer.ownsBlock(lBlock) && !sender.hasPermission("locks.unlock.admin")) {
 				plugin.sendMessage(player, plugin.getLocale().getMessage("command.unlock.notowner"));
 				return true;
 			}

@@ -21,26 +21,26 @@ public class KeyCraftingListener implements Listener {
 									UNSMITHED_KEY = KeyFactory.getUnsmithedkey();
 	
 	@EventHandler
-	public void onDuplicateMergeKey(PrepareItemCraftEvent event){
+	public void onDuplicateMergeKey(PrepareItemCraftEvent event) {
 		ItemStack result = event.getInventory().getResult();
 		if (result == null || result.getType().equals(Material.AIR)) return;
 		
 		Player player = (Player) event.getInventory().getViewers().get(0);
-		if (result.equals(DUAL_KEY_RESULT)){
+		if (result.equals(DUAL_KEY_RESULT)) {
 			ItemStack key1 = null, key2 = null; // (For merges:) - key1 = smithed
 			
-			for (ItemStack item : event.getInventory().getMatrix()){
+			for (ItemStack item : event.getInventory().getMatrix()) {
 				if (item == null) continue;
 				if (key1 != null && key2 != null) break;
 				
-				if (KeyFactory.isUnsmithedKey(item) || KeyFactory.isSmithedKey(item)){
-					if (key1 == null){ key1 = item; }
+				if (KeyFactory.isUnsmithedKey(item) || KeyFactory.isSmithedKey(item)) {
+					if (key1 == null) { key1 = item; }
 					else{ key2 = item; break; }
 				}
 			}
 			
 			// TODO: Check permission
-			if (key1 == null || key2 == null){
+			if (key1 == null || key2 == null) {
 				event.getInventory().setResult(null);
 			}else{
 				boolean key1Unsmithed = KeyFactory.isUnsmithedKey(key1), key2Unsmithed = KeyFactory.isUnsmithedKey(key2);
@@ -48,14 +48,14 @@ public class KeyCraftingListener implements Listener {
 				boolean duplicate = (!key1Unsmithed && key2Unsmithed) || (key1Unsmithed && !key2Unsmithed);
 				boolean merge = !key1Unsmithed && !key2Unsmithed;
 				
-				if (duplicate){
+				if (duplicate) {
 					int[] IDs = KeyFactory.getIDs((key2Unsmithed ? key1 : key2));
 					
 					PlayerDuplicateKeyEvent pdke = new PlayerDuplicateKeyEvent(player, key1, key2, IDs);
 					Bukkit.getPluginManager().callEvent(pdke);
 					
 					event.getInventory().setResult(KeyFactory.buildKey(KeyType.SMITHED).setAmount(2).withIDs(IDs).build());
-				}else if (merge){
+				}else if (merge) {
 					ItemStack resultKey = KeyFactory.mergeKeys(key1, key2);
 					
 					PlayerMergeKeyEvent pmke = new PlayerMergeKeyEvent(player, key1, key2, KeyFactory.getIDs(resultKey));
@@ -70,19 +70,19 @@ public class KeyCraftingListener implements Listener {
 	}
 	
 	@EventHandler
-	public void onConvertKey(PrepareItemCraftEvent event){
+	public void onConvertKey(PrepareItemCraftEvent event) {
 		ItemStack result = event.getInventory().getResult();
 		if (result == null) return;
 		
 		@SuppressWarnings("unused")
 		Player player = (Player) event.getInventory().getViewers().get(0);
-		if (result.equals(SINGLE_KEY_RESULT)){
+		if (result.equals(SINGLE_KEY_RESULT)) {
 			
 			boolean convert = false;
-			for (ItemStack item : event.getInventory().getMatrix()){
+			for (ItemStack item : event.getInventory().getMatrix()) {
 				if (item == null) continue;
 				
-				if (KeyFactory.isSmithedKey(item)){
+				if (KeyFactory.isSmithedKey(item)) {
 					convert = true;
 					break;
 				}

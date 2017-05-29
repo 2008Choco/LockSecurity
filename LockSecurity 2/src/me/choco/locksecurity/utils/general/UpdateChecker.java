@@ -13,7 +13,7 @@ import org.json.simple.parser.ParseException;
 
 public class UpdateChecker {
 	
-	boolean requiresUpdate;
+	private boolean requiresUpdate;
 	private final String queryURL;
 
 	private final Plugin plugin;
@@ -44,8 +44,8 @@ public class UpdateChecker {
 	 * 
 	 * @return true if the query was successfully
 	 */
-	public boolean queryUpdateCheck(){
-		try(BufferedReader reader = new BufferedReader(new InputStreamReader(new URL(queryURL).openStream()))){
+	public boolean queryUpdateCheck() {
+		try(BufferedReader reader = new BufferedReader(new InputStreamReader(new URL(queryURL).openStream()))) {
 			
 			StringBuilder jsonRaw = new StringBuilder();
 			String currentLine;
@@ -61,8 +61,8 @@ public class UpdateChecker {
 			// Version parser
 			String[] newValues = newestVersion.split("\\.");
 			String[] currentValues = currentVersion.split("\\.");
-			for (int i = 0; i < (currentValues.length > newValues.length ? currentValues.length : newValues.length); i++){
-				if (i >= newValues.length){
+			for (int i = 0; i < (currentValues.length > newValues.length ? currentValues.length : newValues.length); i++) {
+				if (i >= newValues.length) {
 					this.requiresUpdate = true;
 					break;
 				} else if (i >= currentValues.length) break;
@@ -71,14 +71,14 @@ public class UpdateChecker {
 				int currentValue = Integer.parseInt(currentValues[i]);
 
 				if (newValue < currentValue) break;
-				else if (newValue > currentValue){
+				else if (newValue > currentValue) {
 					this.requiresUpdate = true;
 					break;
 				}
 			}
 			
 			return true;
-		}catch(IOException | ParseException | NumberFormatException e){ return false; }
+		} catch (IOException | ParseException | NumberFormatException e) { return false; }
 	}
 	
 	/** 
@@ -86,7 +86,7 @@ public class UpdateChecker {
 	 * 
 	 * @return true if an update is required
 	 */
-	public boolean requiresUpdate(){
+	public boolean requiresUpdate() {
 		return requiresUpdate;
 	}
 }

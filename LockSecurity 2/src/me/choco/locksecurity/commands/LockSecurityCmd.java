@@ -10,7 +10,7 @@ import me.choco.locksecurity.utils.ConfigOption;
 
 public class LockSecurityCmd implements CommandExecutor {
 	
-	private LockSecurity plugin;
+	private final LockSecurity plugin;
 	
 	public LockSecurityCmd(LockSecurity plugin) {
 		this.plugin = plugin;
@@ -22,8 +22,8 @@ public class LockSecurityCmd implements CommandExecutor {
 	
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
-		if (args.length >= 1){
-			if (args[0].equalsIgnoreCase("reload")){
+		if (args.length >= 1) {
+			if (args[0].equalsIgnoreCase("reload")) {
 				if (!sender.hasPermission("locks.reload")) {
 					plugin.sendMessage(sender, plugin.getLocale().getMessage("command.general.nopermission"));
 					return true;
@@ -35,7 +35,7 @@ public class LockSecurityCmd implements CommandExecutor {
 				plugin.sendMessage(sender, plugin.getLocale().getMessage("command.locksecurity.reloaded"));
 			}
 			
-			else if (args[0].equalsIgnoreCase("version")){
+			else if (args[0].equalsIgnoreCase("version")) {
 				sender.sendMessage(ChatColor.GOLD + "--------------------------------------------");
 				sender.sendMessage(ChatColor.DARK_AQUA + "" + ChatColor.BOLD + "Version: " + ChatColor.RESET + ChatColor.GRAY  + plugin.getDescription().getVersion());
 				sender.sendMessage(ChatColor.DARK_AQUA + "" + ChatColor.BOLD + "Developer / Maintainer: " + ChatColor.RESET + ChatColor.GRAY + "2008Choco");

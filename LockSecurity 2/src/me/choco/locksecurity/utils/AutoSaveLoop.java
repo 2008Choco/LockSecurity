@@ -16,9 +16,9 @@ import me.choco.locksecurity.utils.json.JSONUtils;
 
 public class AutoSaveLoop extends BukkitRunnable {
 	
-	private LockSecurity plugin;
-	private PlayerRegistry playerRegistry;
-	private LockedBlockManager lockedBlockManager;
+	private final LockSecurity plugin;
+	private final PlayerRegistry playerRegistry;
+	private final LockedBlockManager lockedBlockManager;
 	
 	public AutoSaveLoop(LockSecurity plugin) {
 		this.plugin = plugin;
@@ -28,19 +28,19 @@ public class AutoSaveLoop extends BukkitRunnable {
 	
 	@Override
 	public void run() {
-		if (playerRegistry != null){
+		if (playerRegistry != null) {
 			for (LSPlayer player : playerRegistry.getPlayers().values())
 				JSONUtils.writeJSON(player.getJSONDataFile(), player.write(new JsonObject()));
 		}
 		
-		if (lockedBlockManager != null){
-			try(BufferedWriter writer = new BufferedWriter(new FileWriter(plugin.infoFile))){
+		if (lockedBlockManager != null) {
+			try(BufferedWriter writer = new BufferedWriter(new FileWriter(plugin.infoFile))) {
 				new PrintWriter(plugin.infoFile).close();
 				
 				String toWrite = "nextLockID=" + lockedBlockManager.getNextLockID() + "\n"
 								+ "nextKeyID=" + lockedBlockManager.getNextKeyID();
 				writer.write(toWrite);
-			}catch(IOException e){ e.printStackTrace(); }
+			} catch (IOException e) { e.printStackTrace(); }
 		}
 	}
 }

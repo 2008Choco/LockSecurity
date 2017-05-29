@@ -17,9 +17,9 @@ import me.choco.locksecurity.utils.LSPlayer;
 
 public class BlockBreakListener implements Listener {
 	
-	private LockSecurity plugin;
-	private PlayerRegistry playerRegistry;
-	private LockedBlockManager lockedBlockManager;
+	private final LockSecurity plugin;
+	private final PlayerRegistry playerRegistry;
+	private final LockedBlockManager lockedBlockManager;
 	
 	public BlockBreakListener(LockSecurity plugin) {
 		this.plugin = plugin;
@@ -28,7 +28,7 @@ public class BlockBreakListener implements Listener {
 	}
 	
 	@EventHandler
-	public void onBreakLockedBlock(BlockBreakEvent event){
+	public void onBreakLockedBlock(BlockBreakEvent event) {
 		Block block = event.getBlock();
 		
 		if (!lockedBlockManager.isLockable(block)) return;
@@ -38,7 +38,7 @@ public class BlockBreakListener implements Listener {
 		LSPlayer lsPlayer = playerRegistry.getPlayer(player);
 		
 		LockedBlock lBlock = lockedBlockManager.getLockedBlock(block);
-		if (!lBlock.isOwner(lsPlayer)){
+		if (!lBlock.isOwner(lsPlayer)) {
 			event.setCancelled(true);
 			return;
 		}
@@ -46,14 +46,14 @@ public class BlockBreakListener implements Listener {
 		// PlayerUnlockBlockEvent
 		PlayerUnlockBlockEvent plube = new PlayerUnlockBlockEvent(lsPlayer, lBlock);
 		Bukkit.getPluginManager().callEvent(plube);
-		if (plube.isCancelled()){
+		if (plube.isCancelled()) {
 			event.setCancelled(true);
 			return;
 		}
 		
 		lockedBlockManager.unregisterBlock(lBlock);
 		lsPlayer.removeBlockFromOwnership(lBlock);
-		if (block.getState().getData() instanceof Door){
+		if (block.getState().getData() instanceof Door) {
 			if (!lBlock.hasSecondaryComponent()) return;
 			
 			LockedBlock lBlockSecondary = lBlock.getSecondaryComponent();

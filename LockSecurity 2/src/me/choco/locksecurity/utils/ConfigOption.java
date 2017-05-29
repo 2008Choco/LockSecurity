@@ -27,7 +27,7 @@ public class ConfigOption {
 	public static boolean DISPLAY_WITHDRAW_MSG = true;
 	public static boolean DISPLAY_DEPOSIT_MSG = true;
 	
-	public static void loadConfigurationValues(LockSecurity plugin){
+	public static void loadConfigurationValues(LockSecurity plugin) {
 		FileConfiguration config = plugin.getConfig();
 		
 		LOCALE = config.getString("Locale", "en_CA");
@@ -49,7 +49,7 @@ public class ConfigOption {
 	
 	private static final LockSecurity plugin = LockSecurity.getPlugin();
 	
-	public static int getMaxLocksForWorld(World world){
+	public static int getMaxLocksForWorld(World world) {
 		return plugin.getConfig().getInt("MaximumLocks." + world.getName(), -1);
 	}
 }

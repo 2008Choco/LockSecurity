@@ -11,28 +11,28 @@ import me.choco.locksecurity.registration.LockedBlockManager;
 
 public class WorldDataUnloader implements Listener {
 	
-	private LockedBlockManager manager;
+	private final LockedBlockManager manager;
 	
 	public WorldDataUnloader(LockSecurity plugin) {
 		this.manager = plugin.getLockedBlockManager();
 	}
 	
 	@EventHandler
-	public void onUnloadWorld(PlayerChangedWorldEvent event){
+	public void onUnloadWorld(PlayerChangedWorldEvent event) {
 		World world = event.getFrom();
 		
 		// Empty world, time to unload data
-		if (world.getPlayers().size() == 0){
+		if (world.getPlayers().size() == 0) {
 			manager.unloadDataForWorld(world);
 		}
 	}
 	
 	@EventHandler
-	public void onLeaveAndUnloadWorld(PlayerQuitEvent event){
+	public void onLeaveAndUnloadWorld(PlayerQuitEvent event) {
 		World world = event.getPlayer().getWorld();
 		
 		// Empty world, time to unload data
-		if (world.getPlayers().size() == 1){
+		if (world.getPlayers().size() == 1) {
 			manager.unloadDataForWorld(world);
 		}
 	}

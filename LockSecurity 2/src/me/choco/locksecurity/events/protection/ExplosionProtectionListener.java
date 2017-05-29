@@ -13,14 +13,14 @@ import me.choco.locksecurity.registration.LockedBlockManager;
 
 public class ExplosionProtectionListener implements Listener {
 	
-	private LockedBlockManager lockedBlockManager;
+	private final LockedBlockManager lockedBlockManager;
 	
 	public ExplosionProtectionListener(LockSecurity plugin) {
 		this.lockedBlockManager = plugin.getLockedBlockManager();
 	}
 	
 	@EventHandler(priority = EventPriority.HIGH)
-	public void onExplodeLockedBlock(EntityExplodeEvent event){
+	public void onExplodeLockedBlock(EntityExplodeEvent event) {
         Iterator<Block> it = event.blockList().iterator();
         while (it.hasNext())
             if (lockedBlockManager.isRegistered(it.next())) it.remove();

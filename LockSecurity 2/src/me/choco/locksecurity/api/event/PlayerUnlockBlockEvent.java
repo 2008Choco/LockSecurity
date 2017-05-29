@@ -53,7 +53,7 @@ public class PlayerUnlockBlockEvent extends LSPlayerEvent implements Cancellable
 		return handlers;
 	}
 	
-	public static HandlerList getHandlerList(){
+	public static HandlerList getHandlerList() {
 		return handlers;
 	}
 	

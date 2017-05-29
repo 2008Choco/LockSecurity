@@ -30,9 +30,9 @@ import me.choco.locksecurity.utils.LSPlayer;
 
 public class BlockClickListener implements Listener {
 	
-	private LockSecurity plugin;
-	private LockedBlockManager lockedBlockManager;
-	private PlayerRegistry playerRegistry;
+	private final LockSecurity plugin;
+	private final LockedBlockManager lockedBlockManager;
+	private final PlayerRegistry playerRegistry;
 	
 	public BlockClickListener(LockSecurity plugin) {
 		this.plugin = plugin;
@@ -41,7 +41,7 @@ public class BlockClickListener implements Listener {
 	}
 	
 	@EventHandler
-	public void onClickWithKey(PlayerInteractEvent event){
+	public void onClickWithKey(PlayerInteractEvent event) {
 		if (!event.getAction().equals(Action.RIGHT_CLICK_BLOCK) || !lockedBlockManager.isLockable(event.getClickedBlock())) return;
 		
 		Player player = event.getPlayer();
@@ -51,13 +51,13 @@ public class BlockClickListener implements Listener {
 		ItemStack key = player.getInventory().getItemInMainHand();
 		
 		/* Block is locked */
-		if (lockedBlockManager.isRegistered(block)){
+		if (lockedBlockManager.isRegistered(block)) {
 			if (lsPlayer.isModeActive(LSMode.IGNORE_LOCKS)) return;
 			
 			LockedBlock lBlock = lockedBlockManager.getLockedBlock(block);
 			
 			// Inspect locks mode
-			if (lsPlayer.isModeActive(LSMode.LOCK_INSPECT)){
+			if (lsPlayer.isModeActive(LSMode.LOCK_INSPECT)) {
 				event.setCancelled(true);
 				
 				lBlock.displayInformation(player);
@@ -65,7 +65,7 @@ public class BlockClickListener implements Listener {
 			}
 			
 			// Transfer locks mode
-			if (lsPlayer.isModeActive(LSMode.TRANSFER_LOCK)){
+			if (lsPlayer.isModeActive(LSMode.TRANSFER_LOCK)) {
 				event.setCancelled(true);
 				
 				if (lsPlayer.getToTransferTo() != null) 
@@ -75,7 +75,7 @@ public class BlockClickListener implements Listener {
 			}
 			
 			// Unlock mode
-			if (lsPlayer.isModeActive(LSMode.UNLOCK)){
+			if (lsPlayer.isModeActive(LSMode.UNLOCK)) {
 				event.setCancelled(true);
 				
 				if (!player.hasPermission("locks.unlock.self")) {
@@ -97,7 +97,7 @@ public class BlockClickListener implements Listener {
 			}
 			
 			// No key in hand
-			if (key == null || !key.getType().equals(Material.TRIPWIRE_HOOK)){
+			if (key == null || !key.getType().equals(Material.TRIPWIRE_HOOK)) {
 				event.setCancelled(true);
 				
 				// PlayerInteractLockedBlockEvent - No key
@@ -111,7 +111,7 @@ public class BlockClickListener implements Listener {
 			}
 			
 			// Key validation
-			if (!lBlock.isValidKey(key)){
+			if (!lBlock.isValidKey(key)) {
 				event.setCancelled(true);
 				
 				// PlayerInteractLockedBlockEvent - Not right key
@@ -131,7 +131,7 @@ public class BlockClickListener implements Listener {
 		
 		/* Block is unlocked */
 		else{
-			if (lsPlayer.isModeActive(LSMode.IGNORE_LOCKS)){
+			if (lsPlayer.isModeActive(LSMode.IGNORE_LOCKS)) {
 				event.setCancelled(true);
 				
 				// TODO "This block is not locked" message w/ (Delay buffer)
@@ -157,9 +157,9 @@ public class BlockClickListener implements Listener {
 			lockedBlockManager.registerBlock(lBlock);
 			
 			BlockState state = block.getState();
-			if (state instanceof Chest){
+			if (state instanceof Chest) {
 				Block toLock = null;
-				if ((toLock = this.getAdjacentChest(block)) != null){
+				if ((toLock = this.getAdjacentChest(block)) != null) {
 					// PlayerLockBlockEvent - Secondary block
 					PlayerLockBlockEvent plbeSecondary = new PlayerLockBlockEvent(lsPlayer, toLock, lockedBlockManager.getNextLockID(), keyID);
 					Bukkit.getPluginManager().callEvent(plbeSecondary);
@@ -170,7 +170,7 @@ public class BlockClickListener implements Listener {
 				}
 			}
 			
-			else if (state.getData() instanceof Door){
+			else if (state.getData() instanceof Door) {
 				Door dBlock = (Door) state.getData();
 				Block toLock = (dBlock.isTopHalf() ? block.getRelative(BlockFace.DOWN) : block.getRelative(BlockFace.UP));
 				
@@ -189,7 +189,7 @@ public class BlockClickListener implements Listener {
 			player.playSound(player.getLocation(), Sound.BLOCK_WOODEN_DOOR_CLOSE, 1, 2);
 			
 			// Display notification to all administrators in admin notify mode
-			for (LSPlayer admin : playerRegistry.getPlayersInMode(LSMode.ADMIN_NOTIFY)){
+			for (LSPlayer admin : playerRegistry.getPlayersInMode(LSMode.ADMIN_NOTIFY)) {
 				if (!admin.getPlayer().isOnline()) return;
 				
 				// TODO: Send a message
@@ -209,8 +209,8 @@ public class BlockClickListener implements Listener {
 	
 	private static final BlockFace[] FACES = new BlockFace[]{ BlockFace.NORTH, BlockFace.SOUTH, BlockFace.EAST, BlockFace.WEST };
 	
-	private Block getAdjacentChest(Block block){
-		for (BlockFace face : FACES){
+	private Block getAdjacentChest(Block block) {
+		for (BlockFace face : FACES) {
 			Block relative = block.getRelative(face);
 			if (relative.getType().equals(block.getType())) return relative;
 		}

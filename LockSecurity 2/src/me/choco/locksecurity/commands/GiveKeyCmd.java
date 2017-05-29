@@ -11,7 +11,7 @@ import me.choco.locksecurity.api.KeyFactory;
 
 public class GiveKeyCmd implements CommandExecutor {
 	
-	private LockSecurity plugin;
+	private final LockSecurity plugin;
 	
 	public GiveKeyCmd(LockSecurity plugin) {
 		this.plugin = plugin;
@@ -32,18 +32,18 @@ public class GiveKeyCmd implements CommandExecutor {
 		
 		int amount = 1;
 		
-		if (args.length >= 1){
+		if (args.length >= 1) {
 			target = Bukkit.getPlayer(args[0]);
-			if (target == null){
+			if (target == null) {
 				plugin.sendMessage(sender, plugin.getLocale().getMessage("command.general.playeroffline")
 						.replace("%target%", args[0]));
 				return true;
 			}
 			
-			if (args.length >= 2){
+			if (args.length >= 2) {
 				try{
 					amount = Integer.parseInt(args[1]);
-				}catch(NumberFormatException e){
+				}catch(NumberFormatException e) {
 					plugin.sendMessage(sender, plugin.getLocale().getMessage("command.general.invalidinteger")
 							.replace("%param%", args[1]));
 					return true;
@@ -51,7 +51,7 @@ public class GiveKeyCmd implements CommandExecutor {
 			}
 		}
 		
-		if (target == null){
+		if (target == null) {
 			plugin.sendMessage(sender, plugin.getLocale().getMessage("command.general.specifyplayer"));
 			return true;
 		}

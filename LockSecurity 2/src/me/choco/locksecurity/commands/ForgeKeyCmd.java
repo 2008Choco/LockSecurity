@@ -11,7 +11,7 @@ import me.choco.locksecurity.api.KeyFactory.KeyType;
 
 public class ForgeKeyCmd implements CommandExecutor {
 	
-	private LockSecurity plugin;
+	private final LockSecurity plugin;
 	
 	public ForgeKeyCmd(LockSecurity plugin) {
 		this.plugin = plugin;
@@ -23,7 +23,7 @@ public class ForgeKeyCmd implements CommandExecutor {
 	
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
-		if (!(sender instanceof Player)){
+		if (!(sender instanceof Player)) {
 			plugin.sendMessage(sender, plugin.getLocale().getMessage("command.general.onlyplayers"));
 			return true;
 		}
@@ -40,16 +40,16 @@ public class ForgeKeyCmd implements CommandExecutor {
 		
 		Player player = (Player) sender;
 		
-		if (args.length >= 1){
+		if (args.length >= 1) {
 			String[] stringIDs = args[0].split(",");
 			int[] IDs = new int[stringIDs.length];
 			
-			for (int i = 0; i < stringIDs.length; i++){
+			for (int i = 0; i < stringIDs.length; i++) {
 				String ID = stringIDs[i];
 				try{
 					if (ID.equals("")) continue;
 					IDs[i] = Integer.parseInt(ID);
-				}catch(NumberFormatException e){
+				}catch(NumberFormatException e) {
 					plugin.sendMessage(player, plugin.getLocale().getMessage("command.general.invalidinteger")
 							.replace("%param%", ID));
 					return true;

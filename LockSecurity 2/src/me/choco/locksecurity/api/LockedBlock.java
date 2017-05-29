@@ -29,7 +29,7 @@ import me.choco.locksecurity.utils.json.JSONSerializable;
  */
 public class LockedBlock implements JSONSerializable {
 	
-	private static final PlayerRegistry playerRegistry = LockSecurity.getPlugin().getPlayerRegistry();
+	private static final PlayerRegistry PLAYER_REGISTRY = LockSecurity.getPlugin().getPlayerRegistry();
 	
 	private LockedBlock secondaryComponent;
 	
@@ -68,7 +68,7 @@ public class LockedBlock implements JSONSerializable {
 		this(owner, block.getLocation(), lockID, keyID, secondaryComponent);
 	}
 	
-	public LockedBlock(JsonObject data){
+	public LockedBlock(JsonObject data) {
 		if (!this.read(data))
 			throw new JsonParseException("LockedBlock data parsing failed for LockID=" + lockID);
 	}
@@ -101,7 +101,7 @@ public class LockedBlock implements JSONSerializable {
 	 * @param player the player to check
 	 * @return true if the player owns this block
 	 */
-	public boolean isOwner(LSPlayer player){
+	public boolean isOwner(LSPlayer player) {
 		return player.equals(owner);
 	}
 	
@@ -146,7 +146,7 @@ public class LockedBlock implements JSONSerializable {
 	 * 
 	 * @return the UUID of the block
 	 */
-	public UUID getUniqueId(){
+	public UUID getUniqueId() {
 		return uuid;
 	}
 	
@@ -173,7 +173,7 @@ public class LockedBlock implements JSONSerializable {
 	 * 
 	 * @throws IllegalBlockPositionException if the block is not positioned correctly (and "force" is false)
 	 */
-	public void setSecondaryComponent(LockedBlock secondaryComponent, boolean force){
+	public void setSecondaryComponent(LockedBlock secondaryComponent, boolean force) {
 		if (!force && !canBeSecondaryComponent(secondaryComponent))
 			throw new IllegalBlockPositionException("Block is not positioned correctly to be a secondary component (From [LockID] = " + lockID);
 		
@@ -191,7 +191,7 @@ public class LockedBlock implements JSONSerializable {
 	 * @param block the block to check
 	 * @return true if it can be a secondary component
 	 */
-	public boolean canBeSecondaryComponent(LockedBlock block){
+	public boolean canBeSecondaryComponent(LockedBlock block) {
 		if (!this.getBlock().getType().equals(block.getBlock().getType())) return false;
 		
 		Material material = this.getBlock().getType();
@@ -206,7 +206,7 @@ public class LockedBlock implements JSONSerializable {
 	 * @return the secondary component. null if none is set
 	 * @see {@link #hasSecondaryComponent()}
 	 */
-	public LockedBlock getSecondaryComponent(){
+	public LockedBlock getSecondaryComponent() {
 		return secondaryComponent;
 	}
 	
@@ -215,7 +215,7 @@ public class LockedBlock implements JSONSerializable {
 	 * 
 	 * @return true if this block has a secondary component
 	 */
-	public boolean hasSecondaryComponent(){
+	public boolean hasSecondaryComponent() {
 		return this.secondaryComponent != null;
 	}
 	
@@ -226,7 +226,7 @@ public class LockedBlock implements JSONSerializable {
 	 * @param key the key to check
 	 * @return true if the Key ID values are similar
 	 */
-	public boolean isValidKey(ItemStack key){
+	public boolean isValidKey(ItemStack key) {
 		if (KeyFactory.isUnsmithedKey(key)) return false;
 			
 		int[] IDs = KeyFactory.getIDs(key);
@@ -240,7 +240,7 @@ public class LockedBlock implements JSONSerializable {
 	 * 
 	 * @param player the player to display information to
 	 */
-	public void displayInformation(Player player){
+	public void displayInformation(Player player) {
 		player.sendMessage(ChatColor.GOLD + "- - - - - - " + ChatColor.DARK_AQUA + "Lock information " + ChatColor.GOLD + "- - - - - -");
 		player.sendMessage(ChatColor.GOLD + "Lock ID: " + ChatColor.AQUA + lockID);
 		player.sendMessage(ChatColor.GOLD + "Key ID: " + ChatColor.AQUA + keyID);
@@ -273,7 +273,7 @@ public class LockedBlock implements JSONSerializable {
 		this.uuid = UUID.fromString(data.get("uuid").getAsString());
 		this.lockID = data.get("lockID").getAsInt();
 		this.keyID = data.get("keyID").getAsInt();
-		this.owner = playerRegistry.getPlayer(UUID.fromString(data.get("owner").getAsString()));
+		this.owner = PLAYER_REGISTRY.getPlayer(UUID.fromString(data.get("owner").getAsString()));
 		
 		JsonObject locationData = data.getAsJsonObject("location");
 		World world = Bukkit.getWorld(locationData.get("world").getAsString());

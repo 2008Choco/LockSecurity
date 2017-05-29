@@ -48,11 +48,11 @@ public class LSPlayer implements JSONSerializable {
 		this.uuid = uuid;
 		
 		this.jsonDataFile = new File(plugin.playerdataDir + File.separator + uuid + ".json");
-		if (!jsonDataFile.exists()){
+		if (!jsonDataFile.exists()) {
 			try{
 				jsonDataFile.createNewFile();
 				JSONUtils.writeJSON(jsonDataFile, this.write(new JsonObject()));
-			}catch(IOException e){};
+			}catch(IOException e) {};
 		}
 	}
 	
@@ -92,7 +92,7 @@ public class LSPlayer implements JSONSerializable {
 	 * 
 	 * @param block the block to add to ownership
 	 */
-	public void addBlockToOwnership(LockedBlock block){
+	public void addBlockToOwnership(LockedBlock block) {
 		if (!block.getOwner().equals(this))
 			throw new IllegalStateException("Unable to register a locked block to a user that does not own it");
 		
@@ -105,7 +105,7 @@ public class LSPlayer implements JSONSerializable {
 	 * 
 	 * @param block the block to remove
 	 */
-	public void removeBlockFromOwnership(LockedBlock block){
+	public void removeBlockFromOwnership(LockedBlock block) {
 		ownedBlocks.remove(block);
 	}
 	
@@ -115,7 +115,7 @@ public class LSPlayer implements JSONSerializable {
 	 * @param block the block to check
 	 * @return true if the player owns this block
 	 */
-	public boolean ownsBlock(LockedBlock block){
+	public boolean ownsBlock(LockedBlock block) {
 		return ownedBlocks.contains(block);
 	}
 	
@@ -124,7 +124,7 @@ public class LSPlayer implements JSONSerializable {
 	 * 
 	 * @param mode the mode to enable
 	 */
-	public void enableMode(LSMode mode){
+	public void enableMode(LSMode mode) {
 		this.activeModes.add(mode);
 	}
 	
@@ -133,7 +133,7 @@ public class LSPlayer implements JSONSerializable {
 	 * 
 	 * @param mode the mode to disable
 	 */
-	public void disableMode(LSMode mode){
+	public void disableMode(LSMode mode) {
 		this.activeModes.remove(mode);
 	}
 	
@@ -143,7 +143,7 @@ public class LSPlayer implements JSONSerializable {
 	 * @param mode the mode to toggle
 	 * @return true if set enabled, false if set disabled
 	 */
-	public boolean toggleMode(LSMode mode){
+	public boolean toggleMode(LSMode mode) {
 		if (activeModes.contains(mode)) this.activeModes.remove(mode);
 		else this.activeModes.add(mode);
 		
@@ -156,7 +156,7 @@ public class LSPlayer implements JSONSerializable {
 	 * @param mode the mode to check
 	 * @return true if the specified mode is active
 	 */
-	public boolean isModeActive(LSMode mode){
+	public boolean isModeActive(LSMode mode) {
 		return this.activeModes.contains(mode);
 	}
 	
@@ -210,14 +210,14 @@ public class LSPlayer implements JSONSerializable {
 		data.addProperty("uuid", uuid.toString());
 		
 		JsonArray activeModesData = new JsonArray();
-		for (LSMode mode : this.activeModes){
+		for (LSMode mode : this.activeModes) {
 			activeModesData.add(mode.getName());
 		}
 		
 		data.add("activeModes", activeModesData);
 		
 		JsonArray ownedBlocksData = new JsonArray();
-		for (LockedBlock block : this.ownedBlocks){
+		for (LockedBlock block : this.ownedBlocks) {
 			ownedBlocksData.add(block.write(new JsonObject()));
 		}
 		
@@ -230,7 +230,7 @@ public class LSPlayer implements JSONSerializable {
 		this.uuid = UUID.fromString(data.get("uuid").getAsString());
 		
 		JsonArray activeModesData = data.getAsJsonArray("activeModes");
-		for (int i = 0; i < activeModesData.size(); i++){
+		for (int i = 0; i < activeModesData.size(); i++) {
 			LSMode mode = LSMode.getByName(activeModesData.get(i).getAsString());
 			if (mode == null) continue;
 			
@@ -238,7 +238,7 @@ public class LSPlayer implements JSONSerializable {
 		}
 		
 		JsonArray ownedBlocksData = data.getAsJsonArray("ownedBlocks");
-		for (int i = 0; i < ownedBlocksData.size(); i++){
+		for (int i = 0; i < ownedBlocksData.size(); i++) {
 			JsonObject blockData = ownedBlocksData.get(i).getAsJsonObject();
 			LockedBlock block = new LockedBlock(blockData);
 			

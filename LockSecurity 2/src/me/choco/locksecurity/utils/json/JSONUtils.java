@@ -29,7 +29,7 @@ public class JSONUtils {
 	 * 
 	 * @throws IllegalArgumentException if the file extension is not .json
 	 */
-	public static JsonObject readJSON(File file){
+	public static JsonObject readJSON(File file) {
 		if (!file.getName().endsWith(".json"))
 			throw new IllegalArgumentException("File type provided is not .json extended");
 		
@@ -46,7 +46,7 @@ public class JSONUtils {
 	 * @param file the file to write to
 	 * @param data the data to write
 	 */
-	public static void writeJSON(File file, JsonObject data){
+	public static void writeJSON(File file, JsonObject data) {
 		// Clear file information
 		try(PrintWriter writer = new PrintWriter(file)) {}
 		catch (FileNotFoundException e) { e.printStackTrace(); }

@@ -55,7 +55,7 @@ public enum LSMode {
 	 * @param name the name of the mode
 	 * @return The mode with the specified name. Null if not found
 	 */
-	public static LSMode getByName(String name){
+	public static LSMode getByName(String name) {
 		for (LSMode mode : values())
 			if (mode.getName().equals(name)) return mode;
 		return null;

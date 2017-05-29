@@ -35,7 +35,7 @@ public class Locale {
 	private static JavaPlugin plugin;
 	private static final List<Locale> LOCALES = Lists.newArrayList();
 	
-	private static final Pattern NODE_PATTERN = Pattern.compile("((?:\\w+\\.{1})*(?:\\w+){1})(?:\\s*=\\s*){1}\"(.*)\"");
+	private static final Pattern NODE_PATTERN = Pattern.compile("((?:\\w+\\.{1})*(?:\\w+) {1})(?:\\s*=\\s*) {1}\"(.*)\"");
 	private static final String FILE_EXTENSION = ".lang";
 	private static File localeFolder;
 	
@@ -136,27 +136,27 @@ public class Locale {
 	 * @return reload messages from file
 	 */
 	public boolean reloadMessages() {
-		if (!this.file.exists()){
+		if (!this.file.exists()) {
 			plugin.getLogger().warning("Could not find file for locale " + this.name);
 			return false;
 		}
 		
 		this.nodes.clear(); // Clear previous data (if any)
 		
-		try(BufferedReader reader = new BufferedReader(new FileReader(file))){
+		try(BufferedReader reader = new BufferedReader(new FileReader(file))) {
 			String line;
-			for (int lineNumber = 0; (line = reader.readLine()) != null; lineNumber++){
+			for (int lineNumber = 0; (line = reader.readLine()) != null; lineNumber++) {
 				if (line.isEmpty() || line.startsWith("#") /* Comment */) continue;
 				
 				Matcher matcher = NODE_PATTERN.matcher(line);
-				if (!matcher.find()){
+				if (!matcher.find()) {
 					System.err.println("Invalid locale syntax at (line=" + lineNumber + ")");
 					continue;
 				}
 				
 				nodes.put(matcher.group(1), matcher.group(2));
 			}
-		}catch(IOException e){
+		} catch (IOException e) {
 			e.printStackTrace();
 			return false;
 		}
@@ -188,7 +188,7 @@ public class Locale {
 	public static void searchForLocales() {
 		if (!localeFolder.exists()) localeFolder.mkdirs();
 		
-		for (File file : localeFolder.listFiles()){
+		for (File file : localeFolder.listFiles()) {
 			String name = file.getName();
 			if (!name.endsWith(".lang")) continue;
 			
@@ -279,7 +279,7 @@ public class Locale {
 			return compareFiles(plugin.getResource(fileName), destinationFile);
 		}
 		
-		try(OutputStream outputStream = new FileOutputStream(destinationFile)){
+		try(OutputStream outputStream = new FileOutputStream(destinationFile)) {
 			IOUtils.copy(plugin.getResource(fileName), outputStream);
 			
 			fileName = fileName.substring(0, fileName.lastIndexOf('.'));
@@ -291,7 +291,7 @@ public class Locale {
 			if (defaultLocale == null) defaultLocale = fileName;
 			
 			return true;
-		}catch(IOException e){ return false; }
+		} catch (IOException e) { return false; }
 	}
 	
 	/**

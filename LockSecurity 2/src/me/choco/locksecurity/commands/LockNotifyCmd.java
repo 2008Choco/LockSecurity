@@ -12,8 +12,8 @@ import me.choco.locksecurity.utils.LSPlayer;
 
 public class LockNotifyCmd implements CommandExecutor {
 
-	private LockSecurity plugin;
-	private PlayerRegistry playerRegistry;
+	private final LockSecurity plugin;
+	private final PlayerRegistry playerRegistry;
 	
 	public LockNotifyCmd(LockSecurity plugin) {
 		this.plugin = plugin;
@@ -22,7 +22,7 @@ public class LockNotifyCmd implements CommandExecutor {
 	
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
-		if (!(sender instanceof Player)){
+		if (!(sender instanceof Player)) {
 			plugin.sendMessage(sender, plugin.getLocale().getMessage("command.general.onlyplayers"));
 			return true;
 		}

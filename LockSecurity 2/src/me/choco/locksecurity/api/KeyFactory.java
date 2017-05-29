@@ -19,7 +19,7 @@ import me.choco.locksecurity.utils.general.ItemBuilder;
  */
 public class KeyFactory {
 	
-	private static final ItemStack unsmithedKey = KeyFactory.buildKey(KeyType.UNSMITHED).build();
+	private static final ItemStack UNSMITHED_KEY = KeyFactory.buildKey(KeyType.UNSMITHED).build();
 	
 	/** 
 	 * Build a new key. Different types of keys have different limitations in the {@link KeyBuilder}
@@ -27,7 +27,7 @@ public class KeyFactory {
 	 * @param type the type of key to build
 	 * @return a new KeyBuilder instance to create the key
 	 */
-	public static KeyBuilder buildKey(KeyType type){
+	public static KeyBuilder buildKey(KeyType type) {
 		return new KeyBuilder(type);
 	}
 	
@@ -37,8 +37,8 @@ public class KeyFactory {
 	 * 
 	 * @return 1 unsmithed key
 	 */
-	public static ItemStack getUnsmithedkey(){
-		return unsmithedKey.clone();
+	public static ItemStack getUnsmithedkey() {
+		return UNSMITHED_KEY.clone();
 	}
 	
 	/** 
@@ -48,10 +48,10 @@ public class KeyFactory {
 	 * @param amount the amount of unsmithed keys to create
 	 * @return unsmithed keys
 	 */
-	public static ItemStack getUnsmithedKey(int amount){
+	public static ItemStack getUnsmithedKey(int amount) {
 		if (amount < 0) throw new IllegalArgumentException("Cannot create an ItemStack with a negative amount");
 		
-		ItemStack key = unsmithedKey.clone();
+		ItemStack key = UNSMITHED_KEY.clone();
 		key.setAmount(amount);
 		return key;
 	}
@@ -62,8 +62,8 @@ public class KeyFactory {
 	 * @param item the item to check
 	 * @return true if the item is an unsmithed key
 	 */
-	public static boolean isUnsmithedKey(ItemStack item){
-		return unsmithedKey.isSimilar(item);
+	public static boolean isUnsmithedKey(ItemStack item) {
+		return UNSMITHED_KEY.isSimilar(item);
 	}
 	
 	/** 
@@ -72,7 +72,7 @@ public class KeyFactory {
 	 * @param item the item to check
 	 * @return true if the item is a smithed key
 	 */
-	public static boolean isSmithedKey(ItemStack item){
+	public static boolean isSmithedKey(ItemStack item) {
 		return getIDs(item).length > 0;
 	}
 	
@@ -84,11 +84,11 @@ public class KeyFactory {
 	 * @param key the key to get the ID's from
 	 * @return an array of all ID's on the key
 	 */
-	public static int[] getIDs(ItemStack key){
+	public static int[] getIDs(ItemStack key) {
 		if (key == null || !key.hasItemMeta() || !key.getItemMeta().hasLore()) return new int[0];
 		List<String> lore = key.getItemMeta().getLore();
 		
-		for (String line : lore){
+		for (String line : lore) {
 			line = ChatColor.stripColor(line);
 			if (!line.startsWith("Key ID: ")) continue;
 			
@@ -96,10 +96,10 @@ public class KeyFactory {
 			String[] stringIDs = line.split(", ");
 			
 			int[] IDs = new int[stringIDs.length];
-			for (int i = 0; i < stringIDs.length; i++){
+			for (int i = 0; i < stringIDs.length; i++) {
 				try{
 					IDs[i] = Integer.parseInt(stringIDs[i]);
-				}catch(NumberFormatException e){ IDs[i] = -1; }
+				}catch(NumberFormatException e) { IDs[i] = -1; }
 			}
 			
 			// Remove any invalid values
@@ -120,7 +120,7 @@ public class KeyFactory {
 	 * 
 	 * @return keys with merged Key ID values. null if neither are smithed keys
 	 */
-	public static ItemStack mergeKeys(ItemStack key1, ItemStack key2, int amount){
+	public static ItemStack mergeKeys(ItemStack key1, ItemStack key2, int amount) {
 		int[] key1IDs = getIDs(key1), key2IDs = getIDs(key2);
 		if (key1IDs == null || key2IDs == null) return null;
 		if (amount < 0) throw new IllegalArgumentException("Cannot create an ItemStack with a negative amount");
@@ -145,7 +145,7 @@ public class KeyFactory {
 	 * 
 	 * @return a singular key with merged Key ID values. null if neither are smithed keys
 	 */
-	public static ItemStack mergeKeys(ItemStack key1, ItemStack key2){
+	public static ItemStack mergeKeys(ItemStack key1, ItemStack key2) {
 		return mergeKeys(key1, key2, 1);
 	}
 	
@@ -180,7 +180,7 @@ public class KeyFactory {
 		 * @param amount the amount of keys
 		 * @return this instance of the builder. Allows for chaining
 		 */
-		public KeyBuilder setAmount(int amount){
+		public KeyBuilder setAmount(int amount) {
 			this.keyBuilder.setAmount(amount);
 			return this;
 		}
@@ -192,7 +192,7 @@ public class KeyFactory {
 		 * @param IDs the ID's to add 
 		 * @return this instance of the builder. Allows for chaining
 		 */
-		public KeyBuilder withIDs(int... IDs){
+		public KeyBuilder withIDs(int... IDs) {
 			if (!dataModifications)
 				throw new IllegalStateException("Cannot modify data of an unsmithed key");
 			Arrays.sort(IDs);
@@ -212,7 +212,7 @@ public class KeyFactory {
 		 * 
 		 * @return the finalized ItemStack (key)
 		 */
-		public ItemStack build(){
+		public ItemStack build() {
 			return keyBuilder.build();
 		}
 	}
