@@ -186,6 +186,11 @@ public class LockSecurity extends JavaPlugin {
 		if (checker.queryUpdateCheck() && checker.requiresUpdate()) {
 			this.getLogger().info(locale.getMessage("An update is available for download on SpigotMC!"));
 		}
+		
+		/* TODO: Enable Metrics
+		 * this.getLogger().info("Enabling plugin metrics");
+		 * Metrics metrics = new Metrics(this);
+		 */
 	}
 	
 	@Override
