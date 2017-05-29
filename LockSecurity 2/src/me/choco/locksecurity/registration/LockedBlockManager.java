@@ -158,6 +158,15 @@ public class LockedBlockManager {
 				.collect(Collectors.toSet());
 	}
 	
+	/**
+	 * Get a set of all currently unloaded locked block objects
+	 * 
+	 * @return a set of unloaded, but registered, blocks
+	 */
+	public Set<LockedBlock> getUnloadedBlocks() {
+		return ImmutableSet.copyOf(unloadedBlocks);
+	}
+	
 	/** 
 	 * Check if a block is lockable or not
 	 * 
