@@ -35,7 +35,7 @@ public class Locale {
 	private static JavaPlugin plugin;
 	private static final List<Locale> LOCALES = Lists.newArrayList();
 	
-	private static final Pattern NODE_PATTERN = Pattern.compile("((?:\\w+\\.{1})*(?:\\w+) {1})(?:\\s*=\\s*) {1}\"(.*)\"");
+	private static final Pattern NODE_PATTERN = Pattern.compile("(\\w+(?:\\.{1}\\w+)*)\\s*=\\s*\"(.*)\"");
 	private static final String FILE_EXTENSION = ".lang";
 	private static File localeFolder;
 	
