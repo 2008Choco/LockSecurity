@@ -36,21 +36,25 @@ public class PlayerRegistry {
 	 * before, a new player file will be created for them
 	 * 
 	 * @param player the player to register
+	 * @return the created player
 	 */
-	public void registerPlayer(OfflinePlayer player) {
-		if (players.containsKey(player.getUniqueId())) return;
+	public LSPlayer registerPlayer(OfflinePlayer player) {
+		if (players.containsKey(player.getUniqueId())) return null;
 		
 		LSPlayer lsPlayer = new LSPlayer(player);
 		players.put(player.getUniqueId(), lsPlayer);
+		return lsPlayer;
 	}
 	
 	/** 
 	 * Register an LSPlayer to the player registry
 	 * 
 	 * @param player the player to register
+	 * @return the registered player instance
 	 */
-	public void registerPlayer(LSPlayer player) {
+	public LSPlayer registerPlayer(LSPlayer player) {
 		this.players.put(player.getUUID(), player);
+		return player;
 	}
 	
 	/** 
