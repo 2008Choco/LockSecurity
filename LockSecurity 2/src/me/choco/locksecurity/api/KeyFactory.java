@@ -49,7 +49,7 @@ public class KeyFactory {
 	 * @return unsmithed keys
 	 */
 	public static ItemStack getUnsmithedKey(int amount) {
-		if (amount < 0) throw new IllegalArgumentException("Cannot create an ItemStack with a negative amount");
+		if (amount <= 0) throw new IllegalArgumentException("Cannot create an ItemStack with a negative amount");
 		
 		ItemStack key = UNSMITHED_KEY.clone();
 		key.setAmount(amount);
@@ -95,17 +95,9 @@ public class KeyFactory {
 			line = line.replace("Key ID: ", "");
 			String[] stringIDs = line.split(", ");
 			
-			int[] IDs = new int[stringIDs.length];
-			for (int i = 0; i < stringIDs.length; i++) {
-				try{
-					IDs[i] = Integer.parseInt(stringIDs[i]);
-				}catch(NumberFormatException e) { IDs[i] = -1; }
-			}
-			
-			// Remove any invalid values
-			IDs = Arrays.stream(IDs).filter(id -> id != -1).toArray();
-			return IDs;
+			return Arrays.stream(stringIDs).mapToInt(s -> Integer.parseInt(s)).filter(i -> i > 0).toArray();
 		}
+		
 		return new int[0];
 	}
 	
@@ -123,14 +115,11 @@ public class KeyFactory {
 	public static ItemStack mergeKeys(ItemStack key1, ItemStack key2, int amount) {
 		int[] key1IDs = getIDs(key1), key2IDs = getIDs(key2);
 		if (key1IDs == null || key2IDs == null) return null;
-		if (amount < 0) throw new IllegalArgumentException("Cannot create an ItemStack with a negative amount");
+		if (amount <= 0) throw new IllegalArgumentException("Cannot create an ItemStack with a negative amount");
 		
 		// Add them up and sort in ascending order
 		int[] newIDs = ArrayUtils.addAll(key1IDs, key2IDs);
-		Arrays.sort(newIDs);
-		
-		// Remove duplicates
-		newIDs = Arrays.stream(newIDs).distinct().toArray();
+		newIDs = Arrays.stream(newIDs).distinct().sorted().toArray();
 		
 		return KeyFactory.buildKey(KeyType.SMITHED).withIDs(newIDs).setAmount(amount).build();
 	}
