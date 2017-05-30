@@ -53,7 +53,7 @@ public class PlayerRegistry {
 	 * @return the registered player instance
 	 */
 	public LSPlayer registerPlayer(LSPlayer player) {
-		this.players.put(player.getUUID(), player);
+		this.players.putIfAbsent(player.getUUID(), player);
 		return player;
 	}
 	
