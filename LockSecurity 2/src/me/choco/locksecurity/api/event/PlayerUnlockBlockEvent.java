@@ -20,6 +20,13 @@ public class PlayerUnlockBlockEvent extends LSPlayerEvent implements Cancellable
 	private final LockedBlock block;
 	private final boolean byCommand;
 	
+	/**
+	 * Construct a new PlayerUnlockBlockEvent
+	 * 
+	 * @param player the player taking part in the event
+	 * @param block the unlocked block
+	 * @param byCommand whether it was unlocked by command or not
+	 */
 	public PlayerUnlockBlockEvent(LSPlayer player, LockedBlock block, boolean byCommand) {
 		super(player);
 		this.block = block;

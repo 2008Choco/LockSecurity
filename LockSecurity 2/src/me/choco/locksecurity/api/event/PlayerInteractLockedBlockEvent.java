@@ -25,6 +25,13 @@ public class PlayerInteractLockedBlockEvent extends LSPlayerEvent {
 	private final LockedBlock block;
 	private final InteractResult result;
 	
+	/**
+	 * Construct a new PlayerInteractLockedBlockEvent
+	 * 
+	 * @param player the player taking part in the event
+	 * @param block the interacted block
+	 * @param result the result of the interaction
+	 */
 	public PlayerInteractLockedBlockEvent(LSPlayer player, LockedBlock block, InteractResult result) {
 		super(player);
 		this.block = block;

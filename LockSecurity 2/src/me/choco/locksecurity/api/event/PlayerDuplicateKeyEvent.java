@@ -19,6 +19,14 @@ public class PlayerDuplicateKeyEvent extends PlayerEvent {
 	private final ItemStack firstKey, secondKey;
 	private final int[] IDs;
 	
+	/**
+	 * Construct a new PlayerDuplicateKeyEvent
+	 * 
+	 * @param player the player taking part in the event
+	 * @param firstKey the first key in the crafting window
+	 * @param secondKey the second key in the crafting window
+	 * @param IDs the IDs being duplicated
+	 */
 	public PlayerDuplicateKeyEvent(Player player, ItemStack firstKey, ItemStack secondKey, int[] IDs) {
 		super(player);
 		this.firstKey = firstKey;

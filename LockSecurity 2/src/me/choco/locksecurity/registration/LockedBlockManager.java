@@ -39,6 +39,11 @@ public class LockedBlockManager {
 	private final Set<LockedBlock> lockedBlocks = new HashSet<>(), unloadedBlocks = new HashSet<>();
 	private final PlayerRegistry playerRegistry;
 	
+	/**
+	 * Construct a new LockedBlockManager. There should be need for one 1 manager
+	 * 
+	 * @param plugin the LockSecurity plugin
+	 */
 	public LockedBlockManager(LockSecurity plugin) {
 		this.playerRegistry = plugin.getPlayerRegistry();
 		

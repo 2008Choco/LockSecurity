@@ -18,6 +18,14 @@ public class PlayerMergeKeyEvent extends PlayerEvent {
 	private final ItemStack firstKey, secondKey;
 	private final int[] IDs;
 	
+	/**
+	 * Construct a new PlayerMergeKeyEvent
+	 * 
+	 * @param player the player taking part in the event
+	 * @param firstKey the first key in the crafting window
+	 * @param secondKey the second key in the crafting window
+	 * @param IDs the new ID's (two keys combined)
+	 */
 	public PlayerMergeKeyEvent(Player player, ItemStack firstKey, ItemStack secondKey, int[] IDs) {
 		super(player);
 		this.firstKey = firstKey;

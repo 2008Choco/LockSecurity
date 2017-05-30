@@ -15,6 +15,12 @@ import me.choco.locksecurity.registration.PlayerRegistry;
 import me.choco.locksecurity.utils.LSPlayer;
 import me.choco.locksecurity.utils.general.ConfigAccessor;
 
+/**
+ * Contains a few methods to assist in the transfering of information from one
+ * data source to the new JSON data source in LockSecurity 2.0.0+
+ * 
+ * @author Parker Hawke - 2008Choco
+ */
 public final class TransferUtils {
 	
 	protected static final void fromDatabase(LockSecurity plugin) {

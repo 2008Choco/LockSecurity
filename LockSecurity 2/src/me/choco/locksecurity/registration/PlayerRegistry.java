@@ -27,6 +27,11 @@ public class PlayerRegistry {
 	
 	private final LockSecurity plugin;
 	
+	/**
+	 * Construct a new PlayerRegistry. There should be need for one 1 manager
+	 * 
+	 * @param plugin the LockSecurity plugin
+	 */
 	public PlayerRegistry(LockSecurity plugin) {
 		this.plugin = plugin;
 	}

@@ -11,6 +11,11 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
+/**
+ * A utility class to assist in update checks through the use of SpiGet
+ * 
+ * @author Parker Hawke - 2008Choco
+ */
 public class UpdateChecker {
 	
 	private boolean requiresUpdate;
@@ -19,12 +24,26 @@ public class UpdateChecker {
 	private final Plugin plugin;
 	private final String pluginID;
 	
+	/**
+	 * Construct a new UpdateChecker. The update check will not execute until
+	 * {@link #queryUpdateCheck()} is invoked.
+	 * 
+	 * @param plugin the plugin to check
+	 * @param pluginName the plugin id (found on Spigot)
+	 */
 	public UpdateChecker(Plugin plugin, String pluginName) {
 		this.plugin = plugin;
 		this.pluginID = pluginName;
 		this.queryURL = "https://api.spiget.org/v2/resources/" + pluginID + "/versions?sort=-name";
 	}
 	
+	/**
+	 * Construct a new UpdateChecker. The update check will not execute until
+	 * {@link #queryUpdateCheck()} is invoked.
+	 * 
+	 * @param plugin the plugin to check
+	 * @param pluginID the plugin id (found on Spigot)
+	 */
 	public UpdateChecker(Plugin plugin, int pluginID) {
 		this(plugin, String.valueOf(pluginID));
 	}

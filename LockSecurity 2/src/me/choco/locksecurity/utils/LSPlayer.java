@@ -44,6 +44,11 @@ public class LSPlayer implements JSONSerializable {
 	
 	private UUID uuid;
 	
+	/**
+	 * Construct a new LSPlayer based on an existing Player's UUID
+	 * 
+	 * @param uuid the player UUID
+	 */
 	public LSPlayer(UUID uuid) {
 		this.uuid = uuid;
 		
@@ -56,6 +61,11 @@ public class LSPlayer implements JSONSerializable {
 		}
 	}
 	
+	/**
+	 * Construct a new LSPlayer based on an existing OfflinePlayer
+	 * 
+	 * @param player the player
+	 */
 	public LSPlayer(OfflinePlayer player) {
 		this(player.getUniqueId());
 	}

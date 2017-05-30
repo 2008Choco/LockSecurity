@@ -13,6 +13,11 @@ public abstract class LSPlayerEvent extends Event {
 
 	private final LSPlayer player;
 	
+	/**
+	 * Construct a new LSPlayerEvent
+	 * 
+	 * @param player the player involved in the event
+	 */
 	public LSPlayerEvent(LSPlayer player) {
 		this.player = player;
 	}

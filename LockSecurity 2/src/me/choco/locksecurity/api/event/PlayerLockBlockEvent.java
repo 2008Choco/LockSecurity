@@ -20,6 +20,14 @@ public class PlayerLockBlockEvent extends LSPlayerEvent implements Cancellable {
 	private final int lockID, keyID;
 	private final Block block;
 	
+	/**
+	 * Construct a new PlayerLockBlockEvent
+	 * 
+	 * @param player the player taking part in the event
+	 * @param block the block to be locked
+	 * @param lockID the Lock ID of the block
+	 * @param keyID the Key ID of the block
+	 */
 	public PlayerLockBlockEvent(LSPlayer player, Block block, int lockID, int keyID) {
 		super(player);
 		this.block = block;
