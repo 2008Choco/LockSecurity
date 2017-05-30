@@ -6,7 +6,6 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 
 import me.choco.locksecurity.LockSecurity;
-import me.choco.locksecurity.utils.ConfigOption;
 
 public class LockSecurityCmd implements CommandExecutor {
 	
@@ -31,7 +30,6 @@ public class LockSecurityCmd implements CommandExecutor {
 				
 				plugin.reloadConfig();
 				plugin.getLocale().reloadMessages();
-				ConfigOption.loadConfigurationValues(plugin);
 				plugin.sendMessage(sender, plugin.getLocale().getMessage("command.locksecurity.reloaded"));
 			}
 			

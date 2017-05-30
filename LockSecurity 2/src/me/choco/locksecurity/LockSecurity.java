@@ -43,7 +43,6 @@ import me.choco.locksecurity.events.protection.KeyPlaceProtectionListener;
 import me.choco.locksecurity.registration.LockedBlockManager;
 import me.choco.locksecurity.registration.PlayerRegistry;
 import me.choco.locksecurity.utils.AutoSaveLoop;
-import me.choco.locksecurity.utils.ConfigOption;
 import me.choco.locksecurity.utils.LSPlayer;
 import me.choco.locksecurity.utils.general.ItemBuilder;
 import me.choco.locksecurity.utils.general.UpdateChecker;
@@ -83,7 +82,6 @@ public class LockSecurity extends JavaPlugin {
 		this.infoFile = new File(this.getDataFolder().getAbsolutePath() + File.separator + "plugin.info");
 		this.playerRegistry = new PlayerRegistry(this);
 		this.saveDefaultConfig();
-		ConfigOption.loadConfigurationValues(this);
 		
 		// Locales
 		Locale.init(this);
