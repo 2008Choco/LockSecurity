@@ -47,7 +47,7 @@ public class LSPlayer implements JSONSerializable {
 	public LSPlayer(UUID uuid) {
 		this.uuid = uuid;
 		
-		this.jsonDataFile = new File(plugin.playerdataDir + File.separator + uuid + ".json");
+		this.jsonDataFile = new File(plugin.playerdataDir, uuid + ".json");
 		if (!jsonDataFile.exists()) {
 			try{
 				jsonDataFile.createNewFile();

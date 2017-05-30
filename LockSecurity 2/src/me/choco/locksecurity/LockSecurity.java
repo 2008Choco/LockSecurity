@@ -78,8 +78,8 @@ public class LockSecurity extends JavaPlugin {
 	public void onEnable() {
 		// Default values
 		instance = this;
-		this.playerdataDir = new File(this.getDataFolder().getAbsolutePath() + File.separator + "playerdata");
-		this.infoFile = new File(this.getDataFolder().getAbsolutePath() + File.separator + "plugin.info");
+		this.playerdataDir = new File(this.getDataFolder(), "playerdata");
+		this.infoFile = new File(this.getDataFolder(), "plugin.info");
 		this.playerRegistry = new PlayerRegistry(this);
 		this.saveDefaultConfig();
 		

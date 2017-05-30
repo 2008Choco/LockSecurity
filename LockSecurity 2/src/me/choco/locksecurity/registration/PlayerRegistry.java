@@ -145,7 +145,7 @@ public class PlayerRegistry {
 	 * @return true if the player has a JSON data file
 	 */
 	public boolean hasJSONDataFile(OfflinePlayer player) {
-		return new File(plugin.playerdataDir + File.separator + player.getUniqueId().toString() + ".json").exists();
+		return new File(plugin.playerdataDir, player.getUniqueId() + ".json").exists();
 	}
 	
 	/** 
