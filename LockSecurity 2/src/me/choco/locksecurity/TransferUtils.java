@@ -49,7 +49,7 @@ public final class TransferUtils {
 			int keyID = lockedFile.getConfig().getInt(key + ".KeyID");
 			UUID ownerUUID = UUID.fromString(lockedFile.getConfig().getString(key + ".OwnerUUID"));
 			
-			World world = Bukkit.getServer().getWorld(lockedFile.getConfig().getString(key + ".Location.World"));
+			World world = Bukkit.getWorld(lockedFile.getConfig().getString(key + ".Location.World"));
 			double x = lockedFile.getConfig().getDouble(key + ".Location.X");
 			double y = lockedFile.getConfig().getDouble(key + ".Location.Y");
 			double z = lockedFile.getConfig().getDouble(key + ".Location.Z");
@@ -63,7 +63,10 @@ public final class TransferUtils {
 			
 			LockedBlock block = new LockedBlock(player, location, lockID, keyID);
 			player.addBlockToOwnership(block);
-			// No need to register it. This is done on world load
+			
+			plugin.getLogger().info("Loaded block at " + location.getWorld().getName() + " " 
+					+ location.getBlockX() + ", " + location.getBlockY() + ", " + location.getBlockZ()
+					+ " for user " + player.getPlayer().getName() + " with LockID " + lockID + " and KeyID " + keyID);
 		}
 		
 		plugin.getLogger().info("Transfer process completed! You may now delete the \"locked.yml\", or (recommended) keep as a backup"
