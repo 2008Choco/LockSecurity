@@ -58,7 +58,7 @@ public class ForgeKeyCmd implements CommandExecutor {
 			
 			player.getInventory().addItem(KeyFactory.buildKey(KeyType.SMITHED).withIDs(IDs).build());
 			plugin.sendMessage(player, plugin.getLocale().getMessage("command.forgekey.givenkey")
-					.replace("ID", args[0]));
+					.replace("%ID%", args[0]));
 		}
 		
 		return true;
