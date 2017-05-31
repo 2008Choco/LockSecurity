@@ -16,7 +16,6 @@ import org.bukkit.Location;
 import org.bukkit.World;
 
 import me.choco.locksecurity.api.LockedBlock;
-import me.choco.locksecurity.registration.PlayerRegistry;
 import me.choco.locksecurity.utils.LSPlayer;
 import me.choco.locksecurity.utils.general.ConfigAccessor;
 
