@@ -29,6 +29,8 @@ public final class TransferUtils {
 	
 	protected static final void fromDatabase(LockSecurity plugin) {
 		plugin.getLogger().info("Commencing transfer process for Data Support of LockSecurity 1.7.0 - 1.8.2");
+		
+		int nextLockID = 1, nextKeyID = 1;
 
 		try {
 			Class.forName("org.sqlite.JDBC");
@@ -50,12 +52,27 @@ public final class TransferUtils {
 				Location location = new Location(world, x, y, z);
 				
 				if (!saveNewData(plugin, ownerUUID, location, lockID, keyID)) continue;
+				
+				// lockID and keyID were stored as highest values in the database... I know.. I'm awful
+				nextLockID = Math.max(nextLockID, lockID);
+				nextKeyID = Math.max(nextKeyID, keyID);
 			}
 			
 			result.close();
 			retrievalStatement.close();
 			connection.close();
 		} catch (ClassNotFoundException | SQLException e) { e.printStackTrace(); }
+		
+		try {
+			plugin.infoFile.createNewFile();
+			FileUtils.write(plugin.infoFile, 
+					"nextLockID=" + nextLockID +
+					"\nnextKeyID=" + nextKeyID, 
+				Charset.defaultCharset());
+		} catch (IOException e) {
+			plugin.getLogger().info("Could not load key/lock ID to file");
+			plugin.infoFile.delete();
+		}
 		
 		plugin.getLogger().info("Transfer process completed! You may now delete the \"lockinfo.db\", or (recommended) keep as a backup"
 				+ "in case anything had went awry during the transfer process (i.e. missing data).");
@@ -70,8 +87,8 @@ public final class TransferUtils {
 			try {
 				plugin.infoFile.createNewFile();
 				FileUtils.write(plugin.infoFile, 
-						"nextLockID=" + lockedFile.getConfig().getInt("NextLockID")
-						+ "\nnextKeyID=" + lockedFile.getConfig().getInt("NextKeyID"), 
+						"nextLockID=" + lockedFile.getConfig().getInt("NextLockID") +
+						"\nnextKeyID=" + lockedFile.getConfig().getInt("NextKeyID"), 
 					Charset.defaultCharset());
 			} catch (IOException e) {
 				plugin.getLogger().info("Could not load key/lock ID to file");
