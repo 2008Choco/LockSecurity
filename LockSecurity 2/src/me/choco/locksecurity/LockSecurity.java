@@ -52,15 +52,7 @@ import me.choco.locksecurity.utils.localization.Locale;
 public class LockSecurity extends JavaPlugin {
 	
 	/* LEFT TODO:
-	 *    - TransferUtils method bodies
-	 *       * Write transfered LockID and KeyID data to the info file
-	 *    - Permission nodes
 	 *    - Utilize configuration options
-	 *    
-	 *    - MAKE SURE I'VE DOCUMENTED EVERYTHING I'VE WRITTEN
-	 *    
-	 * LEFT TO TEST:
-	 *    - All API event calls (This should be testable through ChestCollectors)
 	 */
 	
 	private static LockSecurity instance;
