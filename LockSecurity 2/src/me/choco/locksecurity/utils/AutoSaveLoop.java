@@ -14,17 +14,15 @@ import me.choco.locksecurity.registration.LockedBlockManager;
 import me.choco.locksecurity.registration.PlayerRegistry;
 import me.choco.locksecurity.utils.json.JSONUtils;
 
-public class AutoSaveLoop extends BukkitRunnable {
+public final class AutoSaveLoop extends BukkitRunnable {
 	
-	private final LockSecurity plugin;
-	private final PlayerRegistry playerRegistry;
-	private final LockedBlockManager lockedBlockManager;
+	private static AutoSaveLoop instance;
 	
-	public AutoSaveLoop(LockSecurity plugin) {
-		this.plugin = plugin;
-		this.playerRegistry = plugin.getPlayerRegistry();
-		this.lockedBlockManager = plugin.getLockedBlockManager();
-	}
+	private LockSecurity plugin;
+	private PlayerRegistry playerRegistry;
+	private LockedBlockManager lockedBlockManager;
+	
+	private AutoSaveLoop() {}
 	
 	@Override
 	public void run() {
@@ -42,5 +40,25 @@ public class AutoSaveLoop extends BukkitRunnable {
 				writer.write(toWrite);
 			} catch (IOException e) { e.printStackTrace(); }
 		}
+	}
+	
+	/**
+	 * Start the auto save loop as an asynchronous task
+	 * 
+	 * @param plugin LockSecurity's plugin instance
+	 * @param delayTicks the time interval between saves
+	 * 
+	 * @return the singleton instance of AutoSaveLoop
+	 */
+	public static AutoSaveLoop startLoop(LockSecurity plugin, int delayTicks) {
+		if (instance != null) return instance;
+		
+		instance = new AutoSaveLoop();
+		instance.plugin = plugin;
+		instance.playerRegistry = plugin.getPlayerRegistry();
+		instance.lockedBlockManager = plugin.getLockedBlockManager();
+		
+		instance.runTaskTimerAsynchronously(plugin, delayTicks, delayTicks);
+		return instance;
 	}
 }
