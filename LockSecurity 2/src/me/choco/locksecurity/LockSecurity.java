@@ -51,10 +51,6 @@ import me.choco.locksecurity.utils.localization.Locale;
 
 public class LockSecurity extends JavaPlugin {
 	
-	/* LEFT TODO:
-	 *    - Utilize configuration options
-	 */
-	
 	private static LockSecurity instance;
 	public static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
 	
@@ -137,6 +133,7 @@ public class LockSecurity extends JavaPlugin {
 		// Register crafting recipes
 		this.getLogger().info("Registering custom crafting recipes...");
 		ItemStack unsmithedKey = KeyFactory.getUnsmithedkey();
+		unsmithedKey.setAmount(getConfig().getInt("RecipeYield"));
 		Bukkit.getServer().addRecipe(new ShapedRecipe(new NamespacedKey(this, "unsmithedkey1"), unsmithedKey).shape("B  ", " I ", "  P").setIngredient('B', Material.IRON_FENCE).setIngredient('I', Material.IRON_INGOT).setIngredient('P', Material.WOOD));
 		Bukkit.getServer().addRecipe(new ShapedRecipe(new NamespacedKey(this, "unsmithedkey2"), unsmithedKey).shape(" B ", " I ", " P ").setIngredient('B', Material.IRON_FENCE).setIngredient('I', Material.IRON_INGOT).setIngredient('P', Material.WOOD));
 		Bukkit.getServer().addRecipe(new ShapedRecipe(new NamespacedKey(this, "unsmithedkey3"), unsmithedKey).shape("  B", " I ", "P  ").setIngredient('B', Material.IRON_FENCE).setIngredient('I', Material.IRON_INGOT).setIngredient('P', Material.WOOD));
@@ -167,8 +164,8 @@ public class LockSecurity extends JavaPlugin {
 			}
 		}
 		
-		this.autosave = new AutoSaveLoop(this);
-		this.autosave.runTaskTimerAsynchronously(this, 6000L, 6000L);
+		
+		this.autosave = AutoSaveLoop.startLoop(this, getConfig().getInt("DataSaveIntervalTicks"));
 		
 		UpdateChecker checker = new UpdateChecker(this, 12650);
 		if (checker.queryUpdateCheck() && checker.requiresUpdate()) {

@@ -11,6 +11,7 @@ import org.bukkit.material.Door;
 import me.choco.locksecurity.LockSecurity;
 import me.choco.locksecurity.api.LockedBlock;
 import me.choco.locksecurity.api.event.PlayerUnlockBlockEvent;
+import me.choco.locksecurity.api.utils.LSMode;
 import me.choco.locksecurity.registration.LockedBlockManager;
 import me.choco.locksecurity.registration.PlayerRegistry;
 import me.choco.locksecurity.utils.LSPlayer;
@@ -39,8 +40,10 @@ public class BlockBreakListener implements Listener {
 		
 		LockedBlock lBlock = lockedBlockManager.getLockedBlock(block);
 		if (!lBlock.isOwner(lsPlayer)) {
-			event.setCancelled(true);
-			return;
+			if (!lsPlayer.isModeActive(LSMode.IGNORE_LOCKS) && !plugin.getConfig().getBoolean("Griefing.IgnorelocksCanBreakLocks")) {
+				event.setCancelled(true);
+				return;
+			}
 		}
 		
 		// PlayerUnlockBlockEvent

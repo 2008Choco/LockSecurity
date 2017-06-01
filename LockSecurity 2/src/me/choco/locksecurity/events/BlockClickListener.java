@@ -97,7 +97,8 @@ public class BlockClickListener implements Listener {
 			}
 			
 			// No key in hand
-			if (key == null || !key.getType().equals(Material.TRIPWIRE_HOOK)) {
+			if ((!lBlock.isOwner(lsPlayer) && !plugin.getConfig().getBoolean("Griefing.OwnerRequiresKey"))
+					&& key == null || !key.getType().equals(Material.TRIPWIRE_HOOK)) {
 				event.setCancelled(true);
 				
 				// PlayerInteractLockedBlockEvent - No key
@@ -119,8 +120,10 @@ public class BlockClickListener implements Listener {
 				Bukkit.getPluginManager().callEvent(pilbe);
 
 				// TODO: "This is not the proper key for this block" message w/ (Delay buffer)
-				player.spawnParticle(Particle.SMOKE_NORMAL, block.getLocation().add(0.5, 1, 0.5), 5, 0.1F, 0.2F, 0.1F, 0.01F);
 				player.playSound(player.getLocation(), Sound.BLOCK_TRIPWIRE_CLICK_OFF, 1, 2);
+				if (plugin.getConfig().getBoolean("Aesthetics.DisplayLockedSmokeParticle")) {
+					player.spawnParticle(Particle.SMOKE_NORMAL, block.getLocation().add(0.5, 1, 0.5), 5, 0.1F, 0.2F, 0.1F, 0.01F);
+				}
 				return;
 			}
 			
