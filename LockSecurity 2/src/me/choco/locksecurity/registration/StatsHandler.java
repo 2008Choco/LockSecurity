@@ -1,7 +1,9 @@
 package me.choco.locksecurity.registration;
 
 import java.util.Arrays;
+import java.util.function.Function;
 
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 /**
@@ -24,8 +26,8 @@ public class StatsHandler {
 	 */
 	public StatsHandler(JsonObject statisticData) {
 		this.stats = new Statistic<?>[] {
-			this.blocksLocked = new Statistic<>("blocks_locked", statisticData.get("blocks_locked").getAsInt(), 0),
-			this.blocksUnlocked = new Statistic<>("blocks_unlocked", statisticData.get("blocks_unlocked").getAsInt(), 0)
+			this.blocksLocked = new Statistic<>("blocks_locked", statisticData.get("blocks_locked"), JsonElement::getAsInt, 0),
+			this.blocksUnlocked = new Statistic<>("blocks_unlocked", statisticData.get("blocks_unlocked"), JsonElement::getAsInt, 0)
 		};
 	}
 	
@@ -58,7 +60,7 @@ public class StatsHandler {
 	 * @author Parker Hawke - 2008Choco
 	 * @param <T> the type of the statistic's value
 	 */
-	public static class Statistic<T> {
+	public class Statistic<T> {
 		
 		private T value;
 		private final String identifier;
@@ -71,9 +73,9 @@ public class StatsHandler {
 		 * @param value the value of the statistic
 		 * @param defaultValue the default value
 		 */
-		public Statistic(String identifier, T value, T defaultValue) {
+		public Statistic(String identifier, JsonElement value, Function<JsonElement, T> gsonFunction, T defaultValue) {
 			this.identifier = identifier;
-			this.value = (value != null ? value : defaultValue);
+			this.value = (value != null ? gsonFunction.apply(value) : defaultValue);
 		}
 		
 		/**

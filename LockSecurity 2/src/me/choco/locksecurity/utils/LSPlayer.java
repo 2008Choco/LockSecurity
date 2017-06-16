@@ -244,7 +244,7 @@ public class LSPlayer implements JSONSerializable {
 	public boolean read(JsonObject data) {
 		this.uuid = UUID.fromString(data.get("uuid").getAsString());
 		
-		JsonArray activeModesData = data.getAsJsonArray("activeModes");
+		JsonArray activeModesData = data.has("activeModes") ? data.getAsJsonArray("activeModes") : new JsonArray();
 		for (int i = 0; i < activeModesData.size(); i++) {
 			LSMode mode = LSMode.getByName(activeModesData.get(i).getAsString());
 			if (mode == null) continue;
@@ -252,7 +252,7 @@ public class LSPlayer implements JSONSerializable {
 			this.activeModes.add(mode);
 		}
 		
-		JsonArray ownedBlocksData = data.getAsJsonArray("ownedBlocks");
+		JsonArray ownedBlocksData = data.has("ownedBlocks") ? data.getAsJsonArray("ownedBlocks") : new JsonArray();
 		for (int i = 0; i < ownedBlocksData.size(); i++) {
 			JsonObject blockData = ownedBlocksData.get(i).getAsJsonObject();
 			LockedBlock block = new LockedBlock(blockData);
@@ -260,7 +260,7 @@ public class LSPlayer implements JSONSerializable {
 			this.ownedBlocks.add(block);
 		}
 		
-		JsonObject statisticsData = data.getAsJsonObject("statistics");
+		JsonObject statisticsData = data.has("statistics") ? data.getAsJsonObject("statistics") : new JsonObject();
 		this.statsHandler = new StatsHandler(statisticsData);
 		
 		return true;
