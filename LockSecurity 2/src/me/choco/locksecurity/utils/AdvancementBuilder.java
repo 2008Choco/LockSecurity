@@ -1,11 +1,5 @@
 package me.choco.locksecurity.utils;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,6 +13,7 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.World;
+import org.bukkit.advancement.Advancement;
 import org.bukkit.material.MaterialData;
 
 /**
@@ -560,73 +555,19 @@ public class AdvancementBuilder {
 		return this.getAdvancementData(false);
 	}
 	
-    /**
-     * Save this advancement to the specified world and override any existing
-     * advancement that currently exists in the world
-     * 
-     * @param world the world to save the advancement to
-     * @param overwrite true if existing advancement should be deleted
-     * 
-     * @return true if saved successfully
-     */
-    public boolean save(String world, boolean override) {
-    	return this.save(Bukkit.getWorld(world), override);
-    }
-
 	/**
-	 * Save this advancement to the specified world
+	 * Save this advancement and return the representing Bukkit {@link Advancement} equivalent
 	 * 
-	 * @param world the world to save the advancement to
-	 * @return true if saved successfully
+	 * @return the saved advancement. null if an error occurred
 	 */
-    public boolean save(String world) {
-        return this.save(world, false);
-    }
-    
-    /**
-     * Save this advancement to the specified world and override any existing
-     * advancement that currently exists in the world
-     * 
-     * @param world the world to save the advancement to
-     * @param override true if existing advancement should be deleted
-     * 
-     * @return true if saved successfully
-     */
-    public boolean save(World world, boolean override) {
-    	if (world == null) return false;
-    	
-    	File advancementFile = new File(world.getWorldFolder() + "/data/advancements/"
-    							+ id.getNamespace() + "/" + id.getKey() + ".json");
-    	
+    @SuppressWarnings("deprecation")
+	public Advancement save() {
     	try {
-			Files.createDirectories(Paths.get(world.getWorldFolder().getPath() + "/data/advancements/" + id.getNamespace()));
-			
-			if (override) advancementFile.delete();
-			advancementFile.createNewFile();
-		} catch (IOException e) {
-			e.printStackTrace();
-			return false;
-		}
-    	
-    	try (BufferedWriter writer = new BufferedWriter(new FileWriter(advancementFile))) {
-    		this.updateJSON();
-    		writer.write(GSON.toJson(advancementData));
-		} catch(IOException e) {
-			e.printStackTrace();
-			return false;
-		}
-    	
-    	return true;
-    }
-    
-	/**
-	 * Save this advancement to the specified world
-	 * 
-	 * @param world the world to save the advancement to
-	 * @return true if saved successfully
-	 */
-    public boolean save(World world) {
-    	return this.save(world, false);
+    		return Bukkit.getUnsafe().loadAdvancement(id, GSON.toJson(advancementData));
+    	} catch (Exception e) {
+    		e.printStackTrace();
+    		return null;
+    	}
     }
     
     
