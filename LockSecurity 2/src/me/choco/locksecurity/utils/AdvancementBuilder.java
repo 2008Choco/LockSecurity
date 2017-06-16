@@ -96,12 +96,12 @@ public class AdvancementBuilder {
     private final List<Criteria> criteria = new ArrayList<>();
     
     /* Rewards */
-    private NamespacedKey[] recipes, loot;
+    private NamespacedKey[] recipes = new NamespacedKey[0], loot = new NamespacedKey[0];
     private int experience;
     private String function;
     
     /* Root */
-    private String[] requirements;
+    private String[] requirements = new String[0];
     private String parent;
 
     /**
