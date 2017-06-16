@@ -519,17 +519,19 @@ public class AdvancementBuilder {
 		
 		// "requirements"
 		JsonArray requirements = new JsonArray();
+		JsonArray requirementsNested = new JsonArray();
 		for (String requirement : this.requirements) {
-			requirements.add(requirement);
+			requirementsNested.add(requirement);
 		}
+		requirements.add(requirementsNested);
 		
 		// "rewards"
 		JsonObject rewards = new JsonObject();
 		
 		/* "recipes" */
-		JsonArray recipes = new JsonArray();
+		JsonArray recipesData = new JsonArray();
 		for (NamespacedKey recipe : this.recipes) {
-			recipes.add(recipe.toString());
+			recipesData.add(recipe.toString());
 		}
 		
 		/* "loot" */
@@ -538,17 +540,17 @@ public class AdvancementBuilder {
 			lootData.add(loot.toString());
 		}
 		
-		rewards.add("recipes", recipes);
-		rewards.add("loot", lootData);
-		rewards.addProperty("experience", experience);
-		rewards.addProperty("function", function);
+		if (recipes.length > 0) rewards.add("recipes", recipesData);
+		if (loot.length > 0) rewards.add("loot", lootData);
+		if (experience > 0) rewards.addProperty("experience", experience);
+		if (function != null) rewards.addProperty("function", function);
 		
 		// Root
 		this.advancementData.add("display", display);
-		this.advancementData.addProperty("parent", parent);
+		if (parent != null) this.advancementData.addProperty("parent", parent);
 		this.advancementData.add("criteria", criteriaData);
 		this.advancementData.add("requirements", requirements);
-		this.advancementData.add("rewards", rewards);
+		if (rewards.size() > 0) this.advancementData.add("rewards", rewards);
 		
 		return advancementData;
 	}
@@ -579,38 +581,29 @@ public class AdvancementBuilder {
 	/**
 	 * Save this advancement and return the representing Bukkit {@link Advancement} equivalent
 	 * 
-	 * @param override whether to delete any already existing advancements
 	 * @return the saved advancement. null if an error occurred
 	 */
     @SuppressWarnings("deprecation")
-	public Advancement save(boolean override) {
+	public Advancement save() {
     	// Impossible advancement criteria check
     	if (criteria.size() == 0) {
     		this.criteria.add(new Criteria("impossible", "minecraft:impossible"));
     	}
+    	if (requirements.length == 0) {
+    		this.setRequirements("impossible");
+    	}
     	
     	Advancement existingAdvancement = Bukkit.getAdvancement(id);
-    	if (existingAdvancement != null) {
-    		if (!override) return null;
-    		Bukkit.getUnsafe().removeAdvancement(existingAdvancement.getKey());
+    	if (existingAdvancement == null) {
+        	try {
+        		return Bukkit.getUnsafe().loadAdvancement(id, GSON.toJson(this.getAdvancementData(true)));
+        	} catch (Exception e) {
+        		e.printStackTrace();
+        		return null;
+        	}
     	}
     	
-    	try {
-    		return Bukkit.getUnsafe().loadAdvancement(id, GSON.toJson(this.getAdvancementData(true)));
-    	} catch (Exception e) {
-    		e.printStackTrace();
-    		return null;
-    	}
-    }
-    
-    /**
-     * Save this advancement and return the representing Bukkit {@link Advancement} equivalent. This
-     * will override existing advancements by default
-     * 
-     * @return the saved advancement. null if an error occurred
-     */
-    public Advancement save() {
-    	return this.save(true);
+    	return existingAdvancement;
     }
     
     
