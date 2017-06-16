@@ -13,7 +13,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.World;
 import org.bukkit.advancement.Advancement;
-import org.bukkit.material.MaterialData;
 
 /**
  * Simplify the creation of advancements for Minecraft 1.12 in the style of a builder-pattern class.
@@ -86,10 +85,12 @@ public class AdvancementBuilder {
     private final NamespacedKey id;
 	
 	/* Display */
-	private MaterialData icon;
-	private String title, description, background;
+	private NamespacedKey iconMaterial = NamespacedKey.minecraft("stone");
+	private int iconData = 0;
+	private String title = "Advancement Title", description = "Advancement Description";
+	private NamespacedKey background = NamespacedKey.minecraft("textures/gui/advancements/backgrounds/stone.png");
 	private FrameType frame = FrameType.TASK;
-    private boolean announceToChat, showToast, hidden;
+    private boolean announceToChat = true, showToast = true, hidden = false;
     
     /* Criteria */
     private final List<Criteria> criteria = new ArrayList<>();
@@ -122,24 +123,47 @@ public class AdvancementBuilder {
     }
     
     /**
-     * Include an icon to the TOAST notificatoin
+     * Include an icon to the TOAST notification
      * 
-     * @param icon the icon to set
+     * @param material the material of the icon
+     * @param data the data of the icon
+     * 
      * @return this instance. Allows for chained method calls
      */
-    public AdvancementBuilder withIcon(MaterialData icon) {
-    	this.icon = icon;
+    public AdvancementBuilder withIcon(NamespacedKey material, int data) {
+    	this.iconMaterial = material;
+    	this.iconData = data;
+    	return this;
+    }
+    
+    /**
+     * Include an icon to the TOAST notification with a default data value of 0
+     * 
+     * @param material the material of the icon
+     * @return this instance. Allows for chained method calls
+     */
+    public AdvancementBuilder withIcon(NamespacedKey material) {
+    	this.iconMaterial = material;
     	return this;
     }
 
     /**
-     * Get the icon of this advancement displayed in the TOAST notification
+     * Get the icon material of this advancement displayed in the TOAST notification
      * 
-     * @return the icon
+     * @return the icon material
      */
-    public MaterialData getIcon() {
-        return icon;
+    public NamespacedKey getIconMaterial() {
+        return iconMaterial;
     }
+    
+    /**
+     * Get the icon data of this advancement displaye in the TOAST notification
+     * 
+     * @return the icon data
+     */
+    public int getIconData() {
+		return iconData;
+	}
     
     /**
      * Include a description to the TOAST notification
@@ -167,7 +191,7 @@ public class AdvancementBuilder {
      * @param background the background URL to set
      * @return this instance. Allows for chained method calls
      */
-    public AdvancementBuilder withBackground(String background) {
+    public AdvancementBuilder withBackground(NamespacedKey background) {
         this.background = background;
         return this;
     }
@@ -177,7 +201,7 @@ public class AdvancementBuilder {
      * 
      * @return the background
      */
-    public String getBackground() {
+    public NamespacedKey getBackground() {
         return background;
     }
 
@@ -464,19 +488,18 @@ public class AdvancementBuilder {
      * @return the updated JsonObject
      * @see #getAdvancementData()
      */
-	@SuppressWarnings("deprecation")
 	public JsonObject updateJSON() {
 		// "display"
 		JsonObject display = new JsonObject();
 		
 		JsonObject icon = new JsonObject();
-		icon.addProperty("item", this.icon.getItemTypeId());
-		icon.addProperty("data", this.icon.getData());
+		icon.addProperty("item", this.iconMaterial.toString());
+		icon.addProperty("data", this.iconData);
 		
 		display.add("icon", icon);
 		display.addProperty("title", title);
 		display.addProperty("frame", frame.toString());
-		display.addProperty("background", background);
+		display.addProperty("background", background.toString());
 		display.addProperty("description", description);
 		display.addProperty("show_toast", showToast);
 		display.addProperty("announce_to_chat", announceToChat);
