@@ -583,6 +583,11 @@ public class AdvancementBuilder {
 	 */
     @SuppressWarnings("deprecation")
 	public Advancement save() {
+    	// Impossible advancement criteria check
+    	if (criteria.size() == 0) {
+    		this.criteria.add(new Criteria("impossible", "minecraft:impossible"));
+    	}
+    	
     	try {
     		return Bukkit.getUnsafe().loadAdvancement(id, GSON.toJson(this.getAdvancementData(true)));
     	} catch (Exception e) {
