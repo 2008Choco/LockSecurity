@@ -5,7 +5,6 @@ import java.util.List;
 
 import com.google.common.collect.ImmutableList;
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
@@ -18,7 +17,6 @@ import org.bukkit.material.MaterialData;
 
 /**
  * Simplify the creation of advancements for Minecraft 1.12 in the style of a builder-pattern class.
- * Advancements are saved in a single world by default
  * <p>
  * The original project on which this class was based on can be found open sourced on GitHub at
  * <a href="https://github.com/Chazmondo/AdvancementAPI/">
@@ -82,7 +80,7 @@ public class AdvancementBuilder {
 	 * }
 	 */
 	
-	private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
+	private static final Gson GSON = new Gson();
 
 	private final JsonObject advancementData = new JsonObject();
     private final NamespacedKey id;
