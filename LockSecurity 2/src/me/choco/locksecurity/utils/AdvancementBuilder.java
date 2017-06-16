@@ -579,13 +579,20 @@ public class AdvancementBuilder {
 	/**
 	 * Save this advancement and return the representing Bukkit {@link Advancement} equivalent
 	 * 
+	 * @param override whether to delete any already existing advancements
 	 * @return the saved advancement. null if an error occurred
 	 */
     @SuppressWarnings("deprecation")
-	public Advancement save() {
+	public Advancement save(boolean override) {
     	// Impossible advancement criteria check
     	if (criteria.size() == 0) {
     		this.criteria.add(new Criteria("impossible", "minecraft:impossible"));
+    	}
+    	
+    	Advancement existingAdvancement = Bukkit.getAdvancement(id);
+    	if (existingAdvancement != null) {
+    		if (!override) return null;
+    		Bukkit.getUnsafe().removeAdvancement(existingAdvancement.getKey());
     	}
     	
     	try {
@@ -594,6 +601,16 @@ public class AdvancementBuilder {
     		e.printStackTrace();
     		return null;
     	}
+    }
+    
+    /**
+     * Save this advancement and return the representing Bukkit {@link Advancement} equivalent. This
+     * will override existing advancements by default
+     * 
+     * @return the saved advancement. null if an error occurred
+     */
+    public Advancement save() {
+    	return this.save(true);
     }
     
     
