@@ -584,7 +584,7 @@ public class AdvancementBuilder {
     @SuppressWarnings("deprecation")
 	public Advancement save() {
     	try {
-    		return Bukkit.getUnsafe().loadAdvancement(id, GSON.toJson(advancementData));
+    		return Bukkit.getUnsafe().loadAdvancement(id, GSON.toJson(this.getAdvancementData(true)));
     	} catch (Exception e) {
     		e.printStackTrace();
     		return null;
