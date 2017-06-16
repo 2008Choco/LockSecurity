@@ -8,19 +8,21 @@ import me.choco.locksecurity.utils.AdvancementBuilder.Criteria;
 
 public class LSAdvancements {
 	
-	public static Advancement THE_KEY_TO_EVERYTHING; // Root advancement
+	public static Advancement LOCKSECURITY_2; // Root advancement
 	
 	public static void loadAdvancements(LockSecurity plugin) {
-		if (THE_KEY_TO_EVERYTHING != null) return;
+		if (LOCKSECURITY_2 != null) return;
 		
-		THE_KEY_TO_EVERYTHING = new AdvancementBuilder(new NamespacedKey(plugin, "root"))
-				.withTitle("The Key to Everything")
-				.withDescription("Or... almost everything. Obtain your first unsmithed key!")
+		LOCKSECURITY_2 = new AdvancementBuilder(new NamespacedKey(plugin, "root"))
+				.withTitle("LockSecurity 2")
+				.withDescription("Obtain your first unsmithed key!")
 				.withIcon(NamespacedKey.minecraft("tripwire_hook"))
 				.withBackground(NamespacedKey.minecraft("textures/blocks/planks_oak.png"))
 				.addCriteria(new Criteria("impossible", "minecraft:impossible"))
 				.setAnnounceToChat(false)
 				.save();
+		
+		
 	}
 	
 }
