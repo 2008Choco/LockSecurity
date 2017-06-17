@@ -210,6 +210,15 @@ public class LSPlayer implements JSONSerializable {
 	}
 	
 	/**
+	 * Get the statistics for this player
+	 * 
+	 * @return player statistics
+	 */
+	public StatsHandler getStatsHandler() {
+		return statsHandler;
+	}
+	
+	/**
 	 * Clear all localized data for this player
 	 */
 	public void clearLocalData() {
