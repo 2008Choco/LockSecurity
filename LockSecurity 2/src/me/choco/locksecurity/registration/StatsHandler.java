@@ -1,7 +1,6 @@
 package me.choco.locksecurity.registration;
 
 import java.util.Arrays;
-import java.util.function.Function;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -15,6 +14,9 @@ import com.google.gson.JsonObject;
 public class StatsHandler {
 	
 	public final Statistic blocksLocked, blocksUnlocked;
+	public final Statistic keysCrafted, keysMerged, keysDuplicated, keysUnsmithed;
+	public final Statistic successfulOpens, unsuccessfulOpens;
+	public final Statistic locksTransfered;
 	
 	private final Statistic[] stats;
 	
@@ -28,6 +30,16 @@ public class StatsHandler {
 		this.stats = new Statistic[] {
 			this.blocksLocked = new Statistic("blocks_locked", statisticData.get("blocks_locked")),
 			this.blocksUnlocked = new Statistic("blocks_unlocked", statisticData.get("blocks_unlocked")),
+			
+			this.keysCrafted = new Statistic("keys_crafted", statisticData.get("keys_crafted")),
+			this.keysMerged = new Statistic("keys_merged", statisticData.get("keys_merged")),
+			this.keysDuplicated = new Statistic("keys_duplicated", statisticData.get("keys_duplicated")),
+			this.keysUnsmithed = new Statistic("keys_unsmithed", statisticData.get("keys_unsmithed")),
+			
+			this.successfulOpens = new Statistic("successful_opens", statisticData.get("successful_opens")),
+			this.unsuccessfulOpens = new Statistic("unsuccessful_opens", statisticData.get("unsuccessful_opens")),
+			
+			this.locksTransfered = new Statistic("locks_transfered", statisticData.get("locks_transfered"))
 		};
 	}
 	
