@@ -14,9 +14,9 @@ import com.google.gson.JsonObject;
  */
 public class StatsHandler {
 	
-	public Statistic<Integer> blocksLocked, blocksUnlocked;
+	public final Statistic blocksLocked, blocksUnlocked;
 	
-	private Statistic<?>[] stats;
+	private final Statistic[] stats;
 	
 	/**
 	 * Load information from JSON to the statistic handler. The passed JSON object should
@@ -25,9 +25,9 @@ public class StatsHandler {
 	 * @param statisticData the statistics data
 	 */
 	public StatsHandler(JsonObject statisticData) {
-		this.stats = new Statistic<?>[] {
-			this.blocksLocked = new Statistic<>("blocks_locked", statisticData.get("blocks_locked"), JsonElement::getAsInt, 0),
-			this.blocksUnlocked = new Statistic<>("blocks_unlocked", statisticData.get("blocks_unlocked"), JsonElement::getAsInt, 0)
+		this.stats = new Statistic[] {
+			this.blocksLocked = new Statistic("blocks_locked", statisticData.get("blocks_locked"), JsonElement::getAsInt, 0),
+			this.blocksUnlocked = new Statistic("blocks_unlocked", statisticData.get("blocks_unlocked"), JsonElement::getAsInt, 0)
 		};
 	}
 	
@@ -36,7 +36,7 @@ public class StatsHandler {
 	 * 
 	 * @return all statistics
 	 */
-	public Statistic<?>[] getAllStats() {
+	public Statistic[] getAllStats() {
 		return Arrays.copyOf(stats, stats.length);
 	}
 	
@@ -58,11 +58,10 @@ public class StatsHandler {
 	 * Represents a statistic with an accumulated or defined value
 	 * 
 	 * @author Parker Hawke - 2008Choco
-	 * @param <T> the type of the statistic's value
 	 */
-	public class Statistic<T> {
+	public class Statistic {
 		
-		private T value;
+		private int value;
 		private final String identifier;
 		
 		/**
@@ -73,7 +72,7 @@ public class StatsHandler {
 		 * @param value the value of the statistic
 		 * @param defaultValue the default value
 		 */
-		public Statistic(String identifier, JsonElement value, Function<JsonElement, T> gsonFunction, T defaultValue) {
+		public Statistic(String identifier, JsonElement value, Function<JsonElement, Integer> gsonFunction, int defaultValue) {
 			this.identifier = identifier;
 			this.value = (value != null ? gsonFunction.apply(value) : defaultValue);
 		}
@@ -84,7 +83,7 @@ public class StatsHandler {
 		 * @param identifier the unique identifier
 		 * @param value the value of the statistic
 		 */
-		public Statistic(String identifier, T value) {
+		public Statistic(String identifier, int value) {
 			this.identifier = identifier;
 			this.value = value;
 		}
@@ -103,7 +102,7 @@ public class StatsHandler {
 		 * 
 		 * @param value the value to set
 		 */
-		public void setValue(T value) {
+		public void setValue(int value) {
 			this.value = value;
 		}
 		
@@ -112,7 +111,7 @@ public class StatsHandler {
 		 * 
 		 * @return the current value
 		 */
-		public T getValue() {
+		public int getValue() {
 			return value;
 		}
 		
