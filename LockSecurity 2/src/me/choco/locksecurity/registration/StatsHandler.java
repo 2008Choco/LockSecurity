@@ -26,8 +26,8 @@ public class StatsHandler {
 	 */
 	public StatsHandler(JsonObject statisticData) {
 		this.stats = new Statistic[] {
-			this.blocksLocked = new Statistic("blocks_locked", statisticData.get("blocks_locked"), JsonElement::getAsInt, 0),
-			this.blocksUnlocked = new Statistic("blocks_unlocked", statisticData.get("blocks_unlocked"), JsonElement::getAsInt, 0)
+			this.blocksLocked = new Statistic("blocks_locked", statisticData.get("blocks_locked")),
+			this.blocksUnlocked = new Statistic("blocks_unlocked", statisticData.get("blocks_unlocked")),
 		};
 	}
 	
@@ -72,9 +72,9 @@ public class StatsHandler {
 		 * @param value the value of the statistic
 		 * @param defaultValue the default value
 		 */
-		public Statistic(String identifier, JsonElement value, Function<JsonElement, Integer> gsonFunction, int defaultValue) {
+		public Statistic(String identifier, JsonElement value) {
 			this.identifier = identifier;
-			this.value = (value != null ? gsonFunction.apply(value) : defaultValue);
+			this.value = (value != null ? value.getAsInt() : 0);
 		}
 		
 		/**
