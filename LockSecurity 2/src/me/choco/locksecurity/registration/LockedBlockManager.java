@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -38,6 +39,7 @@ public class LockedBlockManager {
 	
 	private final Set<LockedBlock> lockedBlocks = new HashSet<>(), unloadedBlocks = new HashSet<>();
 	private final PlayerRegistry playerRegistry;
+	private final LockSecurity plugin;
 	
 	/**
 	 * Construct a new LockedBlockManager. There should be need for one 1 manager
@@ -45,6 +47,7 @@ public class LockedBlockManager {
 	 * @param plugin the LockSecurity plugin
 	 */
 	public LockedBlockManager(LockSecurity plugin) {
+		this.plugin = plugin;
 		this.playerRegistry = plugin.getPlayerRegistry();
 		
 		// Read Lock / Key ID values
@@ -189,14 +192,12 @@ public class LockedBlockManager {
 	 * @return true if it is lockable
 	 */
 	public boolean isLockable(Material type) {
-		return (type.equals(Material.CHEST) || type.equals(Material.TRAPPED_CHEST) || type.equals(Material.TRAP_DOOR)
-				|| type.equals(Material.FURNACE) || type.equals(Material.DISPENSER) || type.equals(Material.DROPPER)
-				|| type.equals(Material.HOPPER) || type.equals(Material.ANVIL) 
-				|| type.toString().contains("DOOR") || type.toString().contains("FENCE_GATE"));
-		// TODO
-//		List<String> lockableBlocks = getConfig().getStringList("LockableBlocks");
-//		for (String listedType : lockableBlocks)
-//			if (type.toString().equals(listedType)) return true;
+		List<String> lockableBlocks = plugin.getConfig().getStringList("LockableBlocks");
+		
+		for (String material : lockableBlocks)
+			if (type.toString().equalsIgnoreCase(material)) return true;
+		
+		return false;
 	}
 	
 	/** 
@@ -215,7 +216,7 @@ public class LockedBlockManager {
 	 * @param increment whether the next lock ID should increment or not
 	 * @return the next lock ID
 	 */
-	public int getNextLockID(boolean increment) { // TODO
+	public int getNextLockID(boolean increment) {
 		if (this.nextLockID == -1) {}
 		
 		int lockID = this.nextLockID;

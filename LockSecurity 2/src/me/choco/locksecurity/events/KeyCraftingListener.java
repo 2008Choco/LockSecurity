@@ -35,36 +35,38 @@ public class KeyCraftingListener implements Listener {
 				
 				if (KeyFactory.isUnsmithedKey(item) || KeyFactory.isSmithedKey(item)) {
 					if (key1 == null) { key1 = item; }
-					else{ key2 = item; break; }
+					else { key2 = item; break; }
 				}
 			}
 			
-			// TODO: Check permission
-			if (key1 == null || key2 == null) {
+			if (key1 == null || key2 == null || !player.hasPermission("locks.craft")) {
 				event.getInventory().setResult(null);
-			}else{
-				boolean key1Unsmithed = KeyFactory.isUnsmithedKey(key1), key2Unsmithed = KeyFactory.isUnsmithedKey(key2);
+				return;
+			}
+			
+			boolean key1Unsmithed = KeyFactory.isUnsmithedKey(key1), key2Unsmithed = KeyFactory.isUnsmithedKey(key2);
+			
+			boolean duplicate = (!key1Unsmithed && key2Unsmithed) || (key1Unsmithed && !key2Unsmithed);
+			boolean merge = !key1Unsmithed && !key2Unsmithed;
+			
+			if (duplicate) {
+				int[] IDs = KeyFactory.getIDs((key2Unsmithed ? key1 : key2));
 				
-				boolean duplicate = (!key1Unsmithed && key2Unsmithed) || (key1Unsmithed && !key2Unsmithed);
-				boolean merge = !key1Unsmithed && !key2Unsmithed;
+				PlayerDuplicateKeyEvent pdke = new PlayerDuplicateKeyEvent(player, key1, key2, IDs);
+				Bukkit.getPluginManager().callEvent(pdke);
 				
-				if (duplicate) {
-					int[] IDs = KeyFactory.getIDs((key2Unsmithed ? key1 : key2));
-					
-					PlayerDuplicateKeyEvent pdke = new PlayerDuplicateKeyEvent(player, key1, key2, IDs);
-					Bukkit.getPluginManager().callEvent(pdke);
-					
-					event.getInventory().setResult(KeyFactory.buildKey(KeyType.SMITHED).setAmount(2).withIDs(IDs).build());
-				}else if (merge) {
-					ItemStack resultKey = KeyFactory.mergeKeys(key1, key2);
-					
-					PlayerMergeKeyEvent pmke = new PlayerMergeKeyEvent(player, key1, key2, KeyFactory.getIDs(resultKey));
-					Bukkit.getPluginManager().callEvent(pmke);
-					
-					event.getInventory().setResult(resultKey);
-				}else{
-					event.getInventory().setResult(null); 
-				}
+				event.getInventory().setResult(KeyFactory.buildKey(KeyType.SMITHED).setAmount(2).withIDs(IDs).build());
+			}
+			else if (merge) {
+				ItemStack resultKey = KeyFactory.mergeKeys(key1, key2);
+				
+				PlayerMergeKeyEvent pmke = new PlayerMergeKeyEvent(player, key1, key2, KeyFactory.getIDs(resultKey));
+				Bukkit.getPluginManager().callEvent(pmke);
+				
+				event.getInventory().setResult(resultKey);
+			}
+			else {
+				event.getInventory().setResult(null); 
 			}
 		}
 	}
@@ -74,7 +76,6 @@ public class KeyCraftingListener implements Listener {
 		ItemStack result = event.getInventory().getResult();
 		if (result == null) return;
 		
-		@SuppressWarnings("unused")
 		Player player = (Player) event.getInventory().getViewers().get(0);
 		if (result.equals(SINGLE_KEY_RESULT)) {
 			
@@ -88,10 +89,7 @@ public class KeyCraftingListener implements Listener {
 				}
 			}
 
-			// TODO: Check player permission
-			if (convert)
-				event.getInventory().setResult(UNSMITHED_KEY);
-			else{ event.getInventory().setResult(null); }
+			event.getInventory().setResult((convert && player.hasPermission("locks.craft")) ? UNSMITHED_KEY : null);
 		}
 	}
 }

@@ -1,6 +1,7 @@
 package me.choco.locksecurity.events;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
@@ -105,7 +106,7 @@ public class BlockClickListener implements Listener {
 				PlayerInteractLockedBlockEvent pilbe = new PlayerInteractLockedBlockEvent(lsPlayer, lBlock, InteractResult.NO_KEY);
 				Bukkit.getPluginManager().callEvent(pilbe);
 
-				// TODO: "This block requires a key" message w/ (Delay buffer)
+				plugin.sendMessage(player, plugin.getLocale().getMessage("event.key.none"));
 				player.spawnParticle(Particle.SMOKE_NORMAL, block.getLocation().add(0.5, 1, 0.5), 5, 0.1F, 0.2F, 0.1F, 0.01F);
 				player.playSound(player.getLocation(), Sound.BLOCK_WOODEN_DOOR_CLOSE, 1, 0);
 				return;
@@ -119,7 +120,7 @@ public class BlockClickListener implements Listener {
 				PlayerInteractLockedBlockEvent pilbe = new PlayerInteractLockedBlockEvent(lsPlayer, lBlock, InteractResult.NOT_RIGHT_KEY);
 				Bukkit.getPluginManager().callEvent(pilbe);
 
-				// TODO: "This is not the proper key for this block" message w/ (Delay buffer)
+				plugin.sendMessage(player, plugin.getLocale().getMessage("event.key.attemptpick"));
 				player.playSound(player.getLocation(), Sound.BLOCK_TRIPWIRE_CLICK_OFF, 1, 2);
 				if (plugin.getConfig().getBoolean("Aesthetics.DisplayLockedSmokeParticle")) {
 					player.spawnParticle(Particle.SMOKE_NORMAL, block.getLocation().add(0.5, 1, 0.5), 5, 0.1F, 0.2F, 0.1F, 0.01F);
@@ -137,7 +138,7 @@ public class BlockClickListener implements Listener {
 			if (lsPlayer.isModeActive(LSMode.IGNORE_LOCKS)) {
 				event.setCancelled(true);
 				
-				// TODO "This block is not locked" message w/ (Delay buffer)
+				plugin.sendMessage(player, plugin.getLocale().getMessage("command.lockinspect.notlocked"));
 				return;
 			}
 			
@@ -186,8 +187,10 @@ public class BlockClickListener implements Listener {
 				lockedBlockManager.registerBlock(lBlockSecondary);
 			}
 			
-			// TODO "You have locked the block" message
 			event.setCancelled(true);
+			plugin.sendMessage(player, plugin.getLocale().getMessage("event.lock.registered")
+					.replace("%keyID%", String.valueOf(keyID))
+					.replace("%lockID%", String.valueOf(lockID)));
 			this.giveRespectiveLockedKey(player, key, keyID);
 			player.playSound(player.getLocation(), Sound.BLOCK_WOODEN_DOOR_CLOSE, 1, 2);
 			
@@ -195,8 +198,16 @@ public class BlockClickListener implements Listener {
 			for (LSPlayer admin : playerRegistry.getPlayersInMode(LSMode.ADMIN_NOTIFY)) {
 				if (!admin.getPlayer().isOnline()) return;
 				
-				// TODO: Send a message
-				admin.getPlayer().getPlayer().sendMessage("");
+				Location location = block.getLocation();
+				plugin.sendMessage(admin.getPlayer().getPlayer(), plugin.getLocale().getMessage("command.locknotify.notification")
+						.replace("%player%", player.getName())
+						.replace("%type%", block.getType().toString())
+						.replace("%x%", String.valueOf(location.getBlockX()))
+						.replace("%y%", String.valueOf(location.getBlockY()))
+						.replace("%z%", String.valueOf(location.getBlockZ()))
+						.replace("%world%", location.getWorld().getName())
+						.replace("%lockID%", String.valueOf(lockID))
+						.replace("%keyID%", String.valueOf(keyID)));
 			}
 		}
 	}
