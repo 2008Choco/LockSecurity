@@ -17,7 +17,6 @@ import me.choco.locksecurity.LockSecurity;
 import me.choco.locksecurity.api.LockedBlock;
 import me.choco.locksecurity.api.utils.LSMode;
 import me.choco.locksecurity.registration.LockedBlockManager;
-import me.choco.locksecurity.registration.StatsHandler;
 import me.choco.locksecurity.utils.json.JSONSerializable;
 import me.choco.locksecurity.utils.json.JSONUtils;
 
@@ -40,8 +39,6 @@ public class LSPlayer implements JSONSerializable {
 	
 	private final Set<LockedBlock> ownedBlocks = new HashSet<>();
 	private final Set<LSMode> activeModes = new HashSet<>();
-	
-	private StatsHandler statsHandler;
 	
 	private LSPlayer toTransferTo;
 	
@@ -210,15 +207,6 @@ public class LSPlayer implements JSONSerializable {
 	}
 	
 	/**
-	 * Get the statistics for this player
-	 * 
-	 * @return player statistics
-	 */
-	public StatsHandler getStatsHandler() {
-		return statsHandler;
-	}
-	
-	/**
 	 * Clear all localized data for this player
 	 */
 	public void clearLocalData() {
@@ -244,7 +232,6 @@ public class LSPlayer implements JSONSerializable {
 		}
 		
 		data.add("ownedBlocks", ownedBlocksData);
-		data.add("statistics", statsHandler.statsToJson());
 		
 		return data;
 	}
@@ -268,9 +255,6 @@ public class LSPlayer implements JSONSerializable {
 			
 			this.ownedBlocks.add(block);
 		}
-		
-		JsonObject statisticsData = data.has("statistics") ? data.getAsJsonObject("statistics") : new JsonObject();
-		this.statsHandler = new StatsHandler(statisticsData);
 		
 		return true;
 	}

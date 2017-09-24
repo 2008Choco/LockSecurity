@@ -43,7 +43,6 @@ import me.choco.locksecurity.events.protection.KeyPlaceProtectionListener;
 import me.choco.locksecurity.registration.LockedBlockManager;
 import me.choco.locksecurity.registration.PlayerRegistry;
 import me.choco.locksecurity.utils.AutoSaveLoop;
-import me.choco.locksecurity.utils.LSAdvancements;
 import me.choco.locksecurity.utils.LSPlayer;
 import me.choco.locksecurity.utils.general.ItemBuilder;
 import me.choco.locksecurity.utils.general.UpdateChecker;
@@ -172,8 +171,6 @@ public class LockSecurity extends JavaPlugin {
 		if (checker.queryUpdateCheck() && checker.requiresUpdate()) {
 			this.getLogger().info(locale.getMessage("An update is available for download on SpigotMC!"));
 		}
-		
-		LSAdvancements.loadAdvancements(this);
 		
 		/* TODO: Enable Metrics
 		 * this.getLogger().info("Enabling plugin metrics");
