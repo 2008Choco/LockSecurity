@@ -1,5 +1,7 @@
 package me.choco.LSaddon.events;
 
+import java.util.Arrays;
+
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -7,46 +9,55 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
 import me.choco.LSaddon.ChestCollector;
+import me.choco.LSaddon.utils.CollectorBlock;
 import me.choco.LSaddon.utils.CollectorHandler;
 import me.choco.locksecurity.api.LockedBlock;
 import me.choco.locksecurity.api.event.PlayerInteractLockedBlockEvent;
 
-public class ClickLockedChest implements Listener{
+public class ClickLockedChest implements Listener {
 	
-	private ChestCollector plugin;
-	private CollectorHandler collectorHandler;
-	public ClickLockedChest(ChestCollector plugin){
+	private final ChestCollector plugin;
+	private final CollectorHandler collectorHandler;
+	
+	public ClickLockedChest(ChestCollector plugin) {
 		this.plugin = plugin;
 		this.collectorHandler = plugin.getCollectorHandler();
 	}
 	
 	@EventHandler
-	public void onClickLockedChest(PlayerInteractLockedBlockEvent event){
+	public void onClickLockedChest(PlayerInteractLockedBlockEvent event) {
 		LockedBlock block = event.getBlock();
 		Player player = event.getPlayer().getPlayer().getPlayer();
 		
-		if (!plugin.collectorCreationMode.contains(player.getName())) return;
-		if (block.getBlock().getType().equals(Material.CHEST)) return;
+		if (block.getBlock().getType() != Material.CHEST && block.getBlock().getType() != Material.TRAPPED_CHEST) return;
+		if (!plugin.hasCommandItems(player)) return;
 		
-		if (!block.getOwner().getPlayer().getUniqueId().equals(player.getUniqueId())){
+		if (!block.isOwner(event.getPlayer())) {
 			player.sendMessage(ChatColor.GOLD + "[" + ChatColor.AQUA + "Collector" + ChatColor.GOLD + "] " + ChatColor.GRAY + 
 					"You do not own this chest");
-			plugin.collectorCreationMode.remove(player.getName());
+			
+			this.plugin.clearCommandItems(player);
 			return;
 		}
 		
-		if (collectorHandler.isCollector(block.getBlock())){
+		if (collectorHandler.isCollector(block.getBlock())) {
 			player.sendMessage(ChatColor.GOLD + "[" + ChatColor.AQUA + "Collector" + ChatColor.GOLD + "] " + ChatColor.GRAY + 
 					"This is already a collector");
-			plugin.collectorCreationMode.remove(player.getName());
+			
+			this.plugin.clearCommandItems(player);
 			return;
 		}
 		
-		String[] items = plugin.getCommandItems(player.getName());
-		collectorHandler.addCollector(player, items, block.getBlock().getLocation());
-		String itemList = ""; for (String item : items){itemList = itemList + ", " + item;}
+		Material[] items = plugin.getCommandItems(player);
+		this.collectorHandler.registerCollector(new CollectorBlock(block, collectorHandler.getNextCollectorID(true), items));
+		
+		String itemList = String.join(",", Arrays.stream(items)
+				.map(Object::toString)
+				.toArray(String[]::new));
+		
 		player.sendMessage(ChatColor.GOLD + "[" + ChatColor.AQUA + "Collector" + ChatColor.GOLD + "] " + ChatColor.GRAY + 
 				"Chest collector created. The following items will be collected: " + itemList);
-		plugin.collectorCreationMode.remove(player.getName());
+		this.plugin.clearCommandItems(player);
 	}
+	
 }

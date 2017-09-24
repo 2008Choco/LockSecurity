@@ -1,68 +1,73 @@
 package me.choco.LSaddon.events;
 
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.block.Chest;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerPickupItemEvent;
-import org.bukkit.inventory.Inventory;
+import org.bukkit.event.entity.EntityPickupItemEvent;
 import org.bukkit.inventory.ItemStack;
 
 import me.choco.LSaddon.ChestCollector;
+import me.choco.LSaddon.utils.CollectorBlock;
 import me.choco.LSaddon.utils.CollectorHandler;
 
-public class PickupCollectorItem implements Listener{
+public class PickupCollectorItem implements Listener {
 	
-	private ChestCollector plugin;
-	private CollectorHandler collectorHandler;
-	public PickupCollectorItem(ChestCollector plugin){
-		this.plugin = plugin;
+	private final CollectorHandler collectorHandler;
+	
+	public PickupCollectorItem(ChestCollector plugin) {
 		this.collectorHandler = plugin.getCollectorHandler();
 	}
 	
 	@EventHandler
-	public void onCollectionPickup(PlayerPickupItemEvent event){
-		boolean found = false;
-		ItemStack pickedUpItem = event.getItem().getItemStack();
-		String itemType = pickedUpItem.getType().toString();
-		Player player = event.getPlayer();
+	public void onCollectionPickup(EntityPickupItemEvent event) {
+		LivingEntity entity = event.getEntity();
+		if (!(entity instanceof Player)) return;
 		
-		for (int id : collectorHandler.getAllCollectors(player)){
-			String worldName = plugin.collectors.getConfig().getString(id + ".Location.World");
-			int x = plugin.collectors.getConfig().getInt(id + ".Location.X");
-			int y = plugin.collectors.getConfig().getInt(id + ".Location.Y");
-			int z = plugin.collectors.getConfig().getInt(id + ".Location.Z");
-			Location collectorLocation = new Location(Bukkit.getWorld(worldName), x, y, z);
+		Player player = (Player) entity;
+		ItemStack item = event.getItem().getItemStack();
+		int remaining = item.getAmount();
+		boolean found = false;
+		
+		// Add item to as many collectors as possible
+		for (CollectorBlock collector : collectorHandler.getCollectors(player)) {
+			if (!collector.shouldCollect(item.getType())) continue;
+			Chest chest = (Chest) collector.getBlock().getBlock().getState();
 			
-			for (String item : collectorHandler.getCollectorItems(collectorLocation.getBlock())){
-				if (item.toUpperCase().equals(itemType.toUpperCase())){
-					if (collectorLocation.getBlock().getType().equals(Material.CHEST)
-							|| collectorLocation.getBlock().getType().equals(Material.TRAPPED_CHEST)){
-						Chest chest = (Chest) collectorLocation.getBlock().getState();
-						if (hasOpenSlot(chest.getInventory())){
-							chest.getInventory().addItem(pickedUpItem);
-							found = true;
-							
-							event.setCancelled(true);
-							event.getItem().remove();
-							player.playSound(player.getLocation(), Sound.ENTITY_ENDERMEN_TELEPORT, 1, 0);
-						}
-						break;
-					}
-				}
+			if (!hasOpenSlot(chest, item)) continue;
+			
+			remaining = chest.getInventory().addItem(item).values().stream()
+					.mapToInt(ItemStack::getAmount).sum();
+			
+			found = true;
+			if (remaining == 0) {
+				break;
 			}
-			if (found)break;
+		}
+		
+		// Update Item entity with remaining amount (or remove it)
+		if (found) {
+			player.playSound(player.getLocation(), Sound.ENTITY_ENDERMEN_TELEPORT, 1, 0);
+			
+			if (remaining == 0) {
+				event.setCancelled(true);
+				event.getItem().remove();
+			}
+			else {
+				item.setAmount(remaining);
+				event.getItem().setItemStack(item);
+			}
 		}
 	}
 	
-	private boolean hasOpenSlot(Inventory inventory){
-		for (ItemStack item : inventory.getContents()){
-			if (item == null) return true;
+	private boolean hasOpenSlot(Chest chest, ItemStack item) {
+		for (ItemStack inventoryItem : chest.getInventory()) {
+			if (inventoryItem == null) return true;
+			if (inventoryItem.isSimilar(item) && inventoryItem.getAmount() < inventoryItem.getMaxStackSize()) return true;
 		}
+		
 		return false;
 	}
 }
