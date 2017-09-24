@@ -54,7 +54,7 @@ public class LockListCmd implements CommandExecutor {
 			plugin.sendMessage(sender, plugin.getLocale().getMessage("command.general.nopermission"));
 			return true;
 		}
-		else if (args.length >= 1 && sender.hasPermission("locks.locklistother")) {
+		else if (args.length >= 1 && !sender.hasPermission("locks.locklistother")) {
 			plugin.sendMessage(sender, plugin.getLocale().getMessage("command.general.nopermission"));
 			return true;
 		}
