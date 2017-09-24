@@ -1,11 +1,9 @@
 package me.choco.locksecurity.utils.json;
 
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 
@@ -33,9 +31,9 @@ public class JSONUtils {
 		if (!file.getName().endsWith(".json"))
 			throw new IllegalArgumentException("File type provided is not .json extended");
 		
-		try(BufferedReader reader = new BufferedReader(new FileReader(file))) {
+		try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
 			return LockSecurity.GSON.fromJson(reader, JsonObject.class);
-		} catch (IOException e) { }
+		} catch (IOException e) {}
 		
 		return new JsonObject();
 	}
@@ -47,13 +45,11 @@ public class JSONUtils {
 	 * @param data the data to write
 	 */
 	public static void writeJSON(File file, JsonObject data) {
-		// Clear file information
-		try(PrintWriter writer = new PrintWriter(file)) {}
-		catch (FileNotFoundException e) { e.printStackTrace(); }
-		
-		// Rewrite file information
-		try(BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
-	        writer.write(LockSecurity.GSON.toJson(data));
-		} catch (IOException e) { e.printStackTrace(); }
+		try (PrintWriter writer = new PrintWriter(file)) {
+			writer.write(LockSecurity.GSON.toJson(data));
+		}
+		catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
 	}
 }
