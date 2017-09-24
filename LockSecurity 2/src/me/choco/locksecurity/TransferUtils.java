@@ -1,5 +1,6 @@
 package me.choco.locksecurity;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.sql.Connection;
@@ -14,10 +15,10 @@ import org.apache.commons.io.FileUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.configuration.file.YamlConfiguration;
 
 import me.choco.locksecurity.api.LockedBlock;
 import me.choco.locksecurity.utils.LSPlayer;
-import me.choco.locksecurity.utils.general.ConfigAccessor;
 
 /**
  * Contains a few methods to assist in the transfering of information from one
@@ -82,13 +83,14 @@ public final class TransferUtils {
 	protected static final void fromFile(LockSecurity plugin) {
 		plugin.getLogger().info("Commencing transfer process for Data Support of LockSecurity 1.0.0 - 1.6.3");
 		
-		ConfigAccessor lockedFile = new ConfigAccessor(plugin, "locked.yml");
+		YamlConfiguration lockedFile = YamlConfiguration.loadConfiguration(new File(plugin.getDataFolder(), "locked.yml"));
+		
 		if (!plugin.infoFile.exists()) {
 			try {
 				plugin.infoFile.createNewFile();
 				FileUtils.write(plugin.infoFile, 
-						"nextLockID=" + lockedFile.getConfig().getInt("NextLockID") +
-						"\nnextKeyID=" + lockedFile.getConfig().getInt("NextKeyID"), 
+						"nextLockID=" + lockedFile.getInt("NextLockID") +
+						"\nnextKeyID=" + lockedFile.getInt("NextKeyID"), 
 					Charset.defaultCharset());
 			} catch (IOException e) {
 				plugin.getLogger().info("Could not load key/lock ID to file");
@@ -96,18 +98,18 @@ public final class TransferUtils {
 			}
 		}
 		
-		Set<String> keys = lockedFile.getConfig().getKeys(false);
+		Set<String> keys = lockedFile.getKeys(false);
 		keys.remove("NextLockID"); keys.remove("NextKeyID");
 		
 		for (String key : keys) {
 			int lockID = Integer.parseInt(key);
-			int keyID = lockedFile.getConfig().getInt(key + ".KeyID");
-			UUID ownerUUID = UUID.fromString(lockedFile.getConfig().getString(key + ".OwnerUUID"));
+			int keyID = lockedFile.getInt(key + ".KeyID");
+			UUID ownerUUID = UUID.fromString(lockedFile.getString(key + ".OwnerUUID"));
 			
-			World world = Bukkit.getWorld(lockedFile.getConfig().getString(key + ".Location.World"));
-			double x = lockedFile.getConfig().getDouble(key + ".Location.X");
-			double y = lockedFile.getConfig().getDouble(key + ".Location.Y");
-			double z = lockedFile.getConfig().getDouble(key + ".Location.Z");
+			World world = Bukkit.getWorld(lockedFile.getString(key + ".Location.World"));
+			double x = lockedFile.getDouble(key + ".Location.X");
+			double y = lockedFile.getDouble(key + ".Location.Y");
+			double z = lockedFile.getDouble(key + ".Location.Z");
 			Location location = new Location(world, x, y, z);
 			
 			if (!saveNewData(plugin, ownerUUID, location, lockID, keyID)) continue;
