@@ -1,6 +1,7 @@
 package me.choco.locksecurity.utils;
 
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -27,8 +28,17 @@ public final class AutoSaveLoop extends BukkitRunnable {
 	@Override
 	public void run() {
 		if (playerRegistry != null) {
-			for (LSPlayer player : playerRegistry.getPlayers().values())
+			for (LSPlayer player : playerRegistry.getPlayers().values()) {
+				File dataFile = player.getJSONDataFile();
+				
+				try {
+					dataFile.createNewFile();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+				
 				JSONUtils.writeJSON(player.getJSONDataFile(), player.write(new JsonObject()));
+			}
 		}
 		
 		if (lockedBlockManager != null) {
