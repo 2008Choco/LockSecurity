@@ -128,6 +128,7 @@ public class ItemBuilder {
 	 * 
 	 * @param metaType the type of meta to apply methods from
 	 * @param metaFunction the meta application method
+	 * @param <T> the type of meta
 	 * 
 	 * @return this instance. Allows for chained calls
 	 */

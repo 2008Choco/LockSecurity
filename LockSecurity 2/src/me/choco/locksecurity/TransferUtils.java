@@ -21,7 +21,7 @@ import me.choco.locksecurity.api.LockedBlock;
 import me.choco.locksecurity.utils.LSPlayer;
 
 /**
- * Contains a few methods to assist in the transfering of information from one
+ * Contains a few methods to assist in the transferring of information from one
  * data source to the new JSON data source in LockSecurity 2.0.0+
  * 
  * @author Parker Hawke - 2008Choco

@@ -137,6 +137,7 @@ public class LockedBlockManager {
 	/** 
 	 * Get a locked block from Lock ID
 	 * 
+	 * @param lockID the lock id of the block to obtain
 	 * @return the locked block with the given Lock ID. Null if not found
 	 */
 	public LockedBlock getLockedBlock(int lockID) {

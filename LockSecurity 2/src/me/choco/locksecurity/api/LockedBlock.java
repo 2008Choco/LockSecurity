@@ -251,7 +251,7 @@ public class LockedBlock implements JSONSerializable {
 	 * Get the secondary component for this locked block (if any)
 	 * 
 	 * @return the secondary component. null if none is set
-	 * @see {@link #hasSecondaryComponent()}
+	 * @see #hasSecondaryComponent()
 	 */
 	public LockedBlock getSecondaryComponent() {
 		return secondaryComponent;
