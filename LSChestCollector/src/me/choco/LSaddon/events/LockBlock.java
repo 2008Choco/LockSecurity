@@ -30,4 +30,5 @@ public class LockBlock implements Listener {
 					"To convert this into a collector, use " + ChatColor.DARK_AQUA + "/collects <ItemStack,ItemStack,ItemStack>");
 		}
 	}
+	
 }

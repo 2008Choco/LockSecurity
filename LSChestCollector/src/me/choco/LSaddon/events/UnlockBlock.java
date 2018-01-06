@@ -23,4 +23,5 @@ public class UnlockBlock implements Listener {
 		CollectorBlock collector = collectorHandler.getCollector(event.getBlock());
 		this.collectorHandler.unregisterCollector(collector);
 	}
+	
 }

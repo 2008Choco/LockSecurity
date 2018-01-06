@@ -25,13 +25,13 @@ import me.choco.LSaddon.utils.ConfigAccessor;
 import me.choco.locksecurity.LockSecurity;
 
 public class ChestCollector extends JavaPlugin {
-
+	
 	public ConfigAccessor collectorsFile;
-
+	
 	private LockSecurity lockSecurity;
 	private CollectorHandler collectorHandler;
 	private final Map<UUID, Material[]> collectsCommandInfo = new HashMap<>();
-
+	
 	@Override
 	public void onEnable() {
 		if (!Bukkit.getPluginManager().isPluginEnabled("LockSecurity")) {
@@ -48,17 +48,17 @@ public class ChestCollector extends JavaPlugin {
 		this.saveDefaultConfig();
 		this.lockSecurity = LockSecurity.getPlugin();
 		this.collectorHandler = new CollectorHandler(this);
-
+		
 		// Register commands
 		this.getLogger().info("Registering commands");
 		this.getCommand("collects").setExecutor(new CollectsCmd(this));
-
+		
 		// Register events
 		this.getLogger().info("Registering events");
 		Bukkit.getPluginManager().registerEvents(new ClickLockedChest(this), this);
 		Bukkit.getPluginManager().registerEvents(new PickupCollectorItem(this), this);
 		Bukkit.getPluginManager().registerEvents(new UnlockBlock(this), this);
-
+		
 		//Add information to local memory
 		int errors = 0;
 		this.getLogger().info("Storing all Chest Collectors information into local memory");
@@ -78,7 +78,7 @@ public class ChestCollector extends JavaPlugin {
 						.toArray(Material[]::new);
 				
 				CollectorBlock collector = new CollectorBlock(lockSecurity.getLockedBlockManager().getLockedBlock(location), id, materials);
-
+				
 				if (location.getBlock().getType().equals(Material.CHEST) || location.getBlock().getType().equals(Material.TRAPPED_CHEST)) {
 					this.collectorHandler.registerCollector(collector);
 				}
@@ -98,7 +98,7 @@ public class ChestCollector extends JavaPlugin {
 				
 				continue;
 			}
-
+			
 			this.collectorsFile.saveConfig();
 			this.collectorsFile.reloadConfig();
 		}
@@ -107,7 +107,7 @@ public class ChestCollector extends JavaPlugin {
 				? "Stored as many collectors as possible into local memory. \" + errors + \" collectors could not be loaded"
 				: "Successfully stored all collectors into local memory. Plugin ready for use!");
 	}
-
+	
 	@Override
 	public void onDisable() {
 		this.getLogger().info("Clearing all local memory");
@@ -134,7 +134,7 @@ public class ChestCollector extends JavaPlugin {
 		if (collectorsFile != null) this.collectorsFile.saveConfig();
 		if (collectsCommandInfo != null) this.collectsCommandInfo.clear();
 	}
-
+	
 	public LockSecurity getLockSecurity() {
 		return lockSecurity;
 	}
@@ -142,11 +142,11 @@ public class ChestCollector extends JavaPlugin {
 	public CollectorHandler getCollectorHandler() {
 		return collectorHandler;
 	}
-
+	
 	public void setCommandItems(Player player, Material[] materials) {
 		this.collectsCommandInfo.put(player.getUniqueId(), materials);
 	}
-
+	
 	public Material[] getCommandItems(Player player) {
 		return collectsCommandInfo.get(player.getUniqueId());
 	}
@@ -158,7 +158,7 @@ public class ChestCollector extends JavaPlugin {
 	public void clearCommandItems(Player player) {
 		this.collectsCommandInfo.remove(player.getUniqueId());
 	}
-
+	
 	private String formatLocation(Location location) {
 		return location.getWorld().getName() + " x:" + location.getBlockX() + " y:" + location.getBlockY() + " z:" + location.getBlockY();
 	}

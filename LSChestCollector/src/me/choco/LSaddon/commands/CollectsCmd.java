@@ -57,4 +57,5 @@ public class CollectsCmd implements CommandExecutor {
 				"Click on the chest you would like to make a collector");
 		return true;
 	}
+	
 }
