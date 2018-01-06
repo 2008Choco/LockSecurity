@@ -39,7 +39,7 @@ public class BlockBreakListener implements Listener {
 		ILockSecurityPlayer lsPlayer = playerRegistry.getPlayer(player);
 		
 		ILockedBlock lBlock = lockedBlockManager.getLockedBlock(block);
-		if (!lBlock.isOwner(lsPlayer)) {
+		if (!lBlock.isOwner(lsPlayer) && !player.hasPermission("locks.admin")) {
 			if (!lsPlayer.isModeEnabled(LSMode.IGNORE_LOCKS) && !plugin.getConfig().getBoolean("Griefing.IgnorelocksCanBreakLocks")) {
 				event.setCancelled(true);
 				return;
