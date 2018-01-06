@@ -87,6 +87,116 @@ public interface ILockedBlockManager {
 	 */
 	public ILockedBlock getLockedBlock(int lockId);
 	
+	/**
+	 * Create a new lock at the given location with a specified lock ID and key ID, and assign a
+	 * secondary component
+	 * 
+	 * @param owner the owner of the locked block
+	 * @param location the location at which the block is positioned
+	 * @param lockId the ID of the lock
+	 * @param keyId the ID of the key required to open this block
+	 * @param secondaryComponent the secondary component to this block
+	 * 
+	 * @return the newly created locked block
+	 * 
+	 * @see #createNewLock(ILockSecurityPlayer, Location, ILockedBlock)
+	 */
+	public ILockedBlock createNewLock(ILockSecurityPlayer owner, Location location, int lockId, int keyId, ILockedBlock secondaryComponent);
+	
+	/**
+	 * Create a new lock at the given location with a specified lock ID and key ID
+	 * 
+	 * @param owner the owner of the locked block
+	 * @param location the location at which the block is positioned
+	 * @param lockId the ID of the lock
+	 * @param keyId the ID of the key required to open this block
+	 * 
+	 * @return the newly created locked block
+	 * 
+	 * @see #createNewLock(ILockSecurityPlayer, Location)
+	 */
+	public ILockedBlock createNewLock(ILockSecurityPlayer owner, Location location, int lockId, int keyId);
+	
+	/**
+	 * Create a new lock at the given location and assign a secondary component. Lock and key IDs
+	 * will be automatically generated according to {@link #getNextLockID()} and {@link #getNextKeyID()}
+	 * with incremented values enabled
+	 * 
+	 * @param owner the owner of the locked block
+	 * @param location the location at which the block is positioned
+	 * @param secondaryComponent the secondary component to this block
+	 * 
+	 * @return the newly created locked block
+	 */
+	public ILockedBlock createNewLock(ILockSecurityPlayer owner, Location location, ILockedBlock secondaryComponent);
+	
+	/**
+	 * Create a new lock at the given location. Lock and key IDs will be automatically generated
+	 * according to {@link #getNextLockID()} and {@link #getNextKeyID()} with incremented values
+	 * enabled
+	 * 
+	 * @param owner the owner of the locked lock
+	 * @param location the location at which the block is positioned
+	 * 
+	 * @return the newly created locked block
+	 */
+	public ILockedBlock createNewLock(ILockSecurityPlayer owner, Location location);
+	
+	/**
+	 * Create a new lock for the provided block with a specified lock ID and key ID, and assign a
+	 * secondary component
+	 * 
+	 * @param owner the owner of the locked block
+	 * @param block the block to lock
+	 * @param lockId the ID of the lock
+	 * @param keyId the ID of the key required to open this block
+	 * @param secondaryComponent the secondary component to this block
+	 * 
+	 * @return the newly created locked block
+	 * 
+	 * @see #createNewLock(ILockSecurityPlayer, Block, ILockedBlock)
+	 */
+	public ILockedBlock createNewLock(ILockSecurityPlayer owner, Block block, int lockId, int keyId, ILockedBlock secondaryComponent);
+	
+	/**
+	 * Create a new lock for the provided block with a specified lock ID and key ID
+	 * 
+	 * @param owner the owner of the locked block
+	 * @param block the block to lock
+	 * @param lockId the ID of the lock
+	 * @param keyId the ID of the key required to open this block
+	 * 
+	 * @return the newly created locked block
+	 * 
+	 * @see #createNewLock(ILockSecurityPlayer, Block)
+	 */
+	public ILockedBlock createNewLock(ILockSecurityPlayer owner, Block block, int lockId, int keyId);
+	
+	/**
+	 * Create a new lock for the provided block and assign a secondary component. Lock and key IDs
+	 * will be automatically generated according to {@link #getNextLockID()} and {@link #getNextKeyID()}
+	 * with incremented values enabled
+	 * 
+	 * @param owner the owner of the locked block
+	 * @param block the block to lock
+	 * @param secondaryComponent the secondary component to this block
+	 * 
+	 * @return the newly created locked block
+	 */
+	public ILockedBlock createNewLock(ILockSecurityPlayer owner, Block block, ILockedBlock secondaryComponent);
+	
+	/**
+	 * Create a new lock for the provided block. Lock and key IDs will be automatically generated
+	 * according to {@link #getNextLockID()} and {@link #getNextKeyID()} with incremented values
+	 * enabled
+	 * 
+	 * @param owner the owner of the locked block
+	 * @param block the block to lock
+	 * 
+	 * @return the newly created locked block
+	 */
+	public ILockedBlock createNewLock(ILockSecurityPlayer owner, Block block);
+	
 	/** 
 	 * Get a set of all currently registered locked block objects
 	 * 

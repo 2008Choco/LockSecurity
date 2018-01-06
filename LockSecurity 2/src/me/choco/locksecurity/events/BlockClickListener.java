@@ -29,7 +29,6 @@ import me.choco.locksecurity.api.event.PlayerInteractLockedBlockEvent;
 import me.choco.locksecurity.api.event.PlayerInteractLockedBlockEvent.InteractResult;
 import me.choco.locksecurity.api.utils.KeyFactory;
 import me.choco.locksecurity.api.utils.KeyFactory.KeyType;
-import me.choco.locksecurity.data.LockedBlock;
 import me.choco.locksecurity.api.event.PlayerLockBlockEvent;
 
 public class BlockClickListener implements Listener {
@@ -161,8 +160,8 @@ public class BlockClickListener implements Listener {
 			Bukkit.getPluginManager().callEvent(plbe);
 			if (plbe.isCancelled()) return;
 			
-			int lockID = lockedBlockManager.getNextLockID(true), keyID = lockedBlockManager.getNextKeyID(true);
-			LockedBlock lBlock = new LockedBlock(lsPlayer, block, lockID, keyID);
+			ILockedBlock lBlock = lockedBlockManager.createNewLock(lsPlayer, block);
+			int keyID = lBlock.getKeyID(), lockID = lBlock.getLockID();
 			this.lockedBlockManager.registerBlock(lBlock);
 			
 			BlockState state = block.getState();
@@ -174,7 +173,7 @@ public class BlockClickListener implements Listener {
 					Bukkit.getPluginManager().callEvent(plbeSecondary);
 					if (plbeSecondary.isCancelled()) return;
 					
-					LockedBlock lBlockSecondary = new LockedBlock(lsPlayer, toLock, lockedBlockManager.getNextLockID(true), keyID, lBlock);
+					ILockedBlock lBlockSecondary = lockedBlockManager.createNewLock(lsPlayer, toLock, lockedBlockManager.getNextLockID(true), keyID, lBlock);
 					this.lockedBlockManager.registerBlock(lBlockSecondary);
 				}
 			}
@@ -188,7 +187,7 @@ public class BlockClickListener implements Listener {
 				Bukkit.getPluginManager().callEvent(plbeSecondary);
 				if (plbeSecondary.isCancelled()) return;
 				
-				LockedBlock lBlockSecondary = new LockedBlock(lsPlayer, toLock, lockedBlockManager.getNextLockID(true), keyID, lBlock);
+				ILockedBlock lBlockSecondary = lockedBlockManager.createNewLock(lsPlayer, toLock, lockedBlockManager.getNextLockID(true), keyID, lBlock);
 				this.lockedBlockManager.registerBlock(lBlockSecondary);
 			}
 			

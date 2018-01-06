@@ -15,9 +15,11 @@ import org.bukkit.World;
 import org.bukkit.block.Block;
 
 import me.choco.locksecurity.LockSecurity;
+import me.choco.locksecurity.api.ILockSecurityPlayer;
 import me.choco.locksecurity.api.ILockedBlock;
 import me.choco.locksecurity.api.ILockedBlockManager;
 import me.choco.locksecurity.api.IPlayerRegistry;
+import me.choco.locksecurity.data.LockedBlock;
 
 public class LockedBlockManager implements ILockedBlockManager {
 	
@@ -94,6 +96,46 @@ public class LockedBlockManager implements ILockedBlockManager {
 		return this.lockedBlocks.stream()
 			.filter(b -> b.getLockID() == lockID)
 			.findFirst().orElse(null);
+	}
+	
+	@Override
+	public ILockedBlock createNewLock(ILockSecurityPlayer owner, Location location, int lockId, int keyId, ILockedBlock secondaryComponent) {
+		return new LockedBlock(owner, location, lockId, keyId, secondaryComponent);
+	}
+	
+	@Override
+	public ILockedBlock createNewLock(ILockSecurityPlayer owner, Location location, int lockId, int keyId) {
+		return new LockedBlock(owner, location, lockId, keyId);
+	}
+	
+	@Override
+	public ILockedBlock createNewLock(ILockSecurityPlayer owner, Location location, ILockedBlock secondaryComponent) {
+		return createNewLock(owner, location, getNextLockID(true), getNextKeyID(true), secondaryComponent);
+	}
+	
+	@Override
+	public ILockedBlock createNewLock(ILockSecurityPlayer owner, Location location) {
+		return createNewLock(owner, location, getNextLockID(true), getNextKeyID(true));
+	}
+	
+	@Override
+	public ILockedBlock createNewLock(ILockSecurityPlayer owner, Block block, int lockId, int keyId, ILockedBlock secondaryComponent) {
+		return createNewLock(owner, block.getLocation(), lockId, keyId, secondaryComponent);
+	}
+	
+	@Override
+	public ILockedBlock createNewLock(ILockSecurityPlayer owner, Block block, int lockId, int keyId) {
+		return createNewLock(owner, block.getLocation(), lockId, keyId);
+	}
+	
+	@Override
+	public ILockedBlock createNewLock(ILockSecurityPlayer owner, Block block, ILockedBlock secondaryComponent) {
+		return createNewLock(owner, block.getLocation(), secondaryComponent);
+	}
+	
+	@Override
+	public ILockedBlock createNewLock(ILockSecurityPlayer owner, Block block) {
+		return createNewLock(owner, block.getLocation());
 	}
 	
 	@Override

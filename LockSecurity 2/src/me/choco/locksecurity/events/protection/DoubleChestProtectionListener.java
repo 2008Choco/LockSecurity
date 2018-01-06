@@ -12,7 +12,6 @@ import me.choco.locksecurity.api.ILockSecurityPlayer;
 import me.choco.locksecurity.api.ILockedBlock;
 import me.choco.locksecurity.api.ILockedBlockManager;
 import me.choco.locksecurity.api.IPlayerRegistry;
-import me.choco.locksecurity.data.LockedBlock;
 
 public class DoubleChestProtectionListener implements Listener {
 	
@@ -49,7 +48,7 @@ public class DoubleChestProtectionListener implements Listener {
 					return;
 				}
 				
-				this.lockedBlockManager.registerBlock(new LockedBlock(lPlayer, block, lockedBlockManager.getNextLockID(), lBlock.getKeyID(), lBlock));
+				this.lockedBlockManager.registerBlock(lockedBlockManager.createNewLock(lPlayer, block, lBlock));
 				break;
 			}
 		}
