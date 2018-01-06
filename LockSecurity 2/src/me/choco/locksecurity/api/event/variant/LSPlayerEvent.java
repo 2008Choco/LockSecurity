@@ -2,7 +2,7 @@ package me.choco.locksecurity.api.event.variant;
 
 import org.bukkit.event.Event;
 
-import me.choco.locksecurity.utils.LSPlayer;
+import me.choco.locksecurity.api.ILockSecurityPlayer;
 
 /** 
  * Represents an LSPlayer based event
@@ -11,14 +11,14 @@ import me.choco.locksecurity.utils.LSPlayer;
  */
 public abstract class LSPlayerEvent extends Event {
 
-	private final LSPlayer player;
+	private final ILockSecurityPlayer player;
 	
 	/**
 	 * Construct a new LSPlayerEvent
 	 * 
 	 * @param player the player involved in the event
 	 */
-	public LSPlayerEvent(LSPlayer player) {
+	public LSPlayerEvent(ILockSecurityPlayer player) {
 		this.player = player;
 	}
 	
@@ -27,7 +27,7 @@ public abstract class LSPlayerEvent extends Event {
 	 * 
 	 * @return the player
 	 */
-	public LSPlayer getPlayer() {
+	public ILockSecurityPlayer getPlayer() {
 		return player;
 	}
 }

@@ -10,14 +10,14 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import me.choco.locksecurity.LockSecurity;
-import me.choco.locksecurity.api.LockedBlock;
-import me.choco.locksecurity.registration.PlayerRegistry;
-import me.choco.locksecurity.utils.LSPlayer;
+import me.choco.locksecurity.api.ILockSecurityPlayer;
+import me.choco.locksecurity.api.ILockedBlock;
+import me.choco.locksecurity.api.IPlayerRegistry;
 
 public class LockListCmd implements CommandExecutor {
 	
 	private final LockSecurity plugin;
-	private final PlayerRegistry playerRegistry;
+	private final IPlayerRegistry playerRegistry;
 	
 	public LockListCmd(LockSecurity plugin) {
 		this.plugin = plugin;
@@ -63,10 +63,10 @@ public class LockListCmd implements CommandExecutor {
 		return true;
 	}
 	
-	private void displayLockInformation(CommandSender sender, LSPlayer player) {
+	private void displayLockInformation(CommandSender sender, ILockSecurityPlayer player) {
 		sender.sendMessage(ChatColor.translateAlternateColorCodes('&', plugin.getLocale().getMessage("command.locklist.identifier"))
 				.replace("%player%", player.getPlayer().getName()));
-		for (LockedBlock block : player.getOwnedBlocks()) {
+		for (ILockedBlock block : player.getOwnedBlocks()) {
 			Location location = block.getLocation();
 			sender.sendMessage(ChatColor.YELLOW + "[ID: " + block.getLockID() + "] " + 
 					location.getWorld().getName() + 

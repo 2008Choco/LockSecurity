@@ -3,9 +3,9 @@ package me.choco.locksecurity.api.event;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.HandlerList;
 
-import me.choco.locksecurity.api.LockedBlock;
+import me.choco.locksecurity.api.ILockSecurityPlayer;
+import me.choco.locksecurity.api.ILockedBlock;
 import me.choco.locksecurity.api.event.variant.LSPlayerEvent;
-import me.choco.locksecurity.utils.LSPlayer;
 
 /** 
  * Called when a player successfully unlocks a block
@@ -17,7 +17,7 @@ public class PlayerUnlockBlockEvent extends LSPlayerEvent implements Cancellable
 	private static final HandlerList handlers = new HandlerList();
 	private boolean cancelled = false;
 	
-	private final LockedBlock block;
+	private final ILockedBlock block;
 	private final boolean byCommand;
 	
 	/**
@@ -27,7 +27,7 @@ public class PlayerUnlockBlockEvent extends LSPlayerEvent implements Cancellable
 	 * @param block the unlocked block
 	 * @param byCommand whether it was unlocked by command or not
 	 */
-	public PlayerUnlockBlockEvent(LSPlayer player, LockedBlock block, boolean byCommand) {
+	public PlayerUnlockBlockEvent(ILockSecurityPlayer player, ILockedBlock block, boolean byCommand) {
 		super(player);
 		this.block = block;
 		this.byCommand = byCommand;
@@ -39,7 +39,7 @@ public class PlayerUnlockBlockEvent extends LSPlayerEvent implements Cancellable
 	 * @param player the player taking part in the event
 	 * @param block the unlocked block
 	 */
-	public PlayerUnlockBlockEvent(LSPlayer player, LockedBlock block) {
+	public PlayerUnlockBlockEvent(ILockSecurityPlayer player, ILockedBlock block) {
 		this(player, block, false);
 	}
 	
@@ -48,7 +48,7 @@ public class PlayerUnlockBlockEvent extends LSPlayerEvent implements Cancellable
 	 * 
 	 * @return the locked block to be unlocked
 	 */
-	public LockedBlock getBlock() {
+	public ILockedBlock getBlock() {
 		return block;
 	}
 	

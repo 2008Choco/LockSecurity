@@ -8,16 +8,17 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockPlaceEvent;
 
 import me.choco.locksecurity.LockSecurity;
+import me.choco.locksecurity.api.ILockSecurityPlayer;
+import me.choco.locksecurity.api.ILockedBlock;
+import me.choco.locksecurity.api.ILockedBlockManager;
+import me.choco.locksecurity.api.IPlayerRegistry;
 import me.choco.locksecurity.api.LockedBlock;
-import me.choco.locksecurity.registration.LockedBlockManager;
-import me.choco.locksecurity.registration.PlayerRegistry;
-import me.choco.locksecurity.utils.LSPlayer;
 
 public class DoubleChestProtectionListener implements Listener {
 	
 	private final LockSecurity plugin;
-	private final PlayerRegistry playerRegistry;
-	private final LockedBlockManager lockedBlockManager;
+	private final IPlayerRegistry playerRegistry;
+	private final ILockedBlockManager lockedBlockManager;
 	
 	public DoubleChestProtectionListener(LockSecurity plugin) {
 		this.plugin = plugin;
@@ -38,8 +39,8 @@ public class DoubleChestProtectionListener implements Listener {
 				
 				if (!relative.getType().equals(block.getType()) || !lockedBlockManager.isRegistered(block)) continue;
 				
-				LSPlayer lPlayer = playerRegistry.getPlayer(player);
-				LockedBlock lBlock = lockedBlockManager.getLockedBlock(block);
+				ILockSecurityPlayer lPlayer = playerRegistry.getPlayer(player);
+				ILockedBlock lBlock = lockedBlockManager.getLockedBlock(block);
 				if (!lBlock.getOwner().equals(lPlayer)) {
 					event.setCancelled(true);
 					plugin.sendMessage(player, plugin.getLocale().getMessage("event.lock.cannotplace")

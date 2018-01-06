@@ -8,14 +8,14 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import me.choco.locksecurity.LockSecurity;
+import me.choco.locksecurity.api.ILockSecurityPlayer;
+import me.choco.locksecurity.api.IPlayerRegistry;
 import me.choco.locksecurity.api.utils.LSMode;
-import me.choco.locksecurity.registration.PlayerRegistry;
-import me.choco.locksecurity.utils.LSPlayer;
 
 public class TransferLockCmd implements CommandExecutor {
 	
 	private final LockSecurity plugin;
-	private final PlayerRegistry playerRegistry;
+	private final IPlayerRegistry playerRegistry;
 	
 	public TransferLockCmd(LockSecurity plugin) {
 		this.plugin = plugin;
@@ -40,7 +40,7 @@ public class TransferLockCmd implements CommandExecutor {
 		}
 		
 		Player player = (Player) sender;
-		LSPlayer lsPlayer = playerRegistry.getPlayer(player);
+		ILockSecurityPlayer lsPlayer = playerRegistry.getPlayer(player);
 		
 		@SuppressWarnings("deprecation")
 		OfflinePlayer target = Bukkit.getOfflinePlayer(args[0]);
@@ -50,9 +50,9 @@ public class TransferLockCmd implements CommandExecutor {
 			return true;
 		}
 		
-		lsPlayer.setToTransferTo(playerRegistry.getPlayer(target));
+		lsPlayer.setTransferTarget(playerRegistry.getPlayer(target));
 
-		plugin.sendMessage(player, plugin.getLocale().getMessage(lsPlayer.toggleMode(LSMode.TRANSFER_LOCK)
+		this.plugin.sendMessage(player, plugin.getLocale().getMessage(lsPlayer.toggleMode(LSMode.TRANSFER_LOCK)
 				? "command.transferlock.enabled"
 				: "command.transferlock.disabled"));
 		return true;

@@ -3,12 +3,11 @@ package me.choco.locksecurity.registration;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.HashSet;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
-import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.ImmutableList;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -16,29 +15,16 @@ import org.bukkit.World;
 import org.bukkit.block.Block;
 
 import me.choco.locksecurity.LockSecurity;
-import me.choco.locksecurity.api.LockedBlock;
-import me.choco.locksecurity.utils.LSPlayer;
+import me.choco.locksecurity.api.ILockedBlock;
+import me.choco.locksecurity.api.ILockedBlockManager;
+import me.choco.locksecurity.api.IPlayerRegistry;
 
-/** 
- * The manager that keeps track of registered locked blocks and their information.
- * The registration of locked blocks does not mean that they do not exist. The existance
- * of locked blocks is contained within the {@link LSPlayer} object.
- * <p>
- * <b>NOTE:</b> A registered locked block simply means that its information has been loaded. 
- * Information of a locked block may be loaded and unloaded in this manager at any time
- * such that it still exists in the owner's LSPlayer object. Registration of locked blocks
- * should only be done if the world in which it is possessed is loaded. If the world
- * is unloaded, the locked block should also be unregistered to provide more efficient
- * lookups in LockSecurity code.
- * 
- * @author Parker Hawke - 2008Choco
- */
-public class LockedBlockManager {
+public class LockedBlockManager implements ILockedBlockManager {
 	
 	private int nextLockID = -1, nextKeyID = -1;
 	
-	private final Set<LockedBlock> lockedBlocks = new HashSet<>(), unloadedBlocks = new HashSet<>();
-	private final PlayerRegistry playerRegistry;
+	private final List<ILockedBlock> lockedBlocks = new ArrayList<>(), unloadedBlocks = new ArrayList<>();
+	private final IPlayerRegistry playerRegistry;
 	private final LockSecurity plugin;
 	
 	/**
@@ -64,134 +50,73 @@ public class LockedBlockManager {
 		}catch(IOException | NumberFormatException e) { e.printStackTrace(); }
 	}
 	
-	/** 
-	 * Register a locked block to the manager
-	 * 
-	 * @param block the block to register
-	 */
-	public void registerBlock(LockedBlock block) {
+	@Override
+	public void registerBlock(ILockedBlock block) {
 		this.lockedBlocks.add(block);
 	}
 	
-	/** 
-	 * Unregister a locked block from the manager
-	 * 
-	 * @param block the block to unregister
-	 */
-	public void unregisterBlock(LockedBlock block) {
+	@Override
+	public void unregisterBlock(ILockedBlock block) {
 		this.lockedBlocks.remove(block);
 	}
 	
-	/** 
-	 * Check if a specific location possesses a registered locked block or not
-	 * 
-	 * @param location the location to check
-	 * @return true if a block is registered in the specified location
-	 */
+	@Override
+	public boolean isRegistered(ILockedBlock block) {
+		return lockedBlocks.contains(block);
+	}
+	
+	@Override
 	public boolean isRegistered(Location location) {
 		return getLockedBlock(location) != null;
 	}
 	
-	/** 
-	 * Check if a specific block is a registered locked block or not
-	 * 
-	 * @param block the block to check
-	 * @return true if the block is a registered locked block
-	 */
+	@Override
 	public boolean isRegistered(Block block) {
 		return getLockedBlock(block) != null;
 	}
-	
-	/** 
-	 * Check if a specific locked block is registered or not
-	 * 
-	 * @param block the block to check
-	 * @return true if the block is registered
-	 */
-	public boolean isRegistered(LockedBlock block) {
-		return lockedBlocks.contains(block);
-	}
-	
-	/**
-	 * Get a locked block from the registry based on a location
-	 * 
-	 * @param location the location to get the block from
-	 * @return the locked block object in the specified location. null if none found
-	 */
-	public LockedBlock getLockedBlock(Location location) {
+
+	@Override
+	public ILockedBlock getLockedBlock(Location location) {
 		return getLockedBlock(location.getBlock());
 	}
-	
-	/** 
-	 * Get a locked block from the registry
-	 * 
-	 * @param block the block in which to receive a locked block from
-	 * @return the locked block object. null if none found
-	 */
-	public LockedBlock getLockedBlock(Block block) {
-		for (LockedBlock lBlock : this.lockedBlocks)
+
+	@Override
+	public ILockedBlock getLockedBlock(Block block) {
+		for (ILockedBlock lBlock : this.lockedBlocks)
 			if (lBlock.getBlock().equals(block)) return lBlock;
 		return null;
 	}
-	
-	/** 
-	 * Get a locked block from Lock ID
-	 * 
-	 * @param lockID the lock id of the block to obtain
-	 * @return the locked block with the given Lock ID. Null if not found
-	 */
-	public LockedBlock getLockedBlock(int lockID) {
+
+	@Override
+	public ILockedBlock getLockedBlock(int lockID) {
 		return this.lockedBlocks.stream()
 			.filter(b -> b.getLockID() == lockID)
 			.findFirst().orElse(null);
 	}
 	
-	/** 
-	 * Get a set of all currently registered locked block objects
-	 * 
-	 * @return a set of registered blocks
-	 */
-	public Set<LockedBlock> getLockedBlocks() {
-		return ImmutableSet.copyOf(lockedBlocks);
+	@Override
+	public List<ILockedBlock> getLockedBlocks() {
+		return ImmutableList.copyOf(lockedBlocks);
 	}
-	
-	/** 
-	 * Get a set of all locked block objects with the given Key ID
-	 * 
-	 * @param keyID the Key ID to search
-	 * @return a set of all registered blocks with the given Key ID
-	 */
-	public Set<LockedBlock> getLockedBlocks(int keyID) {
+
+	@Override
+	public List<ILockedBlock> getLockedBlocks(int keyID) {
 		return this.lockedBlocks.stream()
 				.filter(b -> b.getKeyID() == keyID)
-				.collect(Collectors.toSet());
+				.collect(Collectors.toList());
+	}
+
+	@Override
+	public List<ILockedBlock> getUnloadedBlocks() {
+		return ImmutableList.copyOf(unloadedBlocks);
 	}
 	
-	/**
-	 * Get a set of all currently unloaded locked block objects
-	 * 
-	 * @return a set of unloaded, but registered, blocks
-	 */
-	public Set<LockedBlock> getUnloadedBlocks() {
-		return ImmutableSet.copyOf(unloadedBlocks);
-	}
-	
-	/** 
-	 * Check if a block is lockable or not
-	 * 
-	 * @param block the block to check
-	 * @return true if it is lockable
-	 */
+	@Override
 	public boolean isLockable(Block block) {
 		return isLockable(block.getType());
 	}
 	
-	/** 
-	 * Check if a material is lockable or not
-	 * 
-	 * @param type the material to check
-	 * @return true if it is lockable
-	 */
+	@Override
 	public boolean isLockable(Material type) {
 		List<String> lockableBlocks = plugin.getConfig().getStringList("LockableBlocks");
 		
@@ -201,22 +126,12 @@ public class LockedBlockManager {
 		return false;
 	}
 	
-	/** 
-	 * Get the next unique lock ID that should be used without incrementing 
-	 * its value
-	 * 
-	 * @return the next lock ID
-	 */
+	@Override
 	public int getNextLockID() {
 		return getNextLockID(false);
 	}
 	
-	/** 
-	 * Get the next unique lock ID that should be used
-	 * 
-	 * @param increment whether the next lock ID should increment or not
-	 * @return the next lock ID
-	 */
+	@Override
 	public int getNextLockID(boolean increment) {
 		if (this.nextLockID == -1) {}
 		
@@ -225,22 +140,12 @@ public class LockedBlockManager {
 		return lockID;
 	}
 	
-	/** 
-	 * Get the next unique key ID that should be used without incrementing 
-	 * its value
-	 * 
-	 * @return the next key ID
-	 */
+	@Override
 	public int getNextKeyID() {
 		return getNextKeyID(false);
 	}
 	
-	/** 
-	 * Get the next unique key ID that should be used
-	 * 
-	 * @param increment whether the next key ID should increment or not
-	 * @return the next key ID
-	 */
+	@Override
 	public int getNextKeyID(boolean increment) {
 		if (this.nextKeyID == -1) {}
 		
@@ -249,15 +154,10 @@ public class LockedBlockManager {
 		return keyID;
 	}
 	
-	/** 
-	 * Load all existing locked blocks contained in the specified world.
-	 * This information is based on registered players in the {@link PlayerRegistry}
-	 * 
-	 * @param world the world to load from
-	 */
+	@Override
 	public void loadDataForWorld(World world) {
 		// Add blocks in the player's data
-		this.playerRegistry.getPlayers().values()
+		this.playerRegistry.getPlayers()
 			.forEach(p -> p.getOwnedBlocks().stream()
 				.filter(b -> b.getLocation().getWorld() == world)
 				.forEach(b -> lockedBlocks.add(b))
@@ -270,11 +170,7 @@ public class LockedBlockManager {
 		this.unloadedBlocks.removeIf(b -> b.getLocation().getWorld() == world);
 	}
 	
-	/** 
-	 * Unload all registered locked blocks contained in the specified world.
-	 * 
-	 * @param world the world to unload from
-	 */
+	@Override
 	public void unloadDataForWorld(World world) {
 		this.lockedBlocks.stream()
 			.filter(b -> b.getLocation().getWorld() == world)
@@ -282,9 +178,7 @@ public class LockedBlockManager {
 		this.lockedBlocks.removeIf(b -> b.getLocation().getWorld() == world);
 	}
 	
-	/**
-	 * Clear all block data from memory
-	 */
+	@Override
 	public void clearLockedBlockData() {
 		this.lockedBlocks.clear();
 		this.unloadedBlocks.clear();

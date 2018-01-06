@@ -8,14 +8,13 @@ import org.bukkit.event.player.PlayerChangedWorldEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 
 import me.choco.locksecurity.LockSecurity;
-import me.choco.locksecurity.registration.LockedBlockManager;
-import me.choco.locksecurity.registration.PlayerRegistry;
-import me.choco.locksecurity.utils.LSPlayer;
+import me.choco.locksecurity.api.ILockedBlockManager;
+import me.choco.locksecurity.api.IPlayerRegistry;
 
 public class WorldDataLoader implements Listener {
 	
-	private final LockedBlockManager manager;
-	private final PlayerRegistry playerRegistry;
+	private final ILockedBlockManager manager;
+	private final IPlayerRegistry playerRegistry;
 	
 	public WorldDataLoader(LockSecurity plugin) {
 		this.manager = plugin.getLockedBlockManager();
@@ -36,7 +35,7 @@ public class WorldDataLoader implements Listener {
 	public void onJoinAndLoadWorld(PlayerJoinEvent event) {
 		Player player = event.getPlayer();
 		if (!playerRegistry.hasJSONDataFile(player))
-			playerRegistry.registerPlayer(new LSPlayer(player));
+			this.playerRegistry.getPlayer(player);
 		
 		World world = player.getWorld();
 		

@@ -12,12 +12,12 @@ import org.bukkit.event.entity.EntityBreakDoorEvent;
 import org.bukkit.event.inventory.InventoryMoveItemEvent;
 
 import me.choco.locksecurity.LockSecurity;
-import me.choco.locksecurity.registration.LockedBlockManager;
+import me.choco.locksecurity.api.ILockedBlockManager;
 
 public class GriefProtectionListener implements Listener {
 	
 	private final LockSecurity plugin;
-	private final LockedBlockManager lockedBlockManager;
+	private final ILockedBlockManager lockedBlockManager;
 	
 	public GriefProtectionListener(LockSecurity plugin) {
 		this.plugin = plugin;

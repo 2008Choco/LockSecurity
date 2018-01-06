@@ -4,8 +4,8 @@ import org.bukkit.block.Block;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.HandlerList;
 
+import me.choco.locksecurity.api.ILockSecurityPlayer;
 import me.choco.locksecurity.api.event.variant.LSPlayerEvent;
-import me.choco.locksecurity.utils.LSPlayer;
 
 /** 
  * Called when a player successfully locks a block
@@ -28,7 +28,7 @@ public class PlayerLockBlockEvent extends LSPlayerEvent implements Cancellable {
 	 * @param lockID the Lock ID of the block
 	 * @param keyID the Key ID of the block
 	 */
-	public PlayerLockBlockEvent(LSPlayer player, Block block, int lockID, int keyID) {
+	public PlayerLockBlockEvent(ILockSecurityPlayer player, Block block, int lockID, int keyID) {
 		super(player);
 		this.block = block;
 		this.lockID = lockID;

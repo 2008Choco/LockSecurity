@@ -9,12 +9,12 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityExplodeEvent;
 
 import me.choco.locksecurity.LockSecurity;
-import me.choco.locksecurity.registration.LockedBlockManager;
+import me.choco.locksecurity.api.ILockedBlockManager;
 
 public class ExplosionProtectionListener implements Listener {
 	
 	private final LockSecurity plugin;
-	private final LockedBlockManager lockedBlockManager;
+	private final ILockedBlockManager lockedBlockManager;
 	
 	public ExplosionProtectionListener(LockSecurity plugin) {
 		this.plugin = plugin;

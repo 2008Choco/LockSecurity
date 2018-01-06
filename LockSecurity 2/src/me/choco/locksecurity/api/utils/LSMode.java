@@ -1,9 +1,9 @@
 package me.choco.locksecurity.api.utils;
 
-import me.choco.locksecurity.utils.LSPlayer;
+import me.choco.locksecurity.utils.LockSecurityPlayer;
 
 /** 
- * Different modes which may be applied to a {@link LSPlayer}
+ * Different modes which may be applied to a {@link LockSecurityPlayer}
  * 
  * @author Parker Hawke - 2008Choco
  */

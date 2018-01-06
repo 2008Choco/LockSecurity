@@ -21,6 +21,9 @@ import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.inventory.ShapelessRecipe;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import me.choco.locksecurity.api.ILockSecurityPlayer;
+import me.choco.locksecurity.api.ILockedBlockManager;
+import me.choco.locksecurity.api.IPlayerRegistry;
 import me.choco.locksecurity.api.KeyFactory;
 import me.choco.locksecurity.commands.ForgeKeyCmd;
 import me.choco.locksecurity.commands.GiveKeyCmd;
@@ -43,7 +46,7 @@ import me.choco.locksecurity.events.protection.KeyPlaceProtectionListener;
 import me.choco.locksecurity.registration.LockedBlockManager;
 import me.choco.locksecurity.registration.PlayerRegistry;
 import me.choco.locksecurity.utils.AutoSaveLoop;
-import me.choco.locksecurity.utils.LSPlayer;
+import me.choco.locksecurity.utils.LockSecurityPlayer;
 import me.choco.locksecurity.utils.general.ItemBuilder;
 import me.choco.locksecurity.utils.general.Metrics;
 import me.choco.locksecurity.utils.general.UpdateChecker;
@@ -57,8 +60,8 @@ public class LockSecurity extends JavaPlugin {
 	
 	private AutoSaveLoop autosave;
 	
-	private PlayerRegistry playerRegistry;
-	private LockedBlockManager lockedBlockManager;
+	private IPlayerRegistry playerRegistry;
+	private ILockedBlockManager lockedBlockManager;
 	
 	public File playerdataDir, infoFile;
 	private Locale locale;
@@ -151,8 +154,8 @@ public class LockSecurity extends JavaPlugin {
 		for (File file : playerdataDir.listFiles()) {
 			OfflinePlayer rawPlayer = Bukkit.getOfflinePlayer(UUID.fromString(file.getName().replace(".json", "")));
 			
-			LSPlayer player = new LSPlayer(rawPlayer);
-			playerRegistry.registerPlayer(player);
+			LockSecurityPlayer player = new LockSecurityPlayer(rawPlayer);
+			this.playerRegistry.registerPlayer(player);
 			
 			player.read(JSONUtils.readJSON(file));
 		}
@@ -187,8 +190,8 @@ public class LockSecurity extends JavaPlugin {
 		
 		if (playerRegistry != null) {
 			this.getLogger().info("Clearing all localized data");
-			this.playerRegistry.getPlayers().values().forEach(LSPlayer::clearLocalData);
-			this.playerRegistry.clearPlayerRegistry();
+			this.playerRegistry.getPlayers().forEach(ILockSecurityPlayer::clearLocalData);
+			this.playerRegistry.clearRegistry();
 		}
 		
 		if (lockedBlockManager != null)
@@ -211,7 +214,7 @@ public class LockSecurity extends JavaPlugin {
 	 * 
 	 * @return the PlayerRegistry class
 	 */
-	public PlayerRegistry getPlayerRegistry() {
+	public IPlayerRegistry getPlayerRegistry() {
 		return playerRegistry;
 	}
 	
@@ -220,7 +223,7 @@ public class LockSecurity extends JavaPlugin {
 	 * 
 	 * @return the LockedBlockManager class
 	 */
-	public LockedBlockManager getLockedBlockManager() {
+	public ILockedBlockManager getLockedBlockManager() {
 		return lockedBlockManager;
 	}
 	

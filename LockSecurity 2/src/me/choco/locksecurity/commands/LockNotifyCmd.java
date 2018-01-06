@@ -6,14 +6,14 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import me.choco.locksecurity.LockSecurity;
+import me.choco.locksecurity.api.ILockSecurityPlayer;
+import me.choco.locksecurity.api.IPlayerRegistry;
 import me.choco.locksecurity.api.utils.LSMode;
-import me.choco.locksecurity.registration.PlayerRegistry;
-import me.choco.locksecurity.utils.LSPlayer;
 
 public class LockNotifyCmd implements CommandExecutor {
 
 	private final LockSecurity plugin;
-	private final PlayerRegistry playerRegistry;
+	private final IPlayerRegistry playerRegistry;
 	
 	public LockNotifyCmd(LockSecurity plugin) {
 		this.plugin = plugin;
@@ -33,7 +33,7 @@ public class LockNotifyCmd implements CommandExecutor {
 		}
 		
 		Player player = (Player) sender;
-		LSPlayer lsPlayer = playerRegistry.getPlayer(player);
+		ILockSecurityPlayer lsPlayer = playerRegistry.getPlayer(player);
 
 		plugin.sendMessage(player, plugin.getLocale().getMessage(lsPlayer.toggleMode(LSMode.ADMIN_NOTIFY)
 				? "command.locknotify.enabled"

@@ -7,11 +7,11 @@ import org.bukkit.event.player.PlayerChangedWorldEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
 import me.choco.locksecurity.LockSecurity;
-import me.choco.locksecurity.registration.LockedBlockManager;
+import me.choco.locksecurity.api.ILockedBlockManager;
 
 public class WorldDataUnloader implements Listener {
 	
-	private final LockedBlockManager manager;
+	private final ILockedBlockManager manager;
 	
 	public WorldDataUnloader(LockSecurity plugin) {
 		this.manager = plugin.getLockedBlockManager();

@@ -17,8 +17,8 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.configuration.file.YamlConfiguration;
 
+import me.choco.locksecurity.api.ILockSecurityPlayer;
 import me.choco.locksecurity.api.LockedBlock;
-import me.choco.locksecurity.utils.LSPlayer;
 
 /**
  * Contains a few methods to assist in the transferring of information from one
@@ -121,7 +121,7 @@ public final class TransferUtils {
 	}
 	
 	private static boolean saveNewData(LockSecurity plugin, UUID ownerUUID, Location location, int lockID, int keyID) {
-		LSPlayer player = plugin.getPlayerRegistry().registerPlayer(Bukkit.getOfflinePlayer(ownerUUID));
+		ILockSecurityPlayer player = plugin.getPlayerRegistry().getPlayer(Bukkit.getOfflinePlayer(ownerUUID));
 		if (player == null) { // Player has never existed on the server
 			plugin.getLogger().warning("Missing player with UUID \"" + ownerUUID + "\". Ignoring...");
 			return false;

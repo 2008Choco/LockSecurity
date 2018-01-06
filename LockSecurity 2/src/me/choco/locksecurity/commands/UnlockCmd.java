@@ -7,18 +7,18 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import me.choco.locksecurity.LockSecurity;
-import me.choco.locksecurity.api.LockedBlock;
+import me.choco.locksecurity.api.ILockSecurityPlayer;
+import me.choco.locksecurity.api.ILockedBlock;
+import me.choco.locksecurity.api.ILockedBlockManager;
+import me.choco.locksecurity.api.IPlayerRegistry;
 import me.choco.locksecurity.api.event.PlayerUnlockBlockEvent;
 import me.choco.locksecurity.api.utils.LSMode;
-import me.choco.locksecurity.registration.LockedBlockManager;
-import me.choco.locksecurity.registration.PlayerRegistry;
-import me.choco.locksecurity.utils.LSPlayer;
 
 public class UnlockCmd implements CommandExecutor {
 	
 	private final LockSecurity plugin;
-	private final PlayerRegistry playerRegistry;
-	private final LockedBlockManager lockedBlockManager;
+	private final IPlayerRegistry playerRegistry;
+	private final ILockedBlockManager lockedBlockManager;
 	
 	public UnlockCmd(LockSecurity plugin) {
 		this.plugin = plugin;
@@ -34,7 +34,7 @@ public class UnlockCmd implements CommandExecutor {
 		}
 		
 		Player player = (Player) sender;
-		LSPlayer lsPlayer = playerRegistry.getPlayer(player);
+		ILockSecurityPlayer lsPlayer = playerRegistry.getPlayer(player);
 		
 		if (args.length >= 1) {
 			if (!sender.hasPermission("locks.unlock.id") || !sender.hasPermission("locks.unlock.admin")) {
@@ -51,7 +51,7 @@ public class UnlockCmd implements CommandExecutor {
 				return true;
 			}
 			
-			LockedBlock lBlock = lockedBlockManager.getLockedBlock(lockID);
+			ILockedBlock lBlock = lockedBlockManager.getLockedBlock(lockID);
 			
 			if (lBlock == null) {
 				plugin.sendMessage(player, plugin.getLocale().getMessage("command.general.idnotlocked")

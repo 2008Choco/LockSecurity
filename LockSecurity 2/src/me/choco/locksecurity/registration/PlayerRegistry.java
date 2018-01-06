@@ -2,29 +2,24 @@ package me.choco.locksecurity.registration;
 
 import java.io.File;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableList;
 
 import org.bukkit.OfflinePlayer;
 
 import me.choco.locksecurity.LockSecurity;
+import me.choco.locksecurity.api.ILockSecurityPlayer;
+import me.choco.locksecurity.api.IPlayerRegistry;
 import me.choco.locksecurity.api.utils.LSMode;
-import me.choco.locksecurity.utils.LSPlayer;
+import me.choco.locksecurity.utils.LockSecurityPlayer;
 
-/** 
- * A registry to keep track of players and their information. Any player that
- * has every joined the server should be registered in this registry upon joining.
- * 
- * @author Parker Hawke - 2008Choco
- */
-public class PlayerRegistry {
+public class PlayerRegistry implements IPlayerRegistry {
 	
-	private final Map<UUID, LSPlayer> players = new HashMap<>();
-	
+	private final Map<UUID, ILockSecurityPlayer> players = new HashMap<>();
 	private final LockSecurity plugin;
 	
 	/**
@@ -36,136 +31,61 @@ public class PlayerRegistry {
 		this.plugin = plugin;
 	}
 	
-	/** 
-	 * Register a player to the player registry. If the player has never been registered 
-	 * before, a new player file will be created for them
-	 * 
-	 * @param player the player to register
-	 * @return the created player
-	 */
-	public LSPlayer registerPlayer(OfflinePlayer player) {
-		if (players.containsKey(player.getUniqueId())) return null;
-		
-		LSPlayer lsPlayer = new LSPlayer(player);
-		players.put(player.getUniqueId(), lsPlayer);
-		return lsPlayer;
+	@Override
+	public ILockSecurityPlayer getPlayer(OfflinePlayer player) {
+		return getPlayer(player.getUniqueId());
 	}
 	
-	/** 
-	 * Register an LSPlayer to the player registry
-	 * 
-	 * @param player the player to register
-	 * @return the registered player instance
-	 */
-	public LSPlayer registerPlayer(LSPlayer player) {
-		this.players.putIfAbsent(player.getUUID(), player);
-		return player;
+	@Override
+	public ILockSecurityPlayer getPlayer(UUID player) {
+		return players.computeIfAbsent(player, LockSecurityPlayer::new);
 	}
 	
-	/** 
-	 * Unregister a player UUID from the player registry (if registered)
-	 * 
-	 * @param uuid the uuid to unregister
-	 */
-	public void unregisterPlayer(UUID uuid) {
-		this.players.remove(uuid);
+	@Override
+	public void registerPlayer(ILockSecurityPlayer player) {
+		this.players.put(player.getUniqueId(), player);
 	}
 	
-	/** 
-	 * Unregister a player from the player registry (if registered)
-	 * 
-	 * @param player the player to unregister
-	 */
+	@Override
+	public void unregisterPlayer(ILockSecurityPlayer player) {
+		this.unregisterPlayer(player.getUniqueId());
+	}
+	
+	@Override
 	public void unregisterPlayer(OfflinePlayer player) {
 		this.unregisterPlayer(player.getUniqueId());
 	}
 	
-	/** 
-	 * Unregister an LSPlayer from the player registry (if registered)
-	 * 
-	 * @param player the player to unregister
-	 */
-	public void unregisterPlayer(LSPlayer player) {
-		this.unregisterPlayer(player.getUUID());
+	@Override
+	public void unregisterPlayer(UUID uuid) {
+		this.players.remove(uuid);
 	}
 	
-	/**
-	 * Check if a player's UUID is currently registered in the registry or not
-	 * 
-	 * @param uuid the UUID to check
-	 * @return true if the player is registered
-	 */
-	public boolean isRegistered(UUID uuid) {
-		return players.containsKey(uuid);
+	@Override
+	public List<ILockSecurityPlayer> getPlayers() {
+		return ImmutableList.copyOf(players.values());
 	}
 	
-	/** 
-	 * Check if a player is currently registered in the registry or not
-	 * 
-	 * @param player the player to check
-	 * @return true if the player is registered
-	 */
-	public boolean isRegistered(OfflinePlayer player) {
-		return this.isRegistered(player.getUniqueId());
-	}
-	
-	/**
-	 * Get an LSPlayer instance from the specified player UUID
-	 * 
-	 * @param uuid the UUID to get an instace from
-	 * @return the LSPlayer instance. null if not registered
-	 */
-	public LSPlayer getPlayer(UUID uuid) {
-		return players.get(uuid);
-	}
-	
-	/** 
-	 * Get an LSPlayer instance from the specified player object
-	 * 
-	 * @param player the player to get an instance from
-	 * @return the LSPlayer instance. null if not registered
-	 */
-	public LSPlayer getPlayer(OfflinePlayer player) {
-		return this.getPlayer(player.getUniqueId());
-	}
-	
-	/** 
-	 * Get all players in the specified mode
-	 * 
-	 * @param mode the mode to reference
-	 * @return a set of all players in the specified mode
-	 */
-	public Set<LSPlayer> getPlayersInMode(LSMode mode) {
+	@Override
+	public List<ILockSecurityPlayer> getPlayers(LSMode mode) {
 		return this.players.values().stream()
-				.filter(p -> p.isModeActive(mode))
-				.collect(Collectors.toSet());
+				.filter(p -> p.isModeEnabled(mode))
+				.collect(Collectors.toList());
 	}
 	
-	/** 
-	 * Check if a player has a JSON data file or not. All players that have ever
-	 * been registered should have a JSON data file, otherwise, they are new players
-	 * and have not yet been registered. Though this is rare
-	 * 
-	 * @param player the player to check
-	 * @return true if the player has a JSON data file
-	 */
+	@Override
 	public boolean hasJSONDataFile(OfflinePlayer player) {
-		return new File(plugin.playerdataDir, player.getUniqueId() + ".json").exists();
+		return hasJSONDataFile(player.getUniqueId());
 	}
 	
-	/** 
-	 * Get the registry Map for this class containing every single registered player. 
-	 * 
-	 * @return a map of all registered players
-	 */
-	public Map<UUID, LSPlayer> getPlayers() {
-		return ImmutableMap.copyOf(players);
+	@Override
+	public boolean hasJSONDataFile(UUID player) {
+		return new File(plugin.playerdataDir, player + ".json").exists();
 	}
 	
-	/**
-	 * Clear all players from the registry
-	 */
-	public void clearPlayerRegistry() {
+	@Override
+	public void clearRegistry() {
 		this.players.clear();
 	}
+	
 }

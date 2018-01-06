@@ -2,10 +2,13 @@ package me.choco.locksecurity.utils;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -14,10 +17,11 @@ import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 
 import me.choco.locksecurity.LockSecurity;
+import me.choco.locksecurity.api.ILockSecurityPlayer;
+import me.choco.locksecurity.api.ILockedBlock;
 import me.choco.locksecurity.api.LockedBlock;
 import me.choco.locksecurity.api.utils.LSMode;
 import me.choco.locksecurity.registration.LockedBlockManager;
-import me.choco.locksecurity.utils.json.JSONSerializable;
 import me.choco.locksecurity.utils.json.JSONUtils;
 
 /** 
@@ -31,16 +35,16 @@ import me.choco.locksecurity.utils.json.JSONUtils;
  * 
  * @author Parker Hawke - 2008Choco
  */
-public class LSPlayer implements JSONSerializable {
+public class LockSecurityPlayer implements ILockSecurityPlayer {
 	
 	private static final LockSecurity plugin = LockSecurity.getPlugin();
 	
 	private final File jsonDataFile;
 	
-	private final Set<LockedBlock> ownedBlocks = new HashSet<>();
+	private final List<ILockedBlock> ownedBlocks = new ArrayList<>();
 	private final Set<LSMode> activeModes = new HashSet<>();
 	
-	private LSPlayer toTransferTo;
+	private ILockSecurityPlayer toTransferTo;
 	
 	private UUID uuid;
 	
@@ -49,7 +53,7 @@ public class LSPlayer implements JSONSerializable {
 	 * 
 	 * @param uuid the player UUID
 	 */
-	public LSPlayer(UUID uuid) {
+	public LockSecurityPlayer(UUID uuid) {
 		this.uuid = uuid;
 		
 		this.jsonDataFile = new File(plugin.playerdataDir, uuid + ".json");
@@ -66,43 +70,27 @@ public class LSPlayer implements JSONSerializable {
 	 * 
 	 * @param player the player
 	 */
-	public LSPlayer(OfflinePlayer player) {
+	public LockSecurityPlayer(OfflinePlayer player) {
 		this(player.getUniqueId());
 	}
 	
-	/** 
-	 * Get the player this object represents
-	 * 
-	 * @return the player
-	 */
+	@Override
 	public OfflinePlayer getPlayer() {
 		return Bukkit.getOfflinePlayer(uuid);
 	}
 	
-	/**
-	 * Get the UUID associated with this LSPlayer
-	 * 
-	 * @return the associated UUID
-	 */
-	public UUID getUUID() {
+	@Override
+	public UUID getUniqueId() {
 		return uuid;
 	}
 	
-	/** 
-	 * Get a set of all blocks owned by this player
-	 * 
-	 * @return a set of all owned blocks
-	 */
-	public Set<LockedBlock> getOwnedBlocks() {
-		return ImmutableSet.copyOf(ownedBlocks);
+	@Override
+	public List<ILockedBlock> getOwnedBlocks() {
+		return ImmutableList.copyOf(ownedBlocks);
 	}
 	
-	/** 
-	 * Add a block to this player's ownership. This does not register the block
-	 * 
-	 * @param block the block to add to ownership
-	 */
-	public void addBlockToOwnership(LockedBlock block) {
+	@Override
+	public void addBlockToOwnership(ILockedBlock block) {
 		if (!block.getOwner().equals(this))
 			throw new IllegalStateException("Unable to register a locked block to a user that does not own it");
 		
@@ -110,105 +98,60 @@ public class LSPlayer implements JSONSerializable {
 		this.ownedBlocks.add(block);
 	}
 	
-	/** 
-	 * Remove a block from this players ownership
-	 * 
-	 * @param block the block to remove
-	 */
-	public void removeBlockFromOwnership(LockedBlock block) {
-		ownedBlocks.remove(block);
+	@Override
+	public void removeBlockFromOwnership(ILockedBlock block) {
+		this.ownedBlocks.remove(block);
 	}
 	
-	/** 
-	 * Check if the player owns the specified block or not
-	 * 
-	 * @param block the block to check
-	 * @return true if the player owns this block
-	 */
-	public boolean ownsBlock(LockedBlock block) {
+	@Override
+	public boolean ownsBlock(ILockedBlock block) {
 		return ownedBlocks.contains(block);
 	}
 	
-	/** 
-	 * Enable a mode for the player
-	 * 
-	 * @param mode the mode to enable
-	 */
+	@Override
 	public void enableMode(LSMode mode) {
 		this.activeModes.add(mode);
 	}
 	
-	/** 
-	 * Disable a mode for the player
-	 * 
-	 * @param mode the mode to disable
-	 */
+	@Override
 	public void disableMode(LSMode mode) {
 		this.activeModes.remove(mode);
 	}
 	
-	/** 
-	 * Toggle the mode either enabled or disabled, depending on it's current state
-	 * 
-	 * @param mode the mode to toggle
-	 * @return true if set enabled, false if set disabled
-	 */
+	@Override
 	public boolean toggleMode(LSMode mode) {
 		if (activeModes.contains(mode)) this.activeModes.remove(mode);
 		else this.activeModes.add(mode);
 		
-		return this.isModeActive(mode);
+		return this.isModeEnabled(mode);
 	}
 	
-	/** 
-	 * Check if a mode is currently active for this player
-	 * 
-	 * @param mode the mode to check
-	 * @return true if the specified mode is active
-	 */
-	public boolean isModeActive(LSMode mode) {
+	@Override
+	public boolean isModeEnabled(LSMode mode) {
 		return this.activeModes.contains(mode);
 	}
 	
-	/** 
-	 * Get a set of all currently active modes for this player
-	 * 
-	 * @return a set of active modes
-	 */
-	public Set<LSMode> getActiveModes() {
+	@Override
+	public Set<LSMode> getEnabledModes() {
 		return ImmutableSet.copyOf(activeModes);
 	}
 	
-	/**
-	 * Set the player that this player is going to transfer an active block to
-	 * 
-	 * @param toTransferTo the player to transfer to
-	 */
-	public void setToTransferTo(LSPlayer toTransferTo) {
-		this.toTransferTo = toTransferTo;
+	@Override
+	public void setTransferTarget(ILockSecurityPlayer target) {
+		this.toTransferTo = target;
 	}
 	
-	/**
-	 * Get the player that is in progress of being transfered to
-	 * 
-	 * @return the transfer to target
-	 */
-	public LSPlayer getToTransferTo() {
+	@Override
+	public ILockSecurityPlayer getTransferTarget() {
 		return toTransferTo;
 	}
 	
-	/** 
-	 * Get the JSON data file that keeps track of offline information for this user
-	 * 
-	 * @return the player's JSON data file
-	 */
+	@Override
 	public File getJSONDataFile() {
 		return jsonDataFile;
 	}
 	
-	/**
-	 * Clear all localized data for this player
-	 */
+	@Override
 	public void clearLocalData() {
 		this.activeModes.clear();
 		this.ownedBlocks.clear();
@@ -227,7 +170,7 @@ public class LSPlayer implements JSONSerializable {
 		data.add("activeModes", activeModesData);
 		
 		JsonArray ownedBlocksData = new JsonArray();
-		for (LockedBlock block : this.ownedBlocks) {
+		for (ILockedBlock block : this.ownedBlocks) {
 			ownedBlocksData.add(block.write(new JsonObject()));
 		}
 		

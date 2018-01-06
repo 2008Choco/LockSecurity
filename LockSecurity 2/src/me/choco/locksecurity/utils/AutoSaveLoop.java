@@ -11,8 +11,9 @@ import com.google.gson.JsonObject;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import me.choco.locksecurity.LockSecurity;
-import me.choco.locksecurity.registration.LockedBlockManager;
-import me.choco.locksecurity.registration.PlayerRegistry;
+import me.choco.locksecurity.api.ILockSecurityPlayer;
+import me.choco.locksecurity.api.ILockedBlockManager;
+import me.choco.locksecurity.api.IPlayerRegistry;
 import me.choco.locksecurity.utils.json.JSONUtils;
 
 public final class AutoSaveLoop extends BukkitRunnable {
@@ -20,15 +21,15 @@ public final class AutoSaveLoop extends BukkitRunnable {
 	private static AutoSaveLoop instance;
 	
 	private LockSecurity plugin;
-	private PlayerRegistry playerRegistry;
-	private LockedBlockManager lockedBlockManager;
+	private IPlayerRegistry playerRegistry;
+	private ILockedBlockManager lockedBlockManager;
 	
 	private AutoSaveLoop() {}
 	
 	@Override
 	public void run() {
 		if (playerRegistry != null) {
-			for (LSPlayer player : playerRegistry.getPlayers().values()) {
+			for (ILockSecurityPlayer player : playerRegistry.getPlayers()) {
 				File dataFile = player.getJSONDataFile();
 				
 				try {

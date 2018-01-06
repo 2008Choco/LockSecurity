@@ -1,8 +1,10 @@
 package me.choco.locksecurity.events;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.block.Block;
@@ -18,6 +20,10 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.Door;
 
 import me.choco.locksecurity.LockSecurity;
+import me.choco.locksecurity.api.ILockSecurityPlayer;
+import me.choco.locksecurity.api.ILockedBlock;
+import me.choco.locksecurity.api.ILockedBlockManager;
+import me.choco.locksecurity.api.IPlayerRegistry;
 import me.choco.locksecurity.api.KeyFactory;
 import me.choco.locksecurity.api.KeyFactory.KeyType;
 import me.choco.locksecurity.api.LockedBlock;
@@ -25,15 +31,12 @@ import me.choco.locksecurity.api.event.PlayerInteractLockedBlockEvent;
 import me.choco.locksecurity.api.event.PlayerInteractLockedBlockEvent.InteractResult;
 import me.choco.locksecurity.api.event.PlayerLockBlockEvent;
 import me.choco.locksecurity.api.utils.LSMode;
-import me.choco.locksecurity.registration.LockedBlockManager;
-import me.choco.locksecurity.registration.PlayerRegistry;
-import me.choco.locksecurity.utils.LSPlayer;
 
 public class BlockClickListener implements Listener {
 	
 	private final LockSecurity plugin;
-	private final LockedBlockManager lockedBlockManager;
-	private final PlayerRegistry playerRegistry;
+	private final ILockedBlockManager lockedBlockManager;
+	private final IPlayerRegistry playerRegistry;
 	
 	public BlockClickListener(LockSecurity plugin) {
 		this.plugin = plugin;
@@ -46,37 +49,39 @@ public class BlockClickListener implements Listener {
 		if (!event.getAction().equals(Action.RIGHT_CLICK_BLOCK) || !lockedBlockManager.isLockable(event.getClickedBlock())) return;
 		
 		Player player = event.getPlayer();
-		LSPlayer lsPlayer = playerRegistry.getPlayer(player);
+		ILockSecurityPlayer lsPlayer = playerRegistry.getPlayer(player);
 		Block block = event.getClickedBlock();
 		
 		ItemStack key = player.getInventory().getItemInMainHand();
 		
 		/* Block is locked */
 		if (lockedBlockManager.isRegistered(block)) {
-			if (lsPlayer.isModeActive(LSMode.IGNORE_LOCKS)) return;
+			if (lsPlayer.isModeEnabled(LSMode.IGNORE_LOCKS)) return;
 			
-			LockedBlock lBlock = lockedBlockManager.getLockedBlock(block);
+			ILockedBlock lBlock = lockedBlockManager.getLockedBlock(block);
 			
 			// Inspect locks mode
-			if (lsPlayer.isModeActive(LSMode.LOCK_INSPECT)) {
+			if (lsPlayer.isModeEnabled(LSMode.LOCK_INSPECT)) {
 				event.setCancelled(true);
 				
-				lBlock.displayInformation(player);
+				this.displayInformation(player, lBlock);
 				return;
 			}
 			
 			// Transfer locks mode
-			if (lsPlayer.isModeActive(LSMode.TRANSFER_LOCK)) {
+			if (lsPlayer.isModeEnabled(LSMode.TRANSFER_LOCK)) {
 				event.setCancelled(true);
 				
-				if (lsPlayer.getToTransferTo() != null) 
-					lBlock.setOwner(lsPlayer.getToTransferTo());
-				lsPlayer.setToTransferTo(null);
+				if (lsPlayer.getTransferTarget() != null) {
+					lBlock.setOwner(lsPlayer.getTransferTarget());
+					lsPlayer.setTransferTarget(null);
+				}
+				
 				lsPlayer.disableMode(LSMode.TRANSFER_LOCK);
 			}
 			
 			// Unlock mode
-			if (lsPlayer.isModeActive(LSMode.UNLOCK)) {
+			if (lsPlayer.isModeEnabled(LSMode.UNLOCK)) {
 				event.setCancelled(true);
 				
 				if (!player.hasPermission("locks.unlock.self")) {
@@ -135,7 +140,7 @@ public class BlockClickListener implements Listener {
 		
 		/* Block is unlocked */
 		else{
-			if (lsPlayer.isModeActive(LSMode.IGNORE_LOCKS)) {
+			if (lsPlayer.isModeEnabled(LSMode.IGNORE_LOCKS)) {
 				event.setCancelled(true);
 				
 				plugin.sendMessage(player, plugin.getLocale().getMessage("command.lockinspect.notlocked"));
@@ -195,7 +200,7 @@ public class BlockClickListener implements Listener {
 			player.playSound(player.getLocation(), Sound.BLOCK_WOODEN_DOOR_CLOSE, 1, 2);
 			
 			// Display notification to all administrators in admin notify mode
-			for (LSPlayer admin : playerRegistry.getPlayersInMode(LSMode.ADMIN_NOTIFY)) {
+			for (ILockSecurityPlayer admin : playerRegistry.getPlayers(LSMode.ADMIN_NOTIFY)) {
 				if (!admin.getPlayer().isOnline()) return;
 				
 				Location location = block.getLocation();
@@ -230,4 +235,16 @@ public class BlockClickListener implements Listener {
 		}
 		return null;
 	}
+	
+	private void displayInformation(Player player, ILockedBlock block) {
+		OfflinePlayer owner = block.getOwner().getPlayer();
+		Location location = block.getLocation();
+		
+		player.sendMessage(ChatColor.GOLD + "- - - - - - " + ChatColor.DARK_AQUA + "Lock information " + ChatColor.GOLD + "- - - - - -");
+		player.sendMessage(ChatColor.GOLD + "Lock ID: " + ChatColor.AQUA + block.getLockID());
+		player.sendMessage(ChatColor.GOLD + "Key ID: " + ChatColor.AQUA + block.getKeyID());
+		player.sendMessage(ChatColor.GOLD + "Owner: " + ChatColor.AQUA + owner.getName() + " (" + ChatColor.GOLD + owner.getUniqueId() + ChatColor.AQUA + ")");
+		player.sendMessage(ChatColor.GOLD + "Location: " + ChatColor.AQUA + location.getWorld().getName() + " x:" + location.getBlockX() + " y:" + location.getBlockY() + " z:" + location.getBlockZ());
+	}
+	
 }

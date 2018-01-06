@@ -2,9 +2,9 @@ package me.choco.locksecurity.api.event;
 
 import org.bukkit.event.HandlerList;
 
-import me.choco.locksecurity.api.LockedBlock;
+import me.choco.locksecurity.api.ILockSecurityPlayer;
+import me.choco.locksecurity.api.ILockedBlock;
 import me.choco.locksecurity.api.event.variant.LSPlayerEvent;
-import me.choco.locksecurity.utils.LSPlayer;
 
 /** 
  * Called when a player interacts with a locked block. Interactions may include: 
@@ -22,7 +22,7 @@ public class PlayerInteractLockedBlockEvent extends LSPlayerEvent {
 	
 	private static final HandlerList handlers = new HandlerList();
 	
-	private final LockedBlock block;
+	private final ILockedBlock block;
 	private final InteractResult result;
 	
 	/**
@@ -32,7 +32,7 @@ public class PlayerInteractLockedBlockEvent extends LSPlayerEvent {
 	 * @param block the interacted block
 	 * @param result the result of the interaction
 	 */
-	public PlayerInteractLockedBlockEvent(LSPlayer player, LockedBlock block, InteractResult result) {
+	public PlayerInteractLockedBlockEvent(ILockSecurityPlayer player, ILockedBlock block, InteractResult result) {
 		super(player);
 		this.block = block;
 		this.result = result;
@@ -43,7 +43,7 @@ public class PlayerInteractLockedBlockEvent extends LSPlayerEvent {
 	 * 
 	 * @return the interacted locked block
 	 */
-	public LockedBlock getBlock() {
+	public ILockedBlock getBlock() {
 		return block;
 	}
 	
