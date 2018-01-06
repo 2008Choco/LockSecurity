@@ -18,7 +18,7 @@ import org.bukkit.World;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import me.choco.locksecurity.api.ILockSecurityPlayer;
-import me.choco.locksecurity.data.LockedBlock;
+import me.choco.locksecurity.api.ILockedBlock;
 
 /**
  * Contains a few methods to assist in the transferring of information from one
@@ -127,7 +127,7 @@ public final class TransferUtils {
 			return false;
 		}
 		
-		LockedBlock block = new LockedBlock(player, location, lockID, keyID);
+		ILockedBlock block = plugin.getLockedBlockManager().createNewLock(player, location, lockID, keyID);
 		player.addBlockToOwnership(block);
 		
 		plugin.getLogger().info("Loaded block at " + location.getWorld().getName() + " " 

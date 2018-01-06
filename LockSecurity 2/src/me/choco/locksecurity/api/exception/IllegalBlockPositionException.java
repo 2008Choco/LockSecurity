@@ -1,9 +1,9 @@
 package me.choco.locksecurity.api.exception;
 
-import me.choco.locksecurity.data.LockedBlock;
+import me.choco.locksecurity.api.ILockedBlock;
 
 /** 
- * An exeception thrown by {@link LockedBlock}s to indicate that a block
+ * An exeception thrown by {@link ILockedBlock}s to indicate that a block
  * is in an invalid position to be a secondary component
  * 
  * @author Parker Hawke - 2008Choco

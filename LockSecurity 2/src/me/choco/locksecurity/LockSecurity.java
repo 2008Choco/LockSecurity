@@ -155,7 +155,7 @@ public class LockSecurity extends JavaPlugin {
 		for (File file : playerdataDir.listFiles()) {
 			OfflinePlayer rawPlayer = Bukkit.getOfflinePlayer(UUID.fromString(file.getName().replace(".json", "")));
 			
-			LockSecurityPlayer player = new LockSecurityPlayer(rawPlayer);
+			ILockSecurityPlayer player = new LockSecurityPlayer(rawPlayer);
 			this.playerRegistry.registerPlayer(player);
 			
 			player.read(JSONUtils.readJSON(file));
@@ -210,7 +210,7 @@ public class LockSecurity extends JavaPlugin {
 	}
 	
 	/** 
-	 * Get the main instance of the {@link PlayerRegistry} class
+	 * Get the main instance of the {@link IPlayerRegistry} class
 	 * 
 	 * @return the PlayerRegistry class
 	 */
@@ -219,7 +219,7 @@ public class LockSecurity extends JavaPlugin {
 	}
 	
 	/** 
-	 * Get the main instance of the {@link LockedBlockManager} class
+	 * Get the main instance of the {@link ILockedBlockManager} class
 	 * 
 	 * @return the LockedBlockManager class
 	 */
