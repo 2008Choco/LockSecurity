@@ -238,4 +238,34 @@ public class LockedBlock implements ILockedBlock {
 		return true;
 	}
 	
+	@Override
+	public int hashCode() {
+		int prime = 31;
+		int result = prime + keyID;
+		result = prime * result + lockID;
+		result = prime * result + ((owner == null) ? 0 : owner.hashCode());
+		result = prime * result + ((uuid == null) ? 0 : uuid.hashCode());
+		
+		return result;
+	}
+	
+	@Override
+	public boolean equals(Object object) {
+		if (!(object instanceof LockedBlock)) return false;
+		
+		LockedBlock other = (LockedBlock) object;
+		if (keyID != other.keyID) return false;
+		if (lockID != other.lockID) return false;
+		
+		if (owner == null) {
+			if (other.owner != null) return false;
+		} else if (!owner.equals(other.owner)) return false;
+		
+		if (uuid == null) {
+			if (other.uuid != null) return false;
+		} else if (!uuid.equals(other.uuid)) return false;
+		
+		return true;
+	}
+	
 }

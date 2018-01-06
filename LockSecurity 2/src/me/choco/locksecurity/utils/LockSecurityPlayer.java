@@ -201,4 +201,21 @@ public class LockSecurityPlayer implements ILockSecurityPlayer {
 		return true;
 	}
 	
+	@Override
+	public int hashCode() {
+		return 31 + ((uuid == null) ? 0 : uuid.hashCode());
+	}
+	
+	@Override
+	public boolean equals(Object object) {
+		if (!(object instanceof LockSecurityPlayer)) return false;
+		
+		LockSecurityPlayer other = (LockSecurityPlayer) object;
+		if (uuid == null) {
+			if (other.uuid != null) return false;
+		} else if (!uuid.equals(other.uuid)) return false;
+		
+		return true;
+	}
+	
 }
