@@ -82,7 +82,7 @@ public interface ILockedBlockManager {
 	/** 
 	 * Get a locked block from Lock ID
 	 * 
-	 * @param lockID the lock id of the block to obtain
+	 * @param lockId the lock id of the block to obtain
 	 * @return the locked block with the given Lock ID. Null if not found
 	 */
 	public ILockedBlock getLockedBlock(int lockId);
@@ -207,7 +207,7 @@ public interface ILockedBlockManager {
 	/** 
 	 * Get a set of all locked block objects with the given Key ID
 	 * 
-	 * @param keyID the Key ID to search
+	 * @param keyId the Key ID to search
 	 * @return a set of all registered blocks with the given Key ID
 	 */
 	public List<ILockedBlock> getLockedBlocks(int keyId);
@@ -230,7 +230,7 @@ public interface ILockedBlockManager {
 	/** 
 	 * Check if a material is lockable or not
 	 * 
-	 * @param type the material to check
+	 * @param material the material to check
 	 * @return true if it is lockable
 	 */
 	public boolean isLockable(Material material);

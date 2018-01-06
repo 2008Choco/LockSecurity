@@ -19,21 +19,9 @@ import org.bukkit.OfflinePlayer;
 import me.choco.locksecurity.LockSecurity;
 import me.choco.locksecurity.api.ILockSecurityPlayer;
 import me.choco.locksecurity.api.ILockedBlock;
-import me.choco.locksecurity.api.ILockedBlockManager;
 import me.choco.locksecurity.api.LSMode;
 import me.choco.locksecurity.utils.json.JSONUtils;
 
-/** 
- * A wrapper class for the OfflinePlayer interface containing information about a player's
- * LockSecurity details such as (but not limited to); their data file, their owned blocks, their
- * active modes ({@link LSMode}), etc.
- * <p>
- * <b>NOTE:</b> Information regarding owned locked blocks is a record of what locked blocks 
- * currently exist. Not all owned blocks are registered in the {@link ILockedBlockManager}, 
- * meaning unregistered blocks will be ignored in a locked block lookup / protection listener
- * 
- * @author Parker Hawke - 2008Choco
- */
 public class LockSecurityPlayer implements ILockSecurityPlayer {
 	
 	private static final LockSecurity plugin = LockSecurity.getPlugin();

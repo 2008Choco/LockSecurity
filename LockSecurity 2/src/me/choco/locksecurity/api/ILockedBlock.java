@@ -80,7 +80,7 @@ public interface ILockedBlock extends JSONSerializable {
 	 * of the same type and must be a valid contendor, such as DoubleChest or Door components. 
 	 * This locked block and the specified component will be linked together
 	 * 
-	 * @param secondaryComponent the block to set as a secondary component
+	 * @param component the block to set as a secondary component
 	 * @throws IllegalBlockPositionException if the block is not positioned correctly
 	 */
 	public void setSecondaryComponent(ILockedBlock component);
@@ -91,7 +91,7 @@ public interface ILockedBlock extends JSONSerializable {
 	 * This locked block and the specified component will be linked together. 
 	 * <br> If forced, the components will be linked regardless of their block position / state
 	 * 
-	 * @param secondaryComponent the block to set as a secondary component
+	 * @param component the block to set as a secondary component
 	 * @param force if true, the blocks will be linked together regardless of their position
 	 * 
 	 * @throws IllegalBlockPositionException if the block is not positioned correctly (and "force" is false)

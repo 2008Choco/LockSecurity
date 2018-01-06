@@ -26,7 +26,7 @@ public interface IPlayerRegistry {
 	 * Get an LSPlayer instance from the specified player UUID. If no player has been
 	 * mapped to the provided UUID, a new instance will be created, mapped and returned
 	 * 
-	 * @param uuid the player UUID to get an instance from
+	 * @param player the player UUID to get an instance from
 	 * @return the LSPlayer instance
 	 */
 	public ILockSecurityPlayer getPlayer(UUID player);
@@ -42,7 +42,7 @@ public interface IPlayerRegistry {
 	 * Unregister a player from the player registry (if registered). Note that this
 	 * will clear any existing data from the player without saving it
 	 * 
-	 * @param uuid the uuid to unregister
+	 * @param player the uuid to unregister
 	 */
 	public void unregisterPlayer(ILockSecurityPlayer player);
 	
@@ -50,7 +50,7 @@ public interface IPlayerRegistry {
 	 * Unregister a player from the player registry (if registered). Note that this
 	 * will clear any existing data from the player without saving it
 	 * 
-	 * @param uuid the uuid to unregister
+	 * @param player the uuid to unregister
 	 */
 	public void unregisterPlayer(OfflinePlayer player);
 	
@@ -58,7 +58,7 @@ public interface IPlayerRegistry {
 	 * Unregister a player UUID from the player registry (if registered). Note that this
 	 * will clear any existing data from the player without saving it
 	 * 
-	 * @param uuid the uuid to unregister
+	 * @param player the uuid to unregister
 	 */
 	public void unregisterPlayer(UUID player);
 	
