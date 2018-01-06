@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 
 import org.bukkit.Location;
@@ -56,6 +57,7 @@ public class LockedBlockManager implements ILockedBlockManager {
 	
 	@Override
 	public void registerBlock(ILockedBlock block) {
+		Preconditions.checkArgument(block != null, "Cannot register a null block");
 		this.lockedBlocks.add(block);
 	}
 	
@@ -162,6 +164,8 @@ public class LockedBlockManager implements ILockedBlockManager {
 	
 	@Override
 	public boolean isLockable(Material type) {
+		if (type == null) return false;
+		
 		List<String> lockableBlocks = plugin.getConfig().getStringList("LockableBlocks");
 		
 		for (String material : lockableBlocks)
@@ -200,6 +204,8 @@ public class LockedBlockManager implements ILockedBlockManager {
 	
 	@Override
 	public void loadDataForWorld(World world) {
+		Preconditions.checkArgument(world != null, "Data cannot be loaded for world null");
+		
 		// Add blocks in the player's data
 		this.playerRegistry.getPlayers()
 			.forEach(p -> p.getOwnedBlocks().stream()
@@ -216,6 +222,8 @@ public class LockedBlockManager implements ILockedBlockManager {
 	
 	@Override
 	public void unloadDataForWorld(World world) {
+		Preconditions.checkArgument(world != null, "Data cannot be unloaded for world null");
+		
 		this.lockedBlocks.stream()
 			.filter(b -> b.getLocation().getWorld() == world)
 			.forEach(b -> unloadedBlocks.add(b));

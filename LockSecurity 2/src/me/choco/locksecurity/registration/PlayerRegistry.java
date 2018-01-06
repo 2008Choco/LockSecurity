@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 
 import org.bukkit.OfflinePlayer;
@@ -43,6 +44,7 @@ public class PlayerRegistry implements IPlayerRegistry {
 	
 	@Override
 	public void registerPlayer(ILockSecurityPlayer player) {
+		Preconditions.checkArgument(player != null, "Registered players must not be null");
 		this.players.put(player.getUniqueId(), player);
 	}
 	
@@ -80,6 +82,7 @@ public class PlayerRegistry implements IPlayerRegistry {
 	
 	@Override
 	public boolean hasJSONDataFile(UUID player) {
+		Preconditions.checkArgument(player != null, "JSON data files do not exist for null players");
 		return new File(plugin.playerdataDir, player + ".json").exists();
 	}
 	

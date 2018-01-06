@@ -2,6 +2,7 @@ package me.choco.locksecurity.data;
 
 import java.util.UUID;
 
+import com.google.common.base.Preconditions;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 
@@ -42,16 +43,18 @@ public class LockedBlock implements ILockedBlock {
 	 * @param keyID the key ID to associate with the block
 	 */
 	public LockedBlock(ILockSecurityPlayer owner, Location location, int lockID, int keyID) {
-		if (owner == null)
-			throw new IllegalStateException("Locked blocks cannot have a null owner");
+		Preconditions.checkArgument(owner != null, "Locked blocks cannot have null owners");
+		Preconditions.checkArgument(location != null, "Invalid location specified: null");
 		
 		this.owner = owner;
 		this.location = location;
 		this.lockID = lockID;
 		this.keyID = keyID;
-		if (!owner.ownsBlock(this)) owner.addBlockToOwnership(this);
-		
 		this.uuid = UUID.randomUUID();
+		
+		if (!owner.ownsBlock(this)) {
+			owner.addBlockToOwnership(this);
+		}
 	}
 	
 	/**
@@ -71,7 +74,10 @@ public class LockedBlock implements ILockedBlock {
 		if (!canBeSecondaryComponent(secondaryComponent))
 			throw new IllegalBlockPositionException("Block is not positioned correctly to be a secondary component (From [LockID] = " + lockID);
 		this.secondaryComponent = secondaryComponent;
-		if (!owner.ownsBlock(secondaryComponent)) owner.addBlockToOwnership(secondaryComponent);
+		
+		if (!owner.ownsBlock(secondaryComponent)) {
+			owner.addBlockToOwnership(secondaryComponent);
+		}
 	}
 	
 	/**
@@ -115,6 +121,8 @@ public class LockedBlock implements ILockedBlock {
 	
 	@Override
 	public void setOwner(ILockSecurityPlayer owner) {
+		Preconditions.checkArgument(owner != null, "Owner must not be null");
+		
 		this.owner.removeBlockFromOwnership(this);
 		owner.addBlockToOwnership(this);
 		
@@ -176,7 +184,7 @@ public class LockedBlock implements ILockedBlock {
 	
 	@Override
 	public boolean canBeSecondaryComponent(ILockedBlock block) {
-		if (!this.getBlock().getType().equals(block.getBlock().getType())) return false;
+		if (block == null || this.getBlock().getType() != block.getBlock().getType()) return false;
 		
 		Material material = this.getBlock().getType();
 		for (BlockFace face : material.name().contains("DOOR") ? FACES_DOORS : FACES)

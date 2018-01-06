@@ -3,6 +3,8 @@ package me.choco.locksecurity.api.utils;
 import java.util.Arrays;
 import java.util.List;
 
+import com.google.common.base.Preconditions;
+
 import org.apache.commons.lang.ArrayUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -28,6 +30,7 @@ public class KeyFactory {
 	 * @return a new KeyBuilder instance to create the key
 	 */
 	public static KeyBuilder buildKey(KeyType type) {
+		Preconditions.checkArgument(type != null, "Cannot create a key of type null");
 		return new KeyBuilder(type);
 	}
 	
@@ -49,7 +52,7 @@ public class KeyFactory {
 	 * @return unsmithed keys
 	 */
 	public static ItemStack getUnsmithedKey(int amount) {
-		if (amount <= 0) throw new IllegalArgumentException("Cannot create an ItemStack with a negative amount");
+		Preconditions.checkArgument(amount > 0, "Cannot create an ItemStack with a negative or zero amount (%s)", amount);
 		
 		ItemStack key = UNSMITHED_KEY.clone();
 		key.setAmount(amount);
@@ -157,10 +160,13 @@ public class KeyFactory {
 			
 			this.keyBuilder = new ItemBuilder(Material.TRIPWIRE_HOOK);
 			this.keyBuilder.setName(ChatColor.GRAY + type.getItemDisplayName());
-			if (type.equals(KeyType.SMITHED))
+			
+			if (type.equals(KeyType.SMITHED)) {
 				this.keyBuilder.addEnchantment(Enchantment.DURABILITY, 10).addFlags(ItemFlag.HIDE_ENCHANTS);
-			else
+			}
+			else {
 				this.keyBuilder.setLore(Arrays.asList(ChatColor.GRAY + "Key ID: " + ChatColor.DARK_PURPLE + "N/A"));
+			}
 		}
 		
 		/** 
@@ -182,10 +188,9 @@ public class KeyFactory {
 		 * @return this instance of the builder. Allows for chaining
 		 */
 		public KeyBuilder withIDs(int... IDs) {
-			if (!dataModifications)
-				throw new IllegalStateException("Cannot modify data of an unsmithed key");
-			Arrays.sort(IDs);
+			Preconditions.checkArgument(dataModifications, "Cannot modify data of an unsmithed key");
 			
+			Arrays.sort(IDs);
 			StringBuilder stringIDs = new StringBuilder();
 			for (int id : IDs)
 				stringIDs.append(", " + id);

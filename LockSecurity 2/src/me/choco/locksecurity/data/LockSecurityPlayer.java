@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
+import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.gson.JsonArray;
@@ -40,6 +41,7 @@ public class LockSecurityPlayer implements ILockSecurityPlayer {
 	 * @param uuid the player UUID
 	 */
 	public LockSecurityPlayer(UUID uuid) {
+		Preconditions.checkArgument(uuid != null, "Player UUID cannot be null");
 		this.uuid = uuid;
 		
 		this.jsonDataFile = new File(plugin.playerdataDir, uuid + ".json");
@@ -77,8 +79,8 @@ public class LockSecurityPlayer implements ILockSecurityPlayer {
 	
 	@Override
 	public void addBlockToOwnership(ILockedBlock block) {
-		if (!block.getOwner().equals(this))
-			throw new IllegalStateException("Unable to register a locked block to a user that does not own it");
+		Preconditions.checkArgument(block != null, "Null blocks cannot be added to ownership");
+		Preconditions.checkArgument(block.getOwner() == this, "Unable to register a locked block to a user that does not own it");
 		
 		if (ownedBlocks.contains(block)) return;
 		this.ownedBlocks.add(block);
@@ -96,16 +98,20 @@ public class LockSecurityPlayer implements ILockSecurityPlayer {
 	
 	@Override
 	public void enableMode(LSMode mode) {
+		Preconditions.checkArgument(mode != null, "Cannot enable a null mode");
 		this.activeModes.add(mode);
 	}
 	
 	@Override
 	public void disableMode(LSMode mode) {
+		Preconditions.checkArgument(mode != null, "Cannot disable a null mode");
 		this.activeModes.remove(mode);
 	}
 	
 	@Override
 	public boolean toggleMode(LSMode mode) {
+		Preconditions.checkArgument(mode != null, "Cannot toggle a null mode");
+		
 		if (activeModes.contains(mode)) this.activeModes.remove(mode);
 		else this.activeModes.add(mode);
 		
