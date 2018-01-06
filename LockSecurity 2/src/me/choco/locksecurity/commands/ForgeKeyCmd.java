@@ -6,8 +6,8 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import me.choco.locksecurity.LockSecurity;
-import me.choco.locksecurity.api.KeyFactory;
-import me.choco.locksecurity.api.KeyFactory.KeyType;
+import me.choco.locksecurity.api.utils.KeyFactory;
+import me.choco.locksecurity.api.utils.KeyFactory.KeyType;
 
 public class ForgeKeyCmd implements CommandExecutor {
 	

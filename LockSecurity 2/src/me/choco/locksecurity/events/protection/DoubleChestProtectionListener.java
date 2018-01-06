@@ -12,7 +12,7 @@ import me.choco.locksecurity.api.ILockSecurityPlayer;
 import me.choco.locksecurity.api.ILockedBlock;
 import me.choco.locksecurity.api.ILockedBlockManager;
 import me.choco.locksecurity.api.IPlayerRegistry;
-import me.choco.locksecurity.api.LockedBlock;
+import me.choco.locksecurity.data.LockedBlock;
 
 public class DoubleChestProtectionListener implements Listener {
 	

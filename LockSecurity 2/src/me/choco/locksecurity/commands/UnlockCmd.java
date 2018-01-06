@@ -11,8 +11,8 @@ import me.choco.locksecurity.api.ILockSecurityPlayer;
 import me.choco.locksecurity.api.ILockedBlock;
 import me.choco.locksecurity.api.ILockedBlockManager;
 import me.choco.locksecurity.api.IPlayerRegistry;
+import me.choco.locksecurity.api.LSMode;
 import me.choco.locksecurity.api.event.PlayerUnlockBlockEvent;
-import me.choco.locksecurity.api.utils.LSMode;
 
 public class UnlockCmd implements CommandExecutor {
 	

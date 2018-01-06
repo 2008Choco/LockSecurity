@@ -5,7 +5,6 @@ import org.bukkit.event.Cancellable;
 import org.bukkit.event.HandlerList;
 
 import me.choco.locksecurity.api.ILockSecurityPlayer;
-import me.choco.locksecurity.api.event.variant.LSPlayerEvent;
 
 /** 
  * Called when a player successfully locks a block

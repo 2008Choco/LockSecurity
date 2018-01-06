@@ -7,7 +7,6 @@ import java.util.UUID;
 
 import org.bukkit.OfflinePlayer;
 
-import me.choco.locksecurity.api.utils.LSMode;
 import me.choco.locksecurity.utils.json.JSONSerializable;
 
 /** 

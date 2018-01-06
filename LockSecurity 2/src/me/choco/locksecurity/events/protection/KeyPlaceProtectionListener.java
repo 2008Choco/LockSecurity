@@ -5,7 +5,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.inventory.ItemStack;
 
-import me.choco.locksecurity.api.KeyFactory.KeyType;
+import me.choco.locksecurity.api.utils.KeyFactory.KeyType;
 
 public class KeyPlaceProtectionListener implements Listener {
 	

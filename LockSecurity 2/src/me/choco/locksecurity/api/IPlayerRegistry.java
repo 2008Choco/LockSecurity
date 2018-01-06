@@ -6,8 +6,6 @@ import java.util.UUID;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
-import me.choco.locksecurity.api.utils.LSMode;
-
 /** 
  * A registry to map Bukkit {@link Player}s to their {@link ILockSecurityPlayer} data objects
  * 

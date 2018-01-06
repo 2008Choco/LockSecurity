@@ -1,4 +1,4 @@
-package me.choco.locksecurity.api;
+package me.choco.locksecurity.api.utils;
 
 import java.util.Arrays;
 import java.util.List;

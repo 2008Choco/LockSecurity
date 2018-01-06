@@ -8,7 +8,7 @@ import org.bukkit.entity.Player;
 import me.choco.locksecurity.LockSecurity;
 import me.choco.locksecurity.api.ILockSecurityPlayer;
 import me.choco.locksecurity.api.IPlayerRegistry;
-import me.choco.locksecurity.api.utils.LSMode;
+import me.choco.locksecurity.api.LSMode;
 
 public class IgnoreLocksCmd implements CommandExecutor {
 	

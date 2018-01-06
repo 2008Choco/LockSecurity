@@ -14,8 +14,8 @@ import org.bukkit.OfflinePlayer;
 import me.choco.locksecurity.LockSecurity;
 import me.choco.locksecurity.api.ILockSecurityPlayer;
 import me.choco.locksecurity.api.IPlayerRegistry;
-import me.choco.locksecurity.api.utils.LSMode;
-import me.choco.locksecurity.utils.LockSecurityPlayer;
+import me.choco.locksecurity.api.LSMode;
+import me.choco.locksecurity.data.LockSecurityPlayer;
 
 public class PlayerRegistry implements IPlayerRegistry {
 	

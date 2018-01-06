@@ -1,4 +1,4 @@
-package me.choco.locksecurity.api.event.variant;
+package me.choco.locksecurity.api.event;
 
 import org.bukkit.event.Event;
 

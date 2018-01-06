@@ -24,13 +24,13 @@ import me.choco.locksecurity.api.ILockSecurityPlayer;
 import me.choco.locksecurity.api.ILockedBlock;
 import me.choco.locksecurity.api.ILockedBlockManager;
 import me.choco.locksecurity.api.IPlayerRegistry;
-import me.choco.locksecurity.api.KeyFactory;
-import me.choco.locksecurity.api.KeyFactory.KeyType;
-import me.choco.locksecurity.api.LockedBlock;
+import me.choco.locksecurity.api.LSMode;
 import me.choco.locksecurity.api.event.PlayerInteractLockedBlockEvent;
 import me.choco.locksecurity.api.event.PlayerInteractLockedBlockEvent.InteractResult;
+import me.choco.locksecurity.api.utils.KeyFactory;
+import me.choco.locksecurity.api.utils.KeyFactory.KeyType;
+import me.choco.locksecurity.data.LockedBlock;
 import me.choco.locksecurity.api.event.PlayerLockBlockEvent;
-import me.choco.locksecurity.api.utils.LSMode;
 
 public class BlockClickListener implements Listener {
 	

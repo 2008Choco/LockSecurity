@@ -1,4 +1,4 @@
-package me.choco.locksecurity.api;
+package me.choco.locksecurity.data;
 
 import java.util.UUID;
 
@@ -14,7 +14,12 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.inventory.ItemStack;
 
 import me.choco.locksecurity.LockSecurity;
+import me.choco.locksecurity.api.ILockSecurityPlayer;
+import me.choco.locksecurity.api.ILockedBlock;
+import me.choco.locksecurity.api.ILockedBlockManager;
+import me.choco.locksecurity.api.IPlayerRegistry;
 import me.choco.locksecurity.api.exception.IllegalBlockPositionException;
+import me.choco.locksecurity.api.utils.KeyFactory;
 
 public class LockedBlock implements ILockedBlock {
 	

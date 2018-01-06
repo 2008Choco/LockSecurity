@@ -1,6 +1,6 @@
-package me.choco.locksecurity.api.utils;
+package me.choco.locksecurity.api;
 
-import me.choco.locksecurity.utils.LockSecurityPlayer;
+import me.choco.locksecurity.data.LockSecurityPlayer;
 
 /** 
  * Different modes which may be applied to a {@link LockSecurityPlayer}

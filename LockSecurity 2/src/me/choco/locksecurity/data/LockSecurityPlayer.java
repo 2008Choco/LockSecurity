@@ -1,4 +1,4 @@
-package me.choco.locksecurity.utils;
+package me.choco.locksecurity.data;
 
 import java.io.File;
 import java.io.IOException;
@@ -19,8 +19,7 @@ import org.bukkit.OfflinePlayer;
 import me.choco.locksecurity.LockSecurity;
 import me.choco.locksecurity.api.ILockSecurityPlayer;
 import me.choco.locksecurity.api.ILockedBlock;
-import me.choco.locksecurity.api.LockedBlock;
-import me.choco.locksecurity.api.utils.LSMode;
+import me.choco.locksecurity.api.LSMode;
 import me.choco.locksecurity.registration.LockedBlockManager;
 import me.choco.locksecurity.utils.json.JSONUtils;
 

@@ -18,7 +18,7 @@ import org.bukkit.World;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import me.choco.locksecurity.api.ILockSecurityPlayer;
-import me.choco.locksecurity.api.LockedBlock;
+import me.choco.locksecurity.data.LockedBlock;
 
 /**
  * Contains a few methods to assist in the transferring of information from one
