@@ -11,7 +11,7 @@ import org.bukkit.event.Listener;
 import me.choco.LSaddon.ChestCollector;
 import me.choco.LSaddon.utils.CollectorBlock;
 import me.choco.LSaddon.utils.CollectorHandler;
-import me.choco.locksecurity.api.LockedBlock;
+import me.choco.locksecurity.api.ILockedBlock;
 import me.choco.locksecurity.api.event.PlayerInteractLockedBlockEvent;
 
 public class ClickLockedChest implements Listener {
@@ -26,7 +26,7 @@ public class ClickLockedChest implements Listener {
 	
 	@EventHandler
 	public void onClickLockedChest(PlayerInteractLockedBlockEvent event) {
-		LockedBlock block = event.getBlock();
+		ILockedBlock block = event.getBlock();
 		Player player = event.getPlayer().getPlayer().getPlayer();
 		
 		if (block.getBlock().getType() != Material.CHEST && block.getBlock().getType() != Material.TRAPPED_CHEST) return;

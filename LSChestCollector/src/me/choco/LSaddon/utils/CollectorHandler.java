@@ -11,7 +11,7 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.block.Block;
 
 import me.choco.LSaddon.ChestCollector;
-import me.choco.locksecurity.api.LockedBlock;
+import me.choco.locksecurity.api.ILockedBlock;
 
 public class CollectorHandler {
 	
@@ -30,7 +30,7 @@ public class CollectorHandler {
 		this.collectors.remove(collector);
 	}
 	
-	public boolean isCollector(LockedBlock block) {
+	public boolean isCollector(ILockedBlock block) {
 		return this.collectors.stream().anyMatch(c -> c.getBlock().equals(block));
 	}
 	
@@ -48,7 +48,7 @@ public class CollectorHandler {
 			.findFirst().orElse(null);
 	}
 	
-	public CollectorBlock getCollector(LockedBlock block) {
+	public CollectorBlock getCollector(ILockedBlock block) {
 		return this.collectors.stream()
 			.filter(c -> c.getBlock().equals(block))
 			.findFirst().orElse(null);

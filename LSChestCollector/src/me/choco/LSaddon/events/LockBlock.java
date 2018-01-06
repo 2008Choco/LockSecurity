@@ -7,8 +7,8 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
 import me.choco.LSaddon.ChestCollector;
+import me.choco.locksecurity.api.ILockSecurityPlayer;
 import me.choco.locksecurity.api.event.PlayerLockBlockEvent;
-import me.choco.locksecurity.utils.LSPlayer;
 
 public class LockBlock implements Listener {
 	
@@ -23,7 +23,7 @@ public class LockBlock implements Listener {
 		Block block = event.getBlock();
 		if (block.getType() != Material.CHEST || block.getType() != Material.TRAPPED_CHEST) return;
 		
-		LSPlayer lsPlayer = event.getPlayer();
+		ILockSecurityPlayer lsPlayer = event.getPlayer();
 		
 		if (plugin.getConfig().getBoolean("DisplayOnLockMsg") && lsPlayer.getOwnedBlocks().size() == 0) {
 			lsPlayer.getPlayer().getPlayer().sendMessage(ChatColor.GOLD + "[" + ChatColor.AQUA + "Collector" + ChatColor.GOLD + "] " + ChatColor.GRAY + 

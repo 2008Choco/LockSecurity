@@ -8,27 +8,27 @@ import com.google.common.collect.ImmutableSet;
 
 import org.bukkit.Material;
 
-import me.choco.locksecurity.api.LockedBlock;
+import me.choco.locksecurity.api.ILockedBlock;
 
 public class CollectorBlock {
 	
 	private final int id;
-	private final LockedBlock block;
+	private final ILockedBlock block;
 	private final Set<Material> materials;
 	
-	public CollectorBlock(LockedBlock block, int id, Material... materials) {
+	public CollectorBlock(ILockedBlock block, int id, Material... materials) {
 		this.block = block;
 		this.id = id;
 		this.materials = new HashSet<>(Arrays.asList(materials));
 	}
 	
-	public CollectorBlock(LockedBlock block, int id) {
+	public CollectorBlock(ILockedBlock block, int id) {
 		this.block = block;
 		this.id = id;
 		this.materials = new HashSet<>();
 	}
 	
-	public LockedBlock getBlock() {
+	public ILockedBlock getBlock() {
 		return block;
 	}
 	
