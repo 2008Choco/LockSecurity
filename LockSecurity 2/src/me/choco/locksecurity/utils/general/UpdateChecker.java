@@ -20,7 +20,7 @@ public class UpdateChecker {
 	
 	private boolean requiresUpdate;
 	private final String queryURL;
-
+	
 	private final Plugin plugin;
 	private final String pluginID;
 	
@@ -88,7 +88,7 @@ public class UpdateChecker {
 				
 				int newValue = Integer.parseInt(newValues[i]);
 				int currentValue = Integer.parseInt(currentValues[i]);
-
+				
 				if (newValue < currentValue) break;
 				else if (newValue > currentValue) {
 					this.requiresUpdate = true;
@@ -108,4 +108,5 @@ public class UpdateChecker {
 	public boolean requiresUpdate() {
 		return requiresUpdate;
 	}
+	
 }

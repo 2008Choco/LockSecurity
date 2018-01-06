@@ -54,4 +54,5 @@ public class GriefProtectionListener implements Listener {
 	public void onHopperPullItem(InventoryMoveItemEvent event) {
 		if (lockedBlockManager.isRegistered(event.getSource().getLocation().getBlock())) event.setCancelled(true);
 	}
+	
 }

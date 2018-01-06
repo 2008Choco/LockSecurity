@@ -80,4 +80,5 @@ public class PlayerLockBlockEvent extends LSPlayerEvent implements Cancellable {
 	public boolean isCancelled() {
 		return cancelled;
 	}
+	
 }

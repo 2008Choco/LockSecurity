@@ -110,7 +110,7 @@ public class BlockClickListener implements Listener {
 				// PlayerInteractLockedBlockEvent - No key
 				PlayerInteractLockedBlockEvent pilbe = new PlayerInteractLockedBlockEvent(lsPlayer, lBlock, InteractResult.NO_KEY);
 				Bukkit.getPluginManager().callEvent(pilbe);
-
+				
 				plugin.sendMessage(player, plugin.getLocale().getMessage("event.key.none"));
 				player.spawnParticle(Particle.SMOKE_NORMAL, block.getLocation().add(0.5, 1, 0.5), 5, 0.1F, 0.2F, 0.1F, 0.01F);
 				player.playSound(player.getLocation(), Sound.BLOCK_WOODEN_DOOR_CLOSE, 1, 0);
@@ -124,7 +124,7 @@ public class BlockClickListener implements Listener {
 				// PlayerInteractLockedBlockEvent - Not right key
 				PlayerInteractLockedBlockEvent pilbe = new PlayerInteractLockedBlockEvent(lsPlayer, lBlock, InteractResult.NOT_RIGHT_KEY);
 				Bukkit.getPluginManager().callEvent(pilbe);
-
+				
 				plugin.sendMessage(player, plugin.getLocale().getMessage("event.key.attemptpick"));
 				player.playSound(player.getLocation(), Sound.BLOCK_TRIPWIRE_CLICK_OFF, 1, 2);
 				if (plugin.getConfig().getBoolean("Aesthetics.DisplayLockedSmokeParticle")) {

@@ -51,10 +51,11 @@ public class TransferLockCmd implements CommandExecutor {
 		}
 		
 		lsPlayer.setTransferTarget(playerRegistry.getPlayer(target));
-
+		
 		this.plugin.sendMessage(player, plugin.getLocale().getMessage(lsPlayer.toggleMode(LSMode.TRANSFER_LOCK)
 				? "command.transferlock.enabled"
 				: "command.transferlock.disabled"));
 		return true;
 	}
+	
 }

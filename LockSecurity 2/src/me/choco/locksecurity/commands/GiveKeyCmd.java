@@ -41,9 +41,9 @@ public class GiveKeyCmd implements CommandExecutor {
 			}
 			
 			if (args.length >= 2) {
-				try{
+				try {
 					amount = Integer.parseInt(args[1]);
-				}catch(NumberFormatException e) {
+				} catch (NumberFormatException e) {
 					plugin.sendMessage(sender, plugin.getLocale().getMessage("command.general.invalidinteger")
 							.replace("%param%", args[1]));
 					return true;
@@ -69,4 +69,5 @@ public class GiveKeyCmd implements CommandExecutor {
 		target.getInventory().addItem(KeyFactory.getUnsmithedKey(amount));
 		return true;
 	}
+	
 }

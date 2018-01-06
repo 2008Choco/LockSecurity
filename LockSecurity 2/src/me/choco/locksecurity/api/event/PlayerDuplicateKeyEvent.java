@@ -69,4 +69,5 @@ public class PlayerDuplicateKeyEvent extends PlayerEvent {
 	public static HandlerList getHandlerList() {
 		return handlers;
 	}
+	
 }

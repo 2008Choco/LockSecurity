@@ -40,4 +40,5 @@ public class IgnoreLocksCmd implements CommandExecutor {
 				: "command.ignorelocks.disabled"));
 		return true;
 	}
+	
 }

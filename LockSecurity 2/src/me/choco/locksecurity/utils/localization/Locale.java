@@ -31,7 +31,7 @@ import org.bukkit.plugin.java.JavaPlugin;
  * @author Parker Hawke - 2008Choco
  */
 public class Locale {
-
+	
 	private static JavaPlugin plugin;
 	private static final List<Locale> LOCALES = Lists.newArrayList();
 	
@@ -279,7 +279,7 @@ public class Locale {
 			return compareFiles(plugin.getResource(fileName), destinationFile);
 		}
 		
-		try(OutputStream outputStream = new FileOutputStream(destinationFile)) {
+		try (OutputStream outputStream = new FileOutputStream(destinationFile)) {
 			IOUtils.copy(plugin.getResource(fileName), outputStream);
 			
 			fileName = fileName.substring(0, fileName.lastIndexOf('.'));
@@ -291,7 +291,9 @@ public class Locale {
 			if (defaultLocale == null) defaultLocale = fileName;
 			
 			return true;
-		} catch (IOException e) { return false; }
+		} catch (IOException e) {
+			return false;
+		}
 	}
 	
 	/**
@@ -324,7 +326,7 @@ public class Locale {
 		boolean changed = false;
 		
 		List<String> defaultLines, existingLines;
-		try(BufferedReader defaultReader = new BufferedReader(new InputStreamReader(defaultFile));
+		try (BufferedReader defaultReader = new BufferedReader(new InputStreamReader(defaultFile));
 				BufferedReader existingReader = new BufferedReader(new FileReader(existingFile));
 				BufferedWriter writer = new BufferedWriter(new FileWriter(existingFile, true))) {
 			defaultLines = defaultReader.lines().collect(Collectors.toList());
@@ -347,8 +349,11 @@ public class Locale {
 					changed = true;
 				}
 			}
-		} catch (IOException e) { return false; }
+		} catch (IOException e) {
+			return false;
+		}
 		
 		return changed;
 	}
+	
 }

@@ -44,8 +44,14 @@ public class LockSecurityCmd implements CommandExecutor {
 				sender.sendMessage(ChatColor.GOLD + "--------------------------------------------");
 			}
 			
-			else{ plugin.sendMessage(sender, "/locksecurity <reload|version>"); }
-		}else{ plugin.sendMessage(sender, "/locksecurity <reload|version>"); }
+			else {
+				plugin.sendMessage(sender, "/locksecurity <reload|version>");
+			}
+		}
+		else{
+			plugin.sendMessage(sender, "/locksecurity <reload|version>");
+		}
 		return true;
 	}
+	
 }

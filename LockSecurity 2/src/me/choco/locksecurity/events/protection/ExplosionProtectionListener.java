@@ -25,8 +25,9 @@ public class ExplosionProtectionListener implements Listener {
 	public void onExplodeLockedBlock(EntityExplodeEvent event) {
 		if (!plugin.getConfig().getBoolean("Griefing.PreventLockedExplosions")) return;
 		
-        Iterator<Block> it = event.blockList().iterator();
-        while (it.hasNext())
-            if (lockedBlockManager.isRegistered(it.next())) it.remove();
+		Iterator<Block> it = event.blockList().iterator();
+		while (it.hasNext())
+			if (lockedBlockManager.isRegistered(it.next())) it.remove();
 	}
+	
 }

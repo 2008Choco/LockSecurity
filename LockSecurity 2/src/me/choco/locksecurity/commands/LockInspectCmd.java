@@ -44,9 +44,9 @@ public class LockInspectCmd implements CommandExecutor {
 		
 		if (args.length >= 1) {
 			int lockID = -1;
-			try{
+			try {
 				lockID = Integer.parseInt(args[0]);
-			}catch(NumberFormatException e) {
+			} catch (NumberFormatException e) {
 				plugin.sendMessage(player, plugin.getLocale().getMessage("command.general.invalidlockid")
 						.replace("%ID%", args[0]));
 			}

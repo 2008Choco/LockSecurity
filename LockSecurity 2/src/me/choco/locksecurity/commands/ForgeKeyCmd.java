@@ -46,10 +46,10 @@ public class ForgeKeyCmd implements CommandExecutor {
 			
 			for (int i = 0; i < stringIDs.length; i++) {
 				String ID = stringIDs[i];
-				try{
+				try {
 					if (ID.equals("")) continue;
 					IDs[i] = Integer.parseInt(ID);
-				}catch(NumberFormatException e) {
+				} catch (NumberFormatException e) {
 					plugin.sendMessage(player, plugin.getLocale().getMessage("command.general.invalidinteger")
 							.replace("%param%", ID));
 					return true;
@@ -57,10 +57,10 @@ public class ForgeKeyCmd implements CommandExecutor {
 			}
 			
 			player.getInventory().addItem(KeyFactory.buildKey(KeyType.SMITHED).withIDs(IDs).build());
-			plugin.sendMessage(player, plugin.getLocale().getMessage("command.forgekey.givenkey")
-					.replace("%ID%", args[0]));
+			plugin.sendMessage(player, plugin.getLocale().getMessage("command.forgekey.givenkey").replace("%ID%", args[0]));
 		}
 		
 		return true;
 	}
+	
 }

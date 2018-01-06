@@ -43,9 +43,9 @@ public class UnlockCmd implements CommandExecutor {
 			}
 			
 			int lockID = 0;
-			try{
+			try {
 				lockID = Integer.parseInt(args[0]);
-			}catch(NumberFormatException e) {
+			} catch (NumberFormatException e) {
 				plugin.sendMessage(player, plugin.getLocale().getMessage("command.general.invalidlockid")
 						.replace("%ID%", args[0]));
 				return true;
@@ -86,4 +86,5 @@ public class UnlockCmd implements CommandExecutor {
 				: "command.unlock.disabled"));
 		return true;
 	}
+	
 }

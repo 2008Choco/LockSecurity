@@ -16,6 +16,8 @@ import me.choco.locksecurity.api.LockedBlock;
 
 public class DoubleChestProtectionListener implements Listener {
 	
+	private static final BlockFace[] FACES = { BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST };
+	
 	private final LockSecurity plugin;
 	private final IPlayerRegistry playerRegistry;
 	private final ILockedBlockManager lockedBlockManager;
@@ -25,8 +27,6 @@ public class DoubleChestProtectionListener implements Listener {
 		this.playerRegistry = plugin.getPlayerRegistry();
 		this.lockedBlockManager = plugin.getLockedBlockManager();
 	}
-	
-	private static final BlockFace[] FACES = {BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST};
 	
 	@EventHandler
 	public void onPlaceBlock(BlockPlaceEvent event) {
@@ -54,4 +54,5 @@ public class DoubleChestProtectionListener implements Listener {
 			}
 		}
 	}
+	
 }

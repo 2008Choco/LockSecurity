@@ -17,8 +17,8 @@ import me.choco.locksecurity.utils.general.ItemBuilder;
 public class KeyCraftingListener implements Listener {
 	
 	private static final ItemStack SINGLE_KEY_RESULT = new ItemBuilder(Material.BEDROCK).setName("SINGLE").build(),
-									DUAL_KEY_RESULT = new ItemBuilder(Material.BEDROCK).setName("DUAL").build(),
-									UNSMITHED_KEY = KeyFactory.getUnsmithedkey();
+			DUAL_KEY_RESULT = new ItemBuilder(Material.BEDROCK).setName("DUAL").build(),
+			UNSMITHED_KEY = KeyFactory.getUnsmithedkey();
 	
 	@EventHandler
 	public void onDuplicateMergeKey(PrepareItemCraftEvent event) {
@@ -88,8 +88,9 @@ public class KeyCraftingListener implements Listener {
 					break;
 				}
 			}
-
+			
 			event.getInventory().setResult((convert && player.hasPermission("locks.craft")) ? UNSMITHED_KEY : null);
 		}
 	}
+	
 }

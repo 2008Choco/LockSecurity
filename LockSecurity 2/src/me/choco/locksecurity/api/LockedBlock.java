@@ -198,7 +198,7 @@ public class LockedBlock implements ILockedBlock {
 			if (ID == keyID) return true;
 		return false;
 	}
-
+	
 	@Override
 	public JsonObject write(JsonObject data) {
 		if (data.size() > 0) return data;
@@ -218,7 +218,7 @@ public class LockedBlock implements ILockedBlock {
 		if (secondaryComponent != null) data.addProperty("secondaryComponent", secondaryComponent.getUniqueId().toString());
 		return data;
 	}
-
+	
 	@Override
 	public boolean read(JsonObject data) {
 		this.uuid = UUID.fromString(data.get("uuid").getAsString());
@@ -237,4 +237,5 @@ public class LockedBlock implements ILockedBlock {
 		
 		return true;
 	}
+	
 }

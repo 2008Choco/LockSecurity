@@ -68,4 +68,5 @@ public class PlayerMergeKeyEvent extends PlayerEvent {
 	public static HandlerList getHandlerList() {
 		return handlers;
 	}
+	
 }

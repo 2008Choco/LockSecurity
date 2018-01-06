@@ -43,13 +43,15 @@ public final class AutoSaveLoop extends BukkitRunnable {
 		}
 		
 		if (lockedBlockManager != null) {
-			try(BufferedWriter writer = new BufferedWriter(new FileWriter(plugin.infoFile))) {
+			try (BufferedWriter writer = new BufferedWriter(new FileWriter(plugin.infoFile))) {
 				new PrintWriter(plugin.infoFile).close();
 				
 				String toWrite = "nextLockID=" + lockedBlockManager.getNextLockID() + "\n"
 								+ "nextKeyID=" + lockedBlockManager.getNextKeyID();
 				writer.write(toWrite);
-			} catch (IOException e) { e.printStackTrace(); }
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 	
@@ -72,4 +74,5 @@ public final class AutoSaveLoop extends BukkitRunnable {
 		instance.runTaskTimerAsynchronously(plugin, delayTicks, delayTicks);
 		return instance;
 	}
+	
 }

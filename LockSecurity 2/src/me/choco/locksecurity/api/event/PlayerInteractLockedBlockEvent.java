@@ -64,4 +64,5 @@ public class PlayerInteractLockedBlockEvent extends LSPlayerEvent {
 	public static HandlerList getHandlerList() {
 		return handlers;
 	}
+	
 }

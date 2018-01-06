@@ -37,7 +37,7 @@ public class LockedBlockManager implements ILockedBlockManager {
 		this.playerRegistry = plugin.getPlayerRegistry();
 		
 		// Read Lock / Key ID values
-		try(BufferedReader reader = new BufferedReader(new FileReader(plugin.infoFile))) {
+		try (BufferedReader reader = new BufferedReader(new FileReader(plugin.infoFile))) {
 			String line;
 			while ((line = reader.readLine()) != null) {
 				String[] values = line.split("=");
@@ -47,7 +47,9 @@ public class LockedBlockManager implements ILockedBlockManager {
 					this.nextKeyID = Integer.parseInt(values[1]);
 				}
 			}
-		}catch(IOException | NumberFormatException e) { e.printStackTrace(); }
+		} catch (IOException | NumberFormatException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	@Override
@@ -74,19 +76,19 @@ public class LockedBlockManager implements ILockedBlockManager {
 	public boolean isRegistered(Block block) {
 		return getLockedBlock(block) != null;
 	}
-
+	
 	@Override
 	public ILockedBlock getLockedBlock(Location location) {
 		return getLockedBlock(location.getBlock());
 	}
-
+	
 	@Override
 	public ILockedBlock getLockedBlock(Block block) {
 		for (ILockedBlock lBlock : this.lockedBlocks)
 			if (lBlock.getBlock().equals(block)) return lBlock;
 		return null;
 	}
-
+	
 	@Override
 	public ILockedBlock getLockedBlock(int lockID) {
 		return this.lockedBlocks.stream()
@@ -98,14 +100,14 @@ public class LockedBlockManager implements ILockedBlockManager {
 	public List<ILockedBlock> getLockedBlocks() {
 		return ImmutableList.copyOf(lockedBlocks);
 	}
-
+	
 	@Override
 	public List<ILockedBlock> getLockedBlocks(int keyID) {
 		return this.lockedBlocks.stream()
 				.filter(b -> b.getKeyID() == keyID)
 				.collect(Collectors.toList());
 	}
-
+	
 	@Override
 	public List<ILockedBlock> getUnloadedBlocks() {
 		return ImmutableList.copyOf(unloadedBlocks);
@@ -183,4 +185,5 @@ public class LockedBlockManager implements ILockedBlockManager {
 		this.lockedBlocks.clear();
 		this.unloadedBlocks.clear();
 	}
+	
 }

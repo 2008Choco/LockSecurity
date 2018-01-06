@@ -67,4 +67,5 @@ public class BlockBreakListener implements Listener {
 		plugin.sendMessage(player, plugin.getLocale().getMessage("command.unlock.unlocked")
 				.replace("%lockID%", String.valueOf(lBlock.getLockID())));
 	}
+	
 }

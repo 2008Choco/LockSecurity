@@ -32,7 +32,7 @@ public final class TransferUtils {
 		plugin.getLogger().info("Commencing transfer process for Data Support of LockSecurity 1.7.0 - 1.8.2");
 		
 		int nextLockID = 1, nextKeyID = 1;
-
+		
 		try {
 			Class.forName("org.sqlite.JDBC");
 			Connection connection = DriverManager.getConnection("jdbc:sqlite:plugins/LockSecurity/lockinfo.db");
@@ -135,4 +135,5 @@ public final class TransferUtils {
 				+ " for user " + player.getPlayer().getName() + " with LockID " + lockID + " and KeyID " + keyID);
 		return true;
 	}
+	
 }

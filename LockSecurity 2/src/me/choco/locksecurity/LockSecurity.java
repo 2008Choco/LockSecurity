@@ -106,21 +106,20 @@ public class LockSecurity extends JavaPlugin {
 		// Register events
 		this.getLogger().info("Registering events...");
 		
-		    /* General/Lock-Based listeners */
+			/* General/Lock-Based listeners */
 		Bukkit.getPluginManager().registerEvents(new BlockClickListener(this), this);
 		Bukkit.getPluginManager().registerEvents(new BlockBreakListener(this), this);
 		Bukkit.getPluginManager().registerEvents(new KeyCraftingListener(), this);
 		
-		    /* Protection listeners */
+			/* Protection listeners */
 		Bukkit.getPluginManager().registerEvents(new KeyPlaceProtectionListener(), this);
 		Bukkit.getPluginManager().registerEvents(new GriefProtectionListener(this), this);
 		Bukkit.getPluginManager().registerEvents(new ExplosionProtectionListener(this), this);
 		Bukkit.getPluginManager().registerEvents(new DoubleChestProtectionListener(this), this);
 		
-		    /* Data listeners */
+			/* Data listeners */
 		Bukkit.getPluginManager().registerEvents(new WorldDataLoader(this), this);
 		Bukkit.getPluginManager().registerEvents(new WorldDataUnloader(this), this);
-		
 		
 		// Register commands
 		this.getLogger().info("Registering plugin commands...");
@@ -167,7 +166,6 @@ public class LockSecurity extends JavaPlugin {
 				this.lockedBlockManager.loadDataForWorld(world);
 			}
 		}
-		
 		
 		this.autosave = AutoSaveLoop.startLoop(this, getConfig().getInt("DataSaveIntervalTicks"));
 		
@@ -245,4 +243,5 @@ public class LockSecurity extends JavaPlugin {
 	public Locale getLocale() {
 		return locale;
 	}
+	
 }

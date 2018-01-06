@@ -10,7 +10,7 @@ import me.choco.locksecurity.api.ILockSecurityPlayer;
  * @author Parker Hawke - 2008Choco
  */
 public abstract class LSPlayerEvent extends Event {
-
+	
 	private final ILockSecurityPlayer player;
 	
 	/**
@@ -30,4 +30,5 @@ public abstract class LSPlayerEvent extends Event {
 	public ILockSecurityPlayer getPlayer() {
 		return player;
 	}
+	
 }

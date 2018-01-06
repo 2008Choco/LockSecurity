@@ -11,7 +11,7 @@ import me.choco.locksecurity.api.IPlayerRegistry;
 import me.choco.locksecurity.api.utils.LSMode;
 
 public class LockNotifyCmd implements CommandExecutor {
-
+	
 	private final LockSecurity plugin;
 	private final IPlayerRegistry playerRegistry;
 	
@@ -34,10 +34,11 @@ public class LockNotifyCmd implements CommandExecutor {
 		
 		Player player = (Player) sender;
 		ILockSecurityPlayer lsPlayer = playerRegistry.getPlayer(player);
-
+		
 		plugin.sendMessage(player, plugin.getLocale().getMessage(lsPlayer.toggleMode(LSMode.ADMIN_NOTIFY)
 				? "command.locknotify.enabled"
 				: "command.locknotify.disabled"));
 		return true;
 	}
+	
 }

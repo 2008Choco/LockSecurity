@@ -44,8 +44,7 @@ public class LockSecurityPlayer implements ILockSecurityPlayer {
 	private final List<ILockedBlock> ownedBlocks = new ArrayList<>();
 	private final Set<LSMode> activeModes = new HashSet<>();
 	
-	private ILockSecurityPlayer toTransferTo;
-	
+	private ILockSecurityPlayer transferTarget;
 	private UUID uuid;
 	
 	/**
@@ -138,12 +137,12 @@ public class LockSecurityPlayer implements ILockSecurityPlayer {
 	
 	@Override
 	public void setTransferTarget(ILockSecurityPlayer target) {
-		this.toTransferTo = target;
+		this.transferTarget = target;
 	}
 	
 	@Override
 	public ILockSecurityPlayer getTransferTarget() {
-		return toTransferTo;
+		return transferTarget;
 	}
 	
 	@Override
@@ -155,9 +154,9 @@ public class LockSecurityPlayer implements ILockSecurityPlayer {
 	public void clearLocalData() {
 		this.activeModes.clear();
 		this.ownedBlocks.clear();
-		this.toTransferTo = null;
+		this.transferTarget = null;
 	}
-
+	
 	@Override
 	public JsonObject write(JsonObject data) {
 		data.addProperty("uuid", uuid.toString());
@@ -178,7 +177,7 @@ public class LockSecurityPlayer implements ILockSecurityPlayer {
 		
 		return data;
 	}
-
+	
 	@Override
 	public boolean read(JsonObject data) {
 		this.uuid = UUID.fromString(data.get("uuid").getAsString());
@@ -201,4 +200,5 @@ public class LockSecurityPlayer implements ILockSecurityPlayer {
 		
 		return true;
 	}
+	
 }
