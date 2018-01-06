@@ -23,7 +23,7 @@ public class WorldDataUnloader implements Listener {
 		
 		// Empty world, time to unload data
 		if (world.getPlayers().size() == 0) {
-			manager.unloadDataForWorld(world);
+			this.manager.unloadDataForWorld(world);
 		}
 	}
 	
@@ -33,7 +33,7 @@ public class WorldDataUnloader implements Listener {
 		
 		// Empty world, time to unload data
 		if (world.getPlayers().size() == 1) {
-			manager.unloadDataForWorld(world);
+			this.manager.unloadDataForWorld(world);
 		}
 	}
 	

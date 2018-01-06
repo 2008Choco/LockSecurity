@@ -19,6 +19,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.inventory.ShapelessRecipe;
+import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import me.choco.locksecurity.api.ILockSecurityPlayer;
@@ -107,19 +108,20 @@ public class LockSecurity extends JavaPlugin {
 		this.getLogger().info("Registering events...");
 		
 			/* General/Lock-Based listeners */
-		Bukkit.getPluginManager().registerEvents(new BlockClickListener(this), this);
-		Bukkit.getPluginManager().registerEvents(new BlockBreakListener(this), this);
-		Bukkit.getPluginManager().registerEvents(new KeyCraftingListener(), this);
+		PluginManager manager = Bukkit.getPluginManager();
+		manager.registerEvents(new BlockClickListener(this), this);
+		manager.registerEvents(new BlockBreakListener(this), this);
+		manager.registerEvents(new KeyCraftingListener(), this);
 		
 			/* Protection listeners */
-		Bukkit.getPluginManager().registerEvents(new KeyPlaceProtectionListener(), this);
-		Bukkit.getPluginManager().registerEvents(new GriefProtectionListener(this), this);
-		Bukkit.getPluginManager().registerEvents(new ExplosionProtectionListener(this), this);
-		Bukkit.getPluginManager().registerEvents(new DoubleChestProtectionListener(this), this);
+		manager.registerEvents(new KeyPlaceProtectionListener(), this);
+		manager.registerEvents(new GriefProtectionListener(this), this);
+		manager.registerEvents(new ExplosionProtectionListener(this), this);
+		manager.registerEvents(new DoubleChestProtectionListener(this), this);
 		
 			/* Data listeners */
-		Bukkit.getPluginManager().registerEvents(new WorldDataLoader(this), this);
-		Bukkit.getPluginManager().registerEvents(new WorldDataUnloader(this), this);
+		manager.registerEvents(new WorldDataLoader(this), this);
+		manager.registerEvents(new WorldDataUnloader(this), this);
 		
 		// Register commands
 		this.getLogger().info("Registering plugin commands...");
@@ -137,16 +139,16 @@ public class LockSecurity extends JavaPlugin {
 		this.getLogger().info("Registering custom crafting recipes...");
 		ItemStack unsmithedKey = KeyFactory.getUnsmithedkey();
 		unsmithedKey.setAmount(getConfig().getInt("RecipeYield"));
-		Bukkit.getServer().addRecipe(new ShapedRecipe(new NamespacedKey(this, "unsmithedkey1"), unsmithedKey).shape("B  ", " I ", "  P").setIngredient('B', Material.IRON_FENCE).setIngredient('I', Material.IRON_INGOT).setIngredient('P', Material.WOOD));
-		Bukkit.getServer().addRecipe(new ShapedRecipe(new NamespacedKey(this, "unsmithedkey2"), unsmithedKey).shape(" B ", " I ", " P ").setIngredient('B', Material.IRON_FENCE).setIngredient('I', Material.IRON_INGOT).setIngredient('P', Material.WOOD));
-		Bukkit.getServer().addRecipe(new ShapedRecipe(new NamespacedKey(this, "unsmithedkey3"), unsmithedKey).shape("  B", " I ", "P  ").setIngredient('B', Material.IRON_FENCE).setIngredient('I', Material.IRON_INGOT).setIngredient('P', Material.WOOD));
-		Bukkit.getServer().addRecipe(new ShapedRecipe(new NamespacedKey(this, "unsmithedkey4"), unsmithedKey).shape("   ", "BIP", "   ").setIngredient('B', Material.IRON_FENCE).setIngredient('I', Material.IRON_INGOT).setIngredient('P', Material.WOOD));
-		Bukkit.getServer().addRecipe(new ShapedRecipe(new NamespacedKey(this, "unsmithedkey5"), unsmithedKey).shape("   ", "PIB", "   ").setIngredient('B', Material.IRON_FENCE).setIngredient('I', Material.IRON_INGOT).setIngredient('P', Material.WOOD));
-		Bukkit.getServer().addRecipe(new ShapedRecipe(new NamespacedKey(this, "unsmithedkey6"), unsmithedKey).shape("  P", " I ", "B  ").setIngredient('B', Material.IRON_FENCE).setIngredient('I', Material.IRON_INGOT).setIngredient('P', Material.WOOD));
-		Bukkit.getServer().addRecipe(new ShapedRecipe(new NamespacedKey(this, "unsmithedkey7"), unsmithedKey).shape(" P ", " I ", " B ").setIngredient('B', Material.IRON_FENCE).setIngredient('I', Material.IRON_INGOT).setIngredient('P', Material.WOOD));
-		Bukkit.getServer().addRecipe(new ShapedRecipe(new NamespacedKey(this, "unsmithedkey8"), unsmithedKey).shape("P  ", " I ", "  B").setIngredient('B', Material.IRON_FENCE).setIngredient('I', Material.IRON_INGOT).setIngredient('P', Material.WOOD));
-		Bukkit.getServer().addRecipe(new ShapelessRecipe(new NamespacedKey(this, "keyclear"), new ItemBuilder(Material.BEDROCK).setName("SINGLE").build()).addIngredient(1, Material.TRIPWIRE_HOOK));
-		Bukkit.getServer().addRecipe(new ShapelessRecipe(new NamespacedKey(this, "keycombine"), new ItemBuilder(Material.BEDROCK).setName("DUAL").build()).addIngredient(2, Material.TRIPWIRE_HOOK));
+		Bukkit.addRecipe(new ShapedRecipe(new NamespacedKey(this, "unsmithedkey1"), unsmithedKey).shape("B  ", " I ", "  P").setIngredient('B', Material.IRON_FENCE).setIngredient('I', Material.IRON_INGOT).setIngredient('P', Material.WOOD));
+		Bukkit.addRecipe(new ShapedRecipe(new NamespacedKey(this, "unsmithedkey2"), unsmithedKey).shape(" B ", " I ", " P ").setIngredient('B', Material.IRON_FENCE).setIngredient('I', Material.IRON_INGOT).setIngredient('P', Material.WOOD));
+		Bukkit.addRecipe(new ShapedRecipe(new NamespacedKey(this, "unsmithedkey3"), unsmithedKey).shape("  B", " I ", "P  ").setIngredient('B', Material.IRON_FENCE).setIngredient('I', Material.IRON_INGOT).setIngredient('P', Material.WOOD));
+		Bukkit.addRecipe(new ShapedRecipe(new NamespacedKey(this, "unsmithedkey4"), unsmithedKey).shape("   ", "BIP", "   ").setIngredient('B', Material.IRON_FENCE).setIngredient('I', Material.IRON_INGOT).setIngredient('P', Material.WOOD));
+		Bukkit.addRecipe(new ShapedRecipe(new NamespacedKey(this, "unsmithedkey5"), unsmithedKey).shape("   ", "PIB", "   ").setIngredient('B', Material.IRON_FENCE).setIngredient('I', Material.IRON_INGOT).setIngredient('P', Material.WOOD));
+		Bukkit.addRecipe(new ShapedRecipe(new NamespacedKey(this, "unsmithedkey6"), unsmithedKey).shape("  P", " I ", "B  ").setIngredient('B', Material.IRON_FENCE).setIngredient('I', Material.IRON_INGOT).setIngredient('P', Material.WOOD));
+		Bukkit.addRecipe(new ShapedRecipe(new NamespacedKey(this, "unsmithedkey7"), unsmithedKey).shape(" P ", " I ", " B ").setIngredient('B', Material.IRON_FENCE).setIngredient('I', Material.IRON_INGOT).setIngredient('P', Material.WOOD));
+		Bukkit.addRecipe(new ShapedRecipe(new NamespacedKey(this, "unsmithedkey8"), unsmithedKey).shape("P  ", " I ", "  B").setIngredient('B', Material.IRON_FENCE).setIngredient('I', Material.IRON_INGOT).setIngredient('P', Material.WOOD));
+		Bukkit.addRecipe(new ShapelessRecipe(new NamespacedKey(this, "keyclear"), new ItemBuilder(Material.BEDROCK).setName("SINGLE").build()).addIngredient(1, Material.TRIPWIRE_HOOK));
+		Bukkit.addRecipe(new ShapelessRecipe(new NamespacedKey(this, "keycombine"), new ItemBuilder(Material.BEDROCK).setName("DUAL").build()).addIngredient(2, Material.TRIPWIRE_HOOK));
 		
 		// Load all registered data
 		this.getLogger().info(locale.getMessage("Loading player JSON data from file. This may take a while"));

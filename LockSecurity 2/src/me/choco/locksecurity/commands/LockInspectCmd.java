@@ -30,12 +30,12 @@ public class LockInspectCmd implements CommandExecutor {
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 		if (!(sender instanceof Player)) {
-			plugin.sendMessage(sender, plugin.getLocale().getMessage("command.general.onlyplayers"));
+			this.plugin.sendMessage(sender, plugin.getLocale().getMessage("command.general.onlyplayers"));
 			return true;
 		}
 		
 		if (!sender.hasPermission("locks.lockinspect")) {
-			plugin.sendMessage(sender, plugin.getLocale().getMessage("command.general.nopermission"));
+			this.plugin.sendMessage(sender, plugin.getLocale().getMessage("command.general.nopermission"));
 			return true;
 		}
 		
@@ -47,14 +47,14 @@ public class LockInspectCmd implements CommandExecutor {
 			try {
 				lockID = Integer.parseInt(args[0]);
 			} catch (NumberFormatException e) {
-				plugin.sendMessage(player, plugin.getLocale().getMessage("command.general.invalidlockid")
+				this.plugin.sendMessage(player, plugin.getLocale().getMessage("command.general.invalidlockid")
 						.replace("%ID%", args[0]));
 			}
 			
 			ILockedBlock lBlock = lockedBlockManager.getLockedBlock(lockID);
 			
 			if (lBlock == null) {
-				plugin.sendMessage(player, plugin.getLocale().getMessage("command.general.idnotlocked")
+				this.plugin.sendMessage(player, plugin.getLocale().getMessage("command.general.idnotlocked")
 						.replace("%ID%", String.valueOf(lockID)));
 				return true;
 			}
@@ -63,7 +63,7 @@ public class LockInspectCmd implements CommandExecutor {
 			return true;
 		}
 		
-		plugin.sendMessage(player, plugin.getLocale().getMessage(lsPlayer.toggleMode(LSMode.LOCK_INSPECT)
+		this.plugin.sendMessage(player, plugin.getLocale().getMessage(lsPlayer.toggleMode(LSMode.LOCK_INSPECT)
 				? "command.lockinspect.enabled"
 				: "command.lockinspect.disabled"));
 		return true;

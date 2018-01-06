@@ -54,17 +54,18 @@ public class BlockBreakListener implements Listener {
 			return;
 		}
 		
-		lockedBlockManager.unregisterBlock(lBlock);
+		this.lockedBlockManager.unregisterBlock(lBlock);
 		lsPlayer.removeBlockFromOwnership(lBlock);
+		
 		if (block.getState().getData() instanceof Door) {
 			if (!lBlock.hasSecondaryComponent()) return;
 			
 			ILockedBlock lBlockSecondary = lBlock.getSecondaryComponent();
-			lockedBlockManager.unregisterBlock(lBlockSecondary);
+			this.lockedBlockManager.unregisterBlock(lBlockSecondary);
 			lsPlayer.removeBlockFromOwnership(lBlockSecondary);
 		}
 		
-		plugin.sendMessage(player, plugin.getLocale().getMessage("command.unlock.unlocked")
+		this.plugin.sendMessage(player, plugin.getLocale().getMessage("command.unlock.unlocked")
 				.replace("%lockID%", String.valueOf(lBlock.getLockID())));
 	}
 	

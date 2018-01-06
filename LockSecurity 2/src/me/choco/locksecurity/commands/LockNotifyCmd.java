@@ -23,19 +23,19 @@ public class LockNotifyCmd implements CommandExecutor {
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 		if (!(sender instanceof Player)) {
-			plugin.sendMessage(sender, plugin.getLocale().getMessage("command.general.onlyplayers"));
+			this.plugin.sendMessage(sender, plugin.getLocale().getMessage("command.general.onlyplayers"));
 			return true;
 		}
 		
 		if (!sender.hasPermission("locks.locknotify")) {
-			plugin.sendMessage(sender, plugin.getLocale().getMessage("command.general.nopermission"));
+			this.plugin.sendMessage(sender, plugin.getLocale().getMessage("command.general.nopermission"));
 			return true;
 		}
 		
 		Player player = (Player) sender;
 		ILockSecurityPlayer lsPlayer = playerRegistry.getPlayer(player);
 		
-		plugin.sendMessage(player, plugin.getLocale().getMessage(lsPlayer.toggleMode(LSMode.ADMIN_NOTIFY)
+		this.plugin.sendMessage(player, plugin.getLocale().getMessage(lsPlayer.toggleMode(LSMode.ADMIN_NOTIFY)
 				? "command.locknotify.enabled"
 				: "command.locknotify.disabled"));
 		return true;

@@ -186,7 +186,7 @@ public class LockedBlock implements ILockedBlock {
 	
 	@Override
 	public boolean hasSecondaryComponent() {
-		return this.secondaryComponent != null;
+		return secondaryComponent != null;
 	}
 	
 	@Override
@@ -209,10 +209,10 @@ public class LockedBlock implements ILockedBlock {
 		data.addProperty("owner", owner.getPlayer().getUniqueId().toString());
 		
 		JsonObject locationData = new JsonObject();
-		locationData.addProperty("world", this.location.getWorld().getName());
-		locationData.addProperty("x", this.location.getBlockX());
-		locationData.addProperty("y", this.location.getBlockY());
-		locationData.addProperty("z", this.location.getBlockZ());
+		locationData.addProperty("world", location.getWorld().getName());
+		locationData.addProperty("x", location.getBlockX());
+		locationData.addProperty("y", location.getBlockY());
+		locationData.addProperty("z", location.getBlockZ());
 		
 		data.add("location", locationData);
 		if (secondaryComponent != null) data.addProperty("secondaryComponent", secondaryComponent.getUniqueId().toString());

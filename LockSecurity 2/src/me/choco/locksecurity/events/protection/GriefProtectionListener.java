@@ -39,7 +39,7 @@ public class GriefProtectionListener implements Listener {
 		Block block = event.getBlock().getRelative(BlockFace.UP);
 		if (lockedBlockManager.isRegistered(block)) {
 			event.setCancelled(true);
-			plugin.sendMessage(event.getPlayer(), plugin.getLocale().getMessage("event.lock.cannotbreak")
+			this.plugin.sendMessage(event.getPlayer(), plugin.getLocale().getMessage("event.lock.cannotbreak")
 					.replace("%type%", block.getType().name())
 					.replace("%player%", this.lockedBlockManager.getLockedBlock(block).getOwner().getPlayer().getName()));
 		}

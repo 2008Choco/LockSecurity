@@ -43,7 +43,7 @@ public class LockedBlockManager implements ILockedBlockManager {
 				String[] values = line.split("=");
 				if (values[0].equalsIgnoreCase("nextLockID")) {
 					this.nextLockID = Integer.parseInt(values[1]);
-				}else if (values[0].equalsIgnoreCase("nextKeyID")) {
+				} else if (values[0].equalsIgnoreCase("nextKeyID")) {
 					this.nextKeyID = Integer.parseInt(values[1]);
 				}
 			}
@@ -123,7 +123,7 @@ public class LockedBlockManager implements ILockedBlockManager {
 		List<String> lockableBlocks = plugin.getConfig().getStringList("LockableBlocks");
 		
 		for (String material : lockableBlocks)
-			if (type.toString().equalsIgnoreCase(material)) return true;
+			if (type.name().equalsIgnoreCase(material)) return true;
 		
 		return false;
 	}

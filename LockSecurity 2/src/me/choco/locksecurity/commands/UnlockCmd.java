@@ -29,7 +29,7 @@ public class UnlockCmd implements CommandExecutor {
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 		if (!(sender instanceof Player)) {
-			plugin.sendMessage(sender, plugin.getLocale().getMessage("command.general.onlyplayers"));
+			this.plugin.sendMessage(sender, plugin.getLocale().getMessage("command.general.onlyplayers"));
 			return true;
 		}
 		
@@ -38,7 +38,7 @@ public class UnlockCmd implements CommandExecutor {
 		
 		if (args.length >= 1) {
 			if (!sender.hasPermission("locks.unlock.id") || !sender.hasPermission("locks.unlock.admin")) {
-				plugin.sendMessage(sender, plugin.getLocale().getMessage("command.general.nopermission"));
+				this.plugin.sendMessage(sender, plugin.getLocale().getMessage("command.general.nopermission"));
 				return true;
 			}
 			
@@ -46,7 +46,7 @@ public class UnlockCmd implements CommandExecutor {
 			try {
 				lockID = Integer.parseInt(args[0]);
 			} catch (NumberFormatException e) {
-				plugin.sendMessage(player, plugin.getLocale().getMessage("command.general.invalidlockid")
+				this.plugin.sendMessage(player, plugin.getLocale().getMessage("command.general.invalidlockid")
 						.replace("%ID%", args[0]));
 				return true;
 			}
@@ -54,13 +54,13 @@ public class UnlockCmd implements CommandExecutor {
 			ILockedBlock lBlock = lockedBlockManager.getLockedBlock(lockID);
 			
 			if (lBlock == null) {
-				plugin.sendMessage(player, plugin.getLocale().getMessage("command.general.idnotlocked")
+				this.plugin.sendMessage(player, plugin.getLocale().getMessage("command.general.idnotlocked")
 						.replace("%ID%", String.valueOf(lockID)));
 				return true;
 			}
 			
 			if (!lsPlayer.ownsBlock(lBlock) && !sender.hasPermission("locks.unlock.admin")) {
-				plugin.sendMessage(player, plugin.getLocale().getMessage("command.unlock.notowner"));
+				this.plugin.sendMessage(player, plugin.getLocale().getMessage("command.unlock.notowner"));
 				return true;
 			}
 			
@@ -71,13 +71,13 @@ public class UnlockCmd implements CommandExecutor {
 			
 			if (lockedBlockManager.isRegistered(lBlock)) lockedBlockManager.unregisterBlock(lBlock);
 			lBlock.getOwner().removeBlockFromOwnership(lBlock);
-			plugin.sendMessage(player, plugin.getLocale().getMessage("command.unlock.unlocked")
+			this.plugin.sendMessage(player, plugin.getLocale().getMessage("command.unlock.unlocked")
 					.replace("%lockID%", String.valueOf(lockID)));
 			return true;
 		}
 		
 		if (!sender.hasPermission("locks.unlock.self")) {
-			plugin.sendMessage(sender, plugin.getLocale().getMessage("command.general.nopermission"));
+			this.plugin.sendMessage(sender, plugin.getLocale().getMessage("command.general.nopermission"));
 			return true;
 		}
 		

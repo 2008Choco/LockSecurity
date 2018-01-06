@@ -38,24 +38,24 @@ public class LockListCmd implements CommandExecutor {
 			}
 			
 			if (!target.hasPlayedBefore()) {
-				plugin.sendMessage(sender, plugin.getLocale().getMessage("command.general.neverplayed")
+				this.plugin.sendMessage(sender, plugin.getLocale().getMessage("command.general.neverplayed")
 						.replace("%target%", args[0]));
 				return true;
 			}
 		}
 		
 		if (target == null) {
-			plugin.sendMessage(sender, plugin.getLocale().getMessage("command.general.onlyplayers"));
+			this.plugin.sendMessage(sender, plugin.getLocale().getMessage("command.general.onlyplayers"));
 			return true;
 		}
 		
 		// Permission check
 		if (args.length == 0 && !sender.hasPermission("locks.locklist")) {
-			plugin.sendMessage(sender, plugin.getLocale().getMessage("command.general.nopermission"));
+			this.plugin.sendMessage(sender, plugin.getLocale().getMessage("command.general.nopermission"));
 			return true;
 		}
 		else if (args.length >= 1 && !sender.hasPermission("locks.locklistother")) {
-			plugin.sendMessage(sender, plugin.getLocale().getMessage("command.general.nopermission"));
+			this.plugin.sendMessage(sender, plugin.getLocale().getMessage("command.general.nopermission"));
 			return true;
 		}
 		

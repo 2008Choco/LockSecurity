@@ -26,7 +26,7 @@ public class GiveKeyCmd implements CommandExecutor {
 		Player target = (sender instanceof Player ? (Player) sender : null);
 		
 		if (!sender.hasPermission("locks.givekey")) {
-			plugin.sendMessage(sender, plugin.getLocale().getMessage("command.general.nopermission"));
+			this.plugin.sendMessage(sender, plugin.getLocale().getMessage("command.general.nopermission"));
 			return true;
 		}
 		
@@ -35,7 +35,7 @@ public class GiveKeyCmd implements CommandExecutor {
 		if (args.length >= 1) {
 			target = Bukkit.getPlayer(args[0]);
 			if (target == null) {
-				plugin.sendMessage(sender, plugin.getLocale().getMessage("command.general.playeroffline")
+				this.plugin.sendMessage(sender, plugin.getLocale().getMessage("command.general.playeroffline")
 						.replace("%target%", args[0]));
 				return true;
 			}
@@ -44,7 +44,7 @@ public class GiveKeyCmd implements CommandExecutor {
 				try {
 					amount = Integer.parseInt(args[1]);
 				} catch (NumberFormatException e) {
-					plugin.sendMessage(sender, plugin.getLocale().getMessage("command.general.invalidinteger")
+					this.plugin.sendMessage(sender, plugin.getLocale().getMessage("command.general.invalidinteger")
 							.replace("%param%", args[1]));
 					return true;
 				}
@@ -52,17 +52,17 @@ public class GiveKeyCmd implements CommandExecutor {
 		}
 		
 		if (target == null) {
-			plugin.sendMessage(sender, plugin.getLocale().getMessage("command.general.specifyplayer"));
+			this.plugin.sendMessage(sender, plugin.getLocale().getMessage("command.general.specifyplayer"));
 			return true;
 		}
 		
 		boolean isSelf = target.equals(sender);
 		if (!isSelf && args.length == 1)
-			plugin.sendMessage(sender, plugin.getLocale().getMessage("command.givekey.sentkey")
+			this.plugin.sendMessage(sender, plugin.getLocale().getMessage("command.givekey.sentkey")
 					.replace("%target%", target.getName())
 					.replace("%count%", String.valueOf(amount)));
 		
-		plugin.sendMessage(target, plugin.getLocale().getMessage(isSelf ? "command.givekey.receivedkey" : "command.givekey.receivedkey.target")
+		this.plugin.sendMessage(target, plugin.getLocale().getMessage(isSelf ? "command.givekey.receivedkey" : "command.givekey.receivedkey.target")
 				.replace("%count%", String.valueOf(amount))
 				.replace("%target%", sender.getName()));
 		

@@ -27,7 +27,7 @@ public class WorldDataLoader implements Listener {
 		
 		// The world is freshly loaded. Time to load data
 		if (world.getPlayers().size() == 1) {
-			manager.loadDataForWorld(world);
+			this.manager.loadDataForWorld(world);
 		}
 	}
 	
@@ -41,7 +41,7 @@ public class WorldDataLoader implements Listener {
 		
 		// The world is freshly loaded. Time to load data
 		if (world.getPlayers().size() == 0) {
-			manager.loadDataForWorld(world);
+			this.manager.loadDataForWorld(world);
 		}
 	}
 	

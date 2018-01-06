@@ -24,7 +24,11 @@ public final class AutoSaveLoop extends BukkitRunnable {
 	private IPlayerRegistry playerRegistry;
 	private ILockedBlockManager lockedBlockManager;
 	
-	private AutoSaveLoop() {}
+	private AutoSaveLoop(LockSecurity plugin) {
+		this.plugin = plugin;
+		this.playerRegistry = plugin.getPlayerRegistry();
+		this.lockedBlockManager = plugin.getLockedBlockManager();
+	}
 	
 	@Override
 	public void run() {
@@ -66,11 +70,7 @@ public final class AutoSaveLoop extends BukkitRunnable {
 	public static AutoSaveLoop startLoop(LockSecurity plugin, int delayTicks) {
 		if (instance != null) return instance;
 		
-		instance = new AutoSaveLoop();
-		instance.plugin = plugin;
-		instance.playerRegistry = plugin.getPlayerRegistry();
-		instance.lockedBlockManager = plugin.getLockedBlockManager();
-		
+		instance = new AutoSaveLoop(plugin);
 		instance.runTaskTimerAsynchronously(plugin, delayTicks, delayTicks);
 		return instance;
 	}

@@ -57,10 +57,10 @@ public class LockSecurityPlayer implements ILockSecurityPlayer {
 		
 		this.jsonDataFile = new File(plugin.playerdataDir, uuid + ".json");
 		if (!jsonDataFile.exists()) {
-			try{
-				jsonDataFile.createNewFile();
+			try {
+				this.jsonDataFile.createNewFile();
 				JSONUtils.writeJSON(jsonDataFile, this.write(new JsonObject()));
-			}catch(IOException e) {};
+			} catch (IOException e) {}
 		}
 	}
 	

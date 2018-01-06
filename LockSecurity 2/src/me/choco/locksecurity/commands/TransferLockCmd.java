@@ -25,17 +25,17 @@ public class TransferLockCmd implements CommandExecutor {
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 		if (!(sender instanceof Player)) {
-			plugin.sendMessage(sender, plugin.getLocale().getMessage("command.general.onlyplayers"));
+			this.plugin.sendMessage(sender, plugin.getLocale().getMessage("command.general.onlyplayers"));
 			return true;
 		}
 		
 		if (!sender.hasPermission("locks.transferlock")) {
-			plugin.sendMessage(sender, plugin.getLocale().getMessage("command.general.nopermission"));
+			this.plugin.sendMessage(sender, plugin.getLocale().getMessage("command.general.nopermission"));
 			return true;
 		}
 		
 		if (args.length == 0) {
-			plugin.sendMessage(sender, plugin.getLocale().getMessage("command.general.specifyplayer"));
+			this.plugin.sendMessage(sender, plugin.getLocale().getMessage("command.general.specifyplayer"));
 			return true;
 		}
 		
@@ -45,7 +45,7 @@ public class TransferLockCmd implements CommandExecutor {
 		@SuppressWarnings("deprecation")
 		OfflinePlayer target = Bukkit.getOfflinePlayer(args[0]);
 		if (!target.hasPlayedBefore()) {
-			plugin.sendMessage(sender, plugin.getLocale().getMessage("command.general.neverplayed")
+			this.plugin.sendMessage(sender, plugin.getLocale().getMessage("command.general.neverplayed")
 					.replace("%target%", args[0]));
 			return true;
 		}

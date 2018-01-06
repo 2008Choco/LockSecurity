@@ -28,9 +28,9 @@ public class LockSecurityCmd implements CommandExecutor {
 					return true;
 				}
 				
-				plugin.reloadConfig();
-				plugin.getLocale().reloadMessages();
-				plugin.sendMessage(sender, plugin.getLocale().getMessage("command.locksecurity.reloaded"));
+				this.plugin.reloadConfig();
+				this.plugin.getLocale().reloadMessages();
+				this.plugin.sendMessage(sender, plugin.getLocale().getMessage("command.locksecurity.reloaded"));
 			}
 			
 			else if (args[0].equalsIgnoreCase("version")) {
@@ -45,11 +45,11 @@ public class LockSecurityCmd implements CommandExecutor {
 			}
 			
 			else {
-				plugin.sendMessage(sender, "/locksecurity <reload|version>");
+				this.plugin.sendMessage(sender, "/locksecurity <reload|version>");
 			}
 		}
 		else{
-			plugin.sendMessage(sender, "/locksecurity <reload|version>");
+			this.plugin.sendMessage(sender, "/locksecurity <reload|version>");
 		}
 		return true;
 	}
