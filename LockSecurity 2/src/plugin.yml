@@ -42,13 +42,10 @@ permissions:
     locks.reload:
         description: Allow access to the /locksecurity reload command
         default: op
-    locks.forcesave:
-        description: Allow access to the /locksecurity forcesave
-        default: op
     locks.craft:
         description: Allow the ability to craft an unsmithed key
         default: true
-        
+    
     locks.lock:
         description: Allow the ability to lock a block
         default: true
@@ -63,7 +60,7 @@ permissions:
         description: Allow access to the /locklist command
         default: true
     locks.locklistother:
-        description: Allow access to the /locklistother command
+        description: Allow access to the /locklist <player> subcommand
         default: op
     locks.forgekey:
         description: Allow access to the /forgekey command
@@ -71,7 +68,7 @@ permissions:
     locks.lockinspect:
         description: Allow access to the /lockinspect command
         default: op
-        
+    
     locks.unlock.*:
         description: Allow access to the /unlock command
         children:
