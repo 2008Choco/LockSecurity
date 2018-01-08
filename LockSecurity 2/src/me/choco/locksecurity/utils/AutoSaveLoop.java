@@ -20,9 +20,9 @@ public final class AutoSaveLoop extends BukkitRunnable {
 	
 	private static AutoSaveLoop instance;
 	
-	private LockSecurity plugin;
-	private IPlayerRegistry playerRegistry;
-	private ILockedBlockManager lockedBlockManager;
+	private final LockSecurity plugin;
+	private final IPlayerRegistry playerRegistry;
+	private final ILockedBlockManager lockedBlockManager;
 	
 	private AutoSaveLoop(LockSecurity plugin) {
 		this.plugin = plugin;
