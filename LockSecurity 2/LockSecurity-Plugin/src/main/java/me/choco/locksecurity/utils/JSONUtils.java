@@ -1,4 +1,4 @@
-package me.choco.locksecurity.utils.json;
+package me.choco.locksecurity.utils;
 
 import java.io.BufferedReader;
 import java.io.File;

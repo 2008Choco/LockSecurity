@@ -21,7 +21,7 @@ import me.choco.locksecurity.LockSecurity;
 import me.choco.locksecurity.api.ILockSecurityPlayer;
 import me.choco.locksecurity.api.ILockedBlock;
 import me.choco.locksecurity.api.LSMode;
-import me.choco.locksecurity.utils.json.JSONUtils;
+import me.choco.locksecurity.utils.JSONUtils;
 
 public class LockSecurityPlayer implements ILockSecurityPlayer {
 	

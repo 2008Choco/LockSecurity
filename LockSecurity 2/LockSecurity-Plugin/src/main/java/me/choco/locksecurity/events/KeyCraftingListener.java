@@ -1,5 +1,11 @@
 package me.choco.locksecurity.events;
 
+import me.choco.locksecurity.api.event.PlayerDuplicateKeyEvent;
+import me.choco.locksecurity.api.event.PlayerMergeKeyEvent;
+import me.choco.locksecurity.api.utils.ItemBuilder;
+import me.choco.locksecurity.api.utils.KeyFactory;
+import me.choco.locksecurity.api.utils.KeyFactory.KeyType;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -7,12 +13,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.PrepareItemCraftEvent;
 import org.bukkit.inventory.ItemStack;
-
-import me.choco.locksecurity.api.event.PlayerDuplicateKeyEvent;
-import me.choco.locksecurity.api.event.PlayerMergeKeyEvent;
-import me.choco.locksecurity.api.utils.KeyFactory;
-import me.choco.locksecurity.api.utils.KeyFactory.KeyType;
-import me.choco.locksecurity.utils.general.ItemBuilder;
 
 public class KeyCraftingListener implements Listener {
 	

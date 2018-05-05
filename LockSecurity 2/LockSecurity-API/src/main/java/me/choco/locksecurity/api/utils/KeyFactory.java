@@ -12,8 +12,6 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 
-import me.choco.locksecurity.utils.general.ItemBuilder;
-
 /** 
  * A utility class to assist with the creation, manipulation and information of LockSecurity keys
  * 

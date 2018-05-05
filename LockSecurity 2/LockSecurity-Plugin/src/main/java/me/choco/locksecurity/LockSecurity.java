@@ -25,6 +25,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import me.choco.locksecurity.api.ILockSecurityPlayer;
 import me.choco.locksecurity.api.ILockedBlockManager;
 import me.choco.locksecurity.api.IPlayerRegistry;
+import me.choco.locksecurity.api.utils.ItemBuilder;
 import me.choco.locksecurity.api.utils.KeyFactory;
 import me.choco.locksecurity.commands.ForgeKeyCmd;
 import me.choco.locksecurity.commands.GiveKeyCmd;
@@ -48,10 +49,9 @@ import me.choco.locksecurity.events.protection.KeyPlaceProtectionListener;
 import me.choco.locksecurity.registration.LockedBlockManager;
 import me.choco.locksecurity.registration.PlayerRegistry;
 import me.choco.locksecurity.utils.AutoSaveLoop;
-import me.choco.locksecurity.utils.general.ItemBuilder;
+import me.choco.locksecurity.utils.JSONUtils;
 import me.choco.locksecurity.utils.general.Metrics;
 import me.choco.locksecurity.utils.general.UpdateChecker;
-import me.choco.locksecurity.utils.json.JSONUtils;
 import me.choco.locksecurity.utils.localization.Locale;
 
 public class LockSecurity extends JavaPlugin {

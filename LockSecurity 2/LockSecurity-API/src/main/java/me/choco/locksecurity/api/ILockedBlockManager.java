@@ -7,8 +7,6 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 
-import me.choco.locksecurity.registration.PlayerRegistry;
-
 /** 
  * The manager that keeps track of registered locked blocks and their information.
  * The registration of locked blocks does not mean that they do not exist. The existence
@@ -269,7 +267,7 @@ public interface ILockedBlockManager {
 	
 	/** 
 	 * Load all existing locked blocks contained in the specified world.
-	 * This information is based on registered players in the {@link PlayerRegistry}
+	 * This information is based on registered players in the {@link IPlayerRegistry}
 	 * 
 	 * @param world the world to load from
 	 */

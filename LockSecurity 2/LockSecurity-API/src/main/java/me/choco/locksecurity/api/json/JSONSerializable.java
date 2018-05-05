@@ -1,4 +1,4 @@
-package me.choco.locksecurity.utils.json;
+package me.choco.locksecurity.api.json;
 
 import com.google.gson.JsonObject;
 

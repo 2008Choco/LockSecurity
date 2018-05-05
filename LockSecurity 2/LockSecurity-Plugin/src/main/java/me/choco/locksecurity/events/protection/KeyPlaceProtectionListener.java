@@ -1,11 +1,11 @@
 package me.choco.locksecurity.events.protection;
 
+import me.choco.locksecurity.api.utils.KeyFactory.KeyType;
+
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.inventory.ItemStack;
-
-import me.choco.locksecurity.api.utils.KeyFactory.KeyType;
 
 public class KeyPlaceProtectionListener implements Listener {
 	

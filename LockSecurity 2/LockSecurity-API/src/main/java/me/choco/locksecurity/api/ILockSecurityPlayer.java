@@ -5,9 +5,9 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-import org.bukkit.OfflinePlayer;
+import me.choco.locksecurity.api.json.JSONSerializable;
 
-import me.choco.locksecurity.utils.json.JSONSerializable;
+import org.bukkit.OfflinePlayer;
 
 /** 
  * A wrapper class for the OfflinePlayer interface containing information about a player's

@@ -14,7 +14,6 @@ import me.choco.locksecurity.LockSecurity;
 import me.choco.locksecurity.api.ILockSecurityPlayer;
 import me.choco.locksecurity.api.ILockedBlockManager;
 import me.choco.locksecurity.api.IPlayerRegistry;
-import me.choco.locksecurity.utils.json.JSONUtils;
 
 public final class AutoSaveLoop extends BukkitRunnable {
 	

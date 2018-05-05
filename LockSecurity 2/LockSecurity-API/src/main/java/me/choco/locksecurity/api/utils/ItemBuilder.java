@@ -1,4 +1,4 @@
-package me.choco.locksecurity.utils.general;
+package me.choco.locksecurity.api.utils;
 
 import java.util.List;
 import java.util.function.Consumer;

@@ -7,7 +7,7 @@ import org.bukkit.block.Block;
 import org.bukkit.inventory.ItemStack;
 
 import me.choco.locksecurity.api.exception.IllegalBlockPositionException;
-import me.choco.locksecurity.utils.json.JSONSerializable;
+import me.choco.locksecurity.api.json.JSONSerializable;
 
 /** 
  * Represents a block in which contains information about its owner, Lock ID, Key ID
