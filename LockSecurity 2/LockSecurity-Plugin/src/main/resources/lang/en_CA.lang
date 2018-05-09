@@ -2,6 +2,7 @@
 
 event.key.attemptpick = "You attempt to pick the lock, but it doesn't work"
 event.key.none = "You do not have the key to open this"
+event.key.inchest = "The chest was opened because your key was left in the chest... be careful!"
 
 event.lock.cannotbreak = "This %type% is locked by %player%. You cannot break this"
 event.lock.cannotopen = "This %type% is locked by %player%. You cannot open this"

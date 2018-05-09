@@ -16,6 +16,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.Door;
 
@@ -24,12 +25,12 @@ import me.choco.locksecurity.api.data.ILockSecurityPlayer;
 import me.choco.locksecurity.api.data.ILockedBlock;
 import me.choco.locksecurity.api.event.PlayerInteractLockedBlockEvent;
 import me.choco.locksecurity.api.event.PlayerInteractLockedBlockEvent.InteractResult;
+import me.choco.locksecurity.api.event.PlayerLockBlockEvent;
 import me.choco.locksecurity.api.registration.ILockedBlockManager;
 import me.choco.locksecurity.api.registration.IPlayerRegistry;
 import me.choco.locksecurity.api.utils.KeyFactory;
-import me.choco.locksecurity.api.utils.LSMode;
 import me.choco.locksecurity.api.utils.KeyFactory.KeyType;
-import me.choco.locksecurity.api.event.PlayerLockBlockEvent;
+import me.choco.locksecurity.api.utils.LSMode;
 
 public class BlockClickListener implements Listener {
 	
@@ -117,7 +118,8 @@ public class BlockClickListener implements Listener {
 			}
 			
 			// Key validation
-			if (!lBlock.isValidKey(key)) {
+			boolean keyInChest = lBlock.isOwner(lsPlayer) && isKeyInInventory(lBlock);
+			if (!lBlock.isValidKey(key) && !keyInChest) {
 				event.setCancelled(true);
 				
 				// PlayerInteractLockedBlockEvent - Not right key
@@ -135,6 +137,10 @@ public class BlockClickListener implements Listener {
 			// PlayerInteractLockedBlockEvent - No key
 			PlayerInteractLockedBlockEvent pilbe = new PlayerInteractLockedBlockEvent(lsPlayer, lBlock, InteractResult.SUCCESS);
 			Bukkit.getPluginManager().callEvent(pilbe);
+			
+			if (keyInChest) {
+				player.sendMessage(plugin.getLocale().getMessage("event.key.inchest"));
+			}
 		}
 		
 		/* Block is unlocked */
@@ -225,6 +231,15 @@ public class BlockClickListener implements Listener {
 		player.getInventory().addItem(KeyFactory.buildKey(KeyType.SMITHED).withIDs(keyID).build());
 	}
 	
+	private boolean isKeyInInventory(ILockedBlock block) {
+		BlockState state = block.getBlock().getState();
+		if (state instanceof InventoryHolder) return false;
+		
+		for (ItemStack item : ((InventoryHolder) state).getInventory())
+			if (block.isValidKey(item)) return true;
+		return false;
+	}
+	
 	private static final BlockFace[] FACES = new BlockFace[]{ BlockFace.NORTH, BlockFace.SOUTH, BlockFace.EAST, BlockFace.WEST };
 	
 	private Block getAdjacentChest(Block block) {
@@ -245,5 +260,6 @@ public class BlockClickListener implements Listener {
 		player.sendMessage(ChatColor.GOLD + "Owner: " + ChatColor.AQUA + owner.getName() + " (" + ChatColor.GOLD + owner.getUniqueId() + ChatColor.AQUA + ")");
 		player.sendMessage(ChatColor.GOLD + "Location: " + ChatColor.AQUA + location.getWorld().getName() + " x:" + location.getBlockX() + " y:" + location.getBlockY() + " z:" + location.getBlockZ());
 	}
+	
 	
 }

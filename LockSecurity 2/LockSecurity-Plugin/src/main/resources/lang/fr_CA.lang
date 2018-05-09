@@ -2,6 +2,7 @@
 
 event.key.attemptpick = "Tu essai de crocheter la serrure, mais sa ne fonctionne pas"
 event.key.none = "Vous ne possédez pas le clé pour ouvrir ceci"
+event.key.inchest = "Ton clee est dans la coffre, donc c'est overt pour toi"
 
 event.lock.cannotbreak = "Cette %type% est fermé par %player%. Tu ne peut pas le brisé"
 event.lock.cannotopen = "Cette %type% est fermé par %player%. Tu ne peut pas l'ouvrir"
