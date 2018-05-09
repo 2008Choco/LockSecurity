@@ -3,9 +3,11 @@ package me.choco.locksecurity.api;
 import me.choco.locksecurity.api.registration.ILockedBlockManager;
 import me.choco.locksecurity.api.registration.IPlayerRegistry;
 
-public class LockSecurityAPI {
+public final class LockSecurityAPI {
 	
 	private static LockSecurity implementation;
+
+	private LockSecurityAPI() { }
 	
 	public static void setImplementation(LockSecurity implementation) {
 		if (LockSecurityAPI.implementation != null) {
