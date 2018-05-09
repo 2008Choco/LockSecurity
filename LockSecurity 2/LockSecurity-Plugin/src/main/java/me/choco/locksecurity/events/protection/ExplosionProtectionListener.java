@@ -8,15 +8,15 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityExplodeEvent;
 
-import me.choco.locksecurity.LockSecurity;
-import me.choco.locksecurity.api.ILockedBlockManager;
+import me.choco.locksecurity.LockSecurityPlugin;
+import me.choco.locksecurity.api.registration.ILockedBlockManager;
 
 public class ExplosionProtectionListener implements Listener {
 	
-	private final LockSecurity plugin;
+	private final LockSecurityPlugin plugin;
 	private final ILockedBlockManager lockedBlockManager;
 	
-	public ExplosionProtectionListener(LockSecurity plugin) {
+	public ExplosionProtectionListener(LockSecurityPlugin plugin) {
 		this.plugin = plugin;
 		this.lockedBlockManager = plugin.getLockedBlockManager();
 	}

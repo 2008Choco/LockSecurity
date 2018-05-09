@@ -19,25 +19,25 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.Door;
 
-import me.choco.locksecurity.LockSecurity;
-import me.choco.locksecurity.api.ILockSecurityPlayer;
-import me.choco.locksecurity.api.ILockedBlock;
-import me.choco.locksecurity.api.ILockedBlockManager;
-import me.choco.locksecurity.api.IPlayerRegistry;
-import me.choco.locksecurity.api.LSMode;
+import me.choco.locksecurity.LockSecurityPlugin;
+import me.choco.locksecurity.api.data.ILockSecurityPlayer;
+import me.choco.locksecurity.api.data.ILockedBlock;
 import me.choco.locksecurity.api.event.PlayerInteractLockedBlockEvent;
 import me.choco.locksecurity.api.event.PlayerInteractLockedBlockEvent.InteractResult;
+import me.choco.locksecurity.api.registration.ILockedBlockManager;
+import me.choco.locksecurity.api.registration.IPlayerRegistry;
 import me.choco.locksecurity.api.utils.KeyFactory;
+import me.choco.locksecurity.api.utils.LSMode;
 import me.choco.locksecurity.api.utils.KeyFactory.KeyType;
 import me.choco.locksecurity.api.event.PlayerLockBlockEvent;
 
 public class BlockClickListener implements Listener {
 	
-	private final LockSecurity plugin;
+	private final LockSecurityPlugin plugin;
 	private final ILockedBlockManager lockedBlockManager;
 	private final IPlayerRegistry playerRegistry;
 	
-	public BlockClickListener(LockSecurity plugin) {
+	public BlockClickListener(LockSecurityPlugin plugin) {
 		this.plugin = plugin;
 		this.lockedBlockManager = plugin.getLockedBlockManager();
 		this.playerRegistry = plugin.getPlayerRegistry();

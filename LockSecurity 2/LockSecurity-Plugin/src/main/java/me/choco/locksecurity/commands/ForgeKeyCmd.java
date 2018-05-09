@@ -5,15 +5,15 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import me.choco.locksecurity.LockSecurity;
+import me.choco.locksecurity.LockSecurityPlugin;
 import me.choco.locksecurity.api.utils.KeyFactory;
 import me.choco.locksecurity.api.utils.KeyFactory.KeyType;
 
 public class ForgeKeyCmd implements CommandExecutor {
 	
-	private final LockSecurity plugin;
+	private final LockSecurityPlugin plugin;
 	
-	public ForgeKeyCmd(LockSecurity plugin) {
+	public ForgeKeyCmd(LockSecurityPlugin plugin) {
 		this.plugin = plugin;
 	}
 	

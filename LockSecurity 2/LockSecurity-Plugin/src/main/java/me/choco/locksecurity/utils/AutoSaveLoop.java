@@ -10,20 +10,20 @@ import com.google.gson.JsonObject;
 
 import org.bukkit.scheduler.BukkitRunnable;
 
-import me.choco.locksecurity.LockSecurity;
-import me.choco.locksecurity.api.ILockSecurityPlayer;
-import me.choco.locksecurity.api.ILockedBlockManager;
-import me.choco.locksecurity.api.IPlayerRegistry;
+import me.choco.locksecurity.LockSecurityPlugin;
+import me.choco.locksecurity.api.data.ILockSecurityPlayer;
+import me.choco.locksecurity.api.registration.ILockedBlockManager;
+import me.choco.locksecurity.api.registration.IPlayerRegistry;
 
 public final class AutoSaveLoop extends BukkitRunnable {
 	
 	private static AutoSaveLoop instance;
 	
-	private final LockSecurity plugin;
+	private final LockSecurityPlugin plugin;
 	private final IPlayerRegistry playerRegistry;
 	private final ILockedBlockManager lockedBlockManager;
 	
-	private AutoSaveLoop(LockSecurity plugin) {
+	private AutoSaveLoop(LockSecurityPlugin plugin) {
 		this.plugin = plugin;
 		this.playerRegistry = plugin.getPlayerRegistry();
 		this.lockedBlockManager = plugin.getLockedBlockManager();
@@ -66,7 +66,7 @@ public final class AutoSaveLoop extends BukkitRunnable {
 	 * 
 	 * @return the singleton instance of AutoSaveLoop
 	 */
-	public static AutoSaveLoop startLoop(LockSecurity plugin, int delayTicks) {
+	public static AutoSaveLoop startLoop(LockSecurityPlugin plugin, int delayTicks) {
 		if (instance != null) return instance;
 		
 		instance = new AutoSaveLoop(plugin);

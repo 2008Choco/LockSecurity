@@ -1,6 +1,9 @@
-package me.choco.locksecurity.api;
+package me.choco.locksecurity.api.registration;
 
 import java.util.List;
+
+import me.choco.locksecurity.api.data.ILockSecurityPlayer;
+import me.choco.locksecurity.api.data.ILockedBlock;
 
 import org.bukkit.Location;
 import org.bukkit.Material;

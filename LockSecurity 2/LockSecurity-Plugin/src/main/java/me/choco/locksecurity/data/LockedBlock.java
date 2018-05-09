@@ -14,17 +14,17 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.inventory.ItemStack;
 
-import me.choco.locksecurity.LockSecurity;
-import me.choco.locksecurity.api.ILockSecurityPlayer;
-import me.choco.locksecurity.api.ILockedBlock;
-import me.choco.locksecurity.api.ILockedBlockManager;
-import me.choco.locksecurity.api.IPlayerRegistry;
+import me.choco.locksecurity.LockSecurityPlugin;
+import me.choco.locksecurity.api.data.ILockSecurityPlayer;
+import me.choco.locksecurity.api.data.ILockedBlock;
 import me.choco.locksecurity.api.exception.IllegalBlockPositionException;
+import me.choco.locksecurity.api.registration.ILockedBlockManager;
+import me.choco.locksecurity.api.registration.IPlayerRegistry;
 import me.choco.locksecurity.api.utils.KeyFactory;
 
 public class LockedBlock implements ILockedBlock {
 	
-	private static final IPlayerRegistry PLAYER_REGISTRY = LockSecurity.getPlugin().getPlayerRegistry();
+	private static final IPlayerRegistry PLAYER_REGISTRY = LockSecurityPlugin.getPlugin().getPlayerRegistry();
 	
 	private ILockedBlock secondaryComponent;
 	

@@ -1,5 +1,5 @@
 name: ${project.name}
-main: me.choco.locksecurity.LockSecurity
+main: me.choco.locksecurity.LockSecurityPlugin
 version: ${project.version}
 description: ${project.description}
 author: 2008Choco

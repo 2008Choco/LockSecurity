@@ -8,23 +8,11 @@ import java.util.UUID;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-import org.apache.commons.io.FileUtils;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
-import org.bukkit.OfflinePlayer;
-import org.bukkit.World;
-import org.bukkit.command.CommandSender;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.ShapedRecipe;
-import org.bukkit.inventory.ShapelessRecipe;
-import org.bukkit.plugin.PluginManager;
-import org.bukkit.plugin.java.JavaPlugin;
-
-import me.choco.locksecurity.api.ILockSecurityPlayer;
-import me.choco.locksecurity.api.ILockedBlockManager;
-import me.choco.locksecurity.api.IPlayerRegistry;
+import me.choco.locksecurity.api.LockSecurity;
+import me.choco.locksecurity.api.LockSecurityAPI;
+import me.choco.locksecurity.api.data.ILockSecurityPlayer;
+import me.choco.locksecurity.api.registration.ILockedBlockManager;
+import me.choco.locksecurity.api.registration.IPlayerRegistry;
 import me.choco.locksecurity.api.utils.ItemBuilder;
 import me.choco.locksecurity.api.utils.KeyFactory;
 import me.choco.locksecurity.commands.ForgeKeyCmd;
@@ -54,9 +42,23 @@ import me.choco.locksecurity.utils.general.Metrics;
 import me.choco.locksecurity.utils.general.UpdateChecker;
 import me.choco.locksecurity.utils.localization.Locale;
 
-public class LockSecurity extends JavaPlugin {
+import org.apache.commons.io.FileUtils;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
+import org.bukkit.OfflinePlayer;
+import org.bukkit.World;
+import org.bukkit.command.CommandSender;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.ShapedRecipe;
+import org.bukkit.inventory.ShapelessRecipe;
+import org.bukkit.plugin.PluginManager;
+import org.bukkit.plugin.java.JavaPlugin;
+
+public class LockSecurityPlugin extends JavaPlugin implements LockSecurity {
 	
-	private static LockSecurity instance;
+	private static LockSecurityPlugin instance;
 	public static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
 	
 	private AutoSaveLoop autosave;
@@ -71,6 +73,8 @@ public class LockSecurity extends JavaPlugin {
 	public void onEnable() {
 		// Default values
 		instance = this;
+		LockSecurityAPI.setImplementation(this);
+		
 		this.playerdataDir = new File(this.getDataFolder(), "playerdata");
 		this.infoFile = new File(this.getDataFolder(), "plugin.info");
 		this.playerRegistry = new PlayerRegistry(this);
@@ -205,24 +209,16 @@ public class LockSecurity extends JavaPlugin {
 	 * 
 	 * @return an instance of LockSecurity
 	 */
-	public static LockSecurity getPlugin() {
+	public static LockSecurityPlugin getPlugin() {
 		return instance;
 	}
 	
-	/** 
-	 * Get the main instance of the {@link IPlayerRegistry} class
-	 * 
-	 * @return the PlayerRegistry class
-	 */
+	@Override
 	public IPlayerRegistry getPlayerRegistry() {
 		return playerRegistry;
 	}
 	
-	/** 
-	 * Get the main instance of the {@link ILockedBlockManager} class
-	 * 
-	 * @return the LockedBlockManager class
-	 */
+	@Override
 	public ILockedBlockManager getLockedBlockManager() {
 		return lockedBlockManager;
 	}

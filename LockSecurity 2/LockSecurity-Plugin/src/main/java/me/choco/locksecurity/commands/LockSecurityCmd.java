@@ -5,13 +5,13 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 
-import me.choco.locksecurity.LockSecurity;
+import me.choco.locksecurity.LockSecurityPlugin;
 
 public class LockSecurityCmd implements CommandExecutor {
 	
-	private final LockSecurity plugin;
+	private final LockSecurityPlugin plugin;
 	
-	public LockSecurityCmd(LockSecurity plugin) {
+	public LockSecurityCmd(LockSecurityPlugin plugin) {
 		this.plugin = plugin;
 	}
 	

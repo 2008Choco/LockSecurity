@@ -17,8 +17,8 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.configuration.file.YamlConfiguration;
 
-import me.choco.locksecurity.api.ILockSecurityPlayer;
-import me.choco.locksecurity.api.ILockedBlock;
+import me.choco.locksecurity.api.data.ILockSecurityPlayer;
+import me.choco.locksecurity.api.data.ILockedBlock;
 
 /**
  * Contains a few methods to assist in the transferring of information from one
@@ -28,7 +28,7 @@ import me.choco.locksecurity.api.ILockedBlock;
  */
 public final class TransferUtils {
 	
-	protected static final void fromDatabase(LockSecurity plugin) {
+	protected static final void fromDatabase(LockSecurityPlugin plugin) {
 		plugin.getLogger().info("Commencing transfer process for Data Support of LockSecurity 1.7.0 - 1.8.2");
 		
 		int nextLockID = 1, nextKeyID = 1;
@@ -80,7 +80,7 @@ public final class TransferUtils {
 		plugin.getLogger().info("Thank you for using LockSecurity " + plugin.getDescription().getVersion() + ". Enjoy!");
 	}
 	
-	protected static final void fromFile(LockSecurity plugin) {
+	protected static final void fromFile(LockSecurityPlugin plugin) {
 		plugin.getLogger().info("Commencing transfer process for Data Support of LockSecurity 1.0.0 - 1.6.3");
 		
 		YamlConfiguration lockedFile = YamlConfiguration.loadConfiguration(new File(plugin.getDataFolder(), "locked.yml"));
@@ -120,7 +120,7 @@ public final class TransferUtils {
 		plugin.getLogger().info("Thank you for using LockSecurity " + plugin.getDescription().getVersion() + ". Enjoy!");
 	}
 	
-	private static boolean saveNewData(LockSecurity plugin, UUID ownerUUID, Location location, int lockID, int keyID) {
+	private static boolean saveNewData(LockSecurityPlugin plugin, UUID ownerUUID, Location location, int lockID, int keyID) {
 		ILockSecurityPlayer player = plugin.getPlayerRegistry().getPlayer(Bukkit.getOfflinePlayer(ownerUUID));
 		if (player == null) { // Player has never existed on the server
 			plugin.getLogger().warning("Missing player with UUID \"" + ownerUUID + "\". Ignoring...");

@@ -1,4 +1,4 @@
-package me.choco.locksecurity.api;
+package me.choco.locksecurity.api.data;
 
 import java.util.UUID;
 

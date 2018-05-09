@@ -1,10 +1,10 @@
 package me.choco.locksecurity.api.event;
 
+import me.choco.locksecurity.api.data.ILockSecurityPlayer;
+
 import org.bukkit.block.Block;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.HandlerList;
-
-import me.choco.locksecurity.api.ILockSecurityPlayer;
 
 /** 
  * Called when a player successfully locks a block

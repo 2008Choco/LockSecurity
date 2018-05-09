@@ -17,15 +17,15 @@ import com.google.gson.JsonObject;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 
-import me.choco.locksecurity.LockSecurity;
-import me.choco.locksecurity.api.ILockSecurityPlayer;
-import me.choco.locksecurity.api.ILockedBlock;
-import me.choco.locksecurity.api.LSMode;
+import me.choco.locksecurity.LockSecurityPlugin;
+import me.choco.locksecurity.api.data.ILockSecurityPlayer;
+import me.choco.locksecurity.api.data.ILockedBlock;
+import me.choco.locksecurity.api.utils.LSMode;
 import me.choco.locksecurity.utils.JSONUtils;
 
 public class LockSecurityPlayer implements ILockSecurityPlayer {
 	
-	private static final LockSecurity plugin = LockSecurity.getPlugin();
+	private static final LockSecurityPlugin plugin = LockSecurityPlugin.getPlugin();
 	
 	private final File jsonDataFile;
 	

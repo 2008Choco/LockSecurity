@@ -6,21 +6,21 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import me.choco.locksecurity.LockSecurity;
-import me.choco.locksecurity.api.ILockSecurityPlayer;
-import me.choco.locksecurity.api.ILockedBlock;
-import me.choco.locksecurity.api.ILockedBlockManager;
-import me.choco.locksecurity.api.IPlayerRegistry;
-import me.choco.locksecurity.api.LSMode;
+import me.choco.locksecurity.LockSecurityPlugin;
+import me.choco.locksecurity.api.data.ILockSecurityPlayer;
+import me.choco.locksecurity.api.data.ILockedBlock;
 import me.choco.locksecurity.api.event.PlayerUnlockBlockEvent;
+import me.choco.locksecurity.api.registration.ILockedBlockManager;
+import me.choco.locksecurity.api.registration.IPlayerRegistry;
+import me.choco.locksecurity.api.utils.LSMode;
 
 public class UnlockCmd implements CommandExecutor {
 	
-	private final LockSecurity plugin;
+	private final LockSecurityPlugin plugin;
 	private final IPlayerRegistry playerRegistry;
 	private final ILockedBlockManager lockedBlockManager;
 	
-	public UnlockCmd(LockSecurity plugin) {
+	public UnlockCmd(LockSecurityPlugin plugin) {
 		this.plugin = plugin;
 		this.playerRegistry = plugin.getPlayerRegistry();
 		this.lockedBlockManager = plugin.getLockedBlockManager();

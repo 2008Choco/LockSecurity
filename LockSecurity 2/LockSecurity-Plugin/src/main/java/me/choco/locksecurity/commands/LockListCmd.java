@@ -9,17 +9,17 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import me.choco.locksecurity.LockSecurity;
-import me.choco.locksecurity.api.ILockSecurityPlayer;
-import me.choco.locksecurity.api.ILockedBlock;
-import me.choco.locksecurity.api.IPlayerRegistry;
+import me.choco.locksecurity.LockSecurityPlugin;
+import me.choco.locksecurity.api.data.ILockSecurityPlayer;
+import me.choco.locksecurity.api.data.ILockedBlock;
+import me.choco.locksecurity.api.registration.IPlayerRegistry;
 
 public class LockListCmd implements CommandExecutor {
 	
-	private final LockSecurity plugin;
+	private final LockSecurityPlugin plugin;
 	private final IPlayerRegistry playerRegistry;
 	
-	public LockListCmd(LockSecurity plugin) {
+	public LockListCmd(LockSecurityPlugin plugin) {
 		this.plugin = plugin;
 		this.playerRegistry = plugin.getPlayerRegistry();
 	}

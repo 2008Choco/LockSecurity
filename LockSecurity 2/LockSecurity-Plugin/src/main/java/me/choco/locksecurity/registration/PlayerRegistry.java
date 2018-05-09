@@ -12,23 +12,23 @@ import com.google.common.collect.ImmutableList;
 
 import org.bukkit.OfflinePlayer;
 
-import me.choco.locksecurity.LockSecurity;
-import me.choco.locksecurity.api.ILockSecurityPlayer;
-import me.choco.locksecurity.api.IPlayerRegistry;
-import me.choco.locksecurity.api.LSMode;
+import me.choco.locksecurity.LockSecurityPlugin;
+import me.choco.locksecurity.api.data.ILockSecurityPlayer;
+import me.choco.locksecurity.api.registration.IPlayerRegistry;
+import me.choco.locksecurity.api.utils.LSMode;
 import me.choco.locksecurity.data.LockSecurityPlayer;
 
 public class PlayerRegistry implements IPlayerRegistry {
 	
 	private final Map<UUID, ILockSecurityPlayer> players = new HashMap<>();
-	private final LockSecurity plugin;
+	private final LockSecurityPlugin plugin;
 	
 	/**
 	 * Construct a new PlayerRegistry. There should be need for one 1 manager
 	 * 
 	 * @param plugin the LockSecurity plugin
 	 */
-	public PlayerRegistry(LockSecurity plugin) {
+	public PlayerRegistry(LockSecurityPlugin plugin) {
 		this.plugin = plugin;
 	}
 	

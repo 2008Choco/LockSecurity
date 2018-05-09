@@ -6,14 +6,14 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import me.choco.locksecurity.LockSecurity;
+import me.choco.locksecurity.LockSecurityPlugin;
 import me.choco.locksecurity.api.utils.KeyFactory;
 
 public class GiveKeyCmd implements CommandExecutor {
 	
-	private final LockSecurity plugin;
+	private final LockSecurityPlugin plugin;
 	
-	public GiveKeyCmd(LockSecurity plugin) {
+	public GiveKeyCmd(LockSecurityPlugin plugin) {
 		this.plugin = plugin;
 	}
 	

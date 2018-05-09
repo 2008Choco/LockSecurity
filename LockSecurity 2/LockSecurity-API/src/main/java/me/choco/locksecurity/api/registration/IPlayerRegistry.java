@@ -1,7 +1,10 @@
-package me.choco.locksecurity.api;
+package me.choco.locksecurity.api.registration;
 
 import java.util.List;
 import java.util.UUID;
+
+import me.choco.locksecurity.api.data.ILockSecurityPlayer;
+import me.choco.locksecurity.api.utils.LSMode;
 
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;

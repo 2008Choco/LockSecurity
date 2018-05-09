@@ -2,8 +2,8 @@ package me.choco.locksecurity.api.event;
 
 import org.bukkit.event.HandlerList;
 
-import me.choco.locksecurity.api.ILockSecurityPlayer;
-import me.choco.locksecurity.api.ILockedBlock;
+import me.choco.locksecurity.api.data.ILockSecurityPlayer;
+import me.choco.locksecurity.api.data.ILockedBlock;
 
 /** 
  * Called when a player interacts with a locked block. Interactions may include: 

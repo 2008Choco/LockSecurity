@@ -15,11 +15,11 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 
-import me.choco.locksecurity.LockSecurity;
-import me.choco.locksecurity.api.ILockSecurityPlayer;
-import me.choco.locksecurity.api.ILockedBlock;
-import me.choco.locksecurity.api.ILockedBlockManager;
-import me.choco.locksecurity.api.IPlayerRegistry;
+import me.choco.locksecurity.LockSecurityPlugin;
+import me.choco.locksecurity.api.data.ILockSecurityPlayer;
+import me.choco.locksecurity.api.data.ILockedBlock;
+import me.choco.locksecurity.api.registration.ILockedBlockManager;
+import me.choco.locksecurity.api.registration.IPlayerRegistry;
 import me.choco.locksecurity.data.LockedBlock;
 
 public class LockedBlockManager implements ILockedBlockManager {
@@ -28,14 +28,14 @@ public class LockedBlockManager implements ILockedBlockManager {
 	
 	private final List<ILockedBlock> lockedBlocks = new ArrayList<>(), unloadedBlocks = new ArrayList<>();
 	private final IPlayerRegistry playerRegistry;
-	private final LockSecurity plugin;
+	private final LockSecurityPlugin plugin;
 	
 	/**
 	 * Construct a new LockedBlockManager. There should be need for one 1 manager
 	 * 
 	 * @param plugin the LockSecurity plugin
 	 */
-	public LockedBlockManager(LockSecurity plugin) {
+	public LockedBlockManager(LockSecurityPlugin plugin) {
 		this.plugin = plugin;
 		this.playerRegistry = plugin.getPlayerRegistry();
 		

@@ -1,8 +1,8 @@
 package me.choco.locksecurity.api.event;
 
-import org.bukkit.event.Event;
+import me.choco.locksecurity.api.data.ILockSecurityPlayer;
 
-import me.choco.locksecurity.api.ILockSecurityPlayer;
+import org.bukkit.event.Event;
 
 /** 
  * Represents an LSPlayer based event

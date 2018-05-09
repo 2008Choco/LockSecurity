@@ -10,7 +10,7 @@ import java.io.PrintWriter;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
-import me.choco.locksecurity.LockSecurity;
+import me.choco.locksecurity.LockSecurityPlugin;
 
 /** 
  * Utilities related to the reading and writing of JSON objects to and from files
@@ -32,7 +32,7 @@ public class JSONUtils {
 			throw new IllegalArgumentException("File type provided is not .json extended");
 		
 		try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
-			return LockSecurity.GSON.fromJson(reader, JsonObject.class);
+			return LockSecurityPlugin.GSON.fromJson(reader, JsonObject.class);
 		} catch (IOException e) {}
 		
 		return new JsonObject();
@@ -46,7 +46,7 @@ public class JSONUtils {
 	 */
 	public static void writeJSON(File file, JsonObject data) {
 		try (PrintWriter writer = new PrintWriter(file)) {
-			writer.write(LockSecurity.GSON.toJson(data));
+			writer.write(LockSecurityPlugin.GSON.toJson(data));
 		}
 		catch (FileNotFoundException e) {
 			e.printStackTrace();

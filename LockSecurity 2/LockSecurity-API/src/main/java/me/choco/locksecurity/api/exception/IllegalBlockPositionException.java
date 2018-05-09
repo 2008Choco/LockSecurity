@@ -1,6 +1,6 @@
 package me.choco.locksecurity.api.exception;
 
-import me.choco.locksecurity.api.ILockedBlock;
+import me.choco.locksecurity.api.data.ILockedBlock;
 
 /** 
  * An exeception thrown by {@link ILockedBlock}s to indicate that a block
