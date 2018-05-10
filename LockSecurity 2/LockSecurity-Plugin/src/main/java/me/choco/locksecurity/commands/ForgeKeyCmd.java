@@ -8,6 +8,7 @@ import org.bukkit.entity.Player;
 import me.choco.locksecurity.LockSecurityPlugin;
 import me.choco.locksecurity.api.utils.KeyFactory;
 import me.choco.locksecurity.api.utils.KeyFactory.KeyType;
+import me.choco.locksecurity.utils.localization.Locale;
 
 public class ForgeKeyCmd implements CommandExecutor {
 	
@@ -23,18 +24,19 @@ public class ForgeKeyCmd implements CommandExecutor {
 	
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
+		Locale locale = plugin.getLocale();
 		if (!(sender instanceof Player)) {
-			this.plugin.sendMessage(sender, plugin.getLocale().getMessage("command.general.onlyplayers"));
+			locale.sendMessage(sender, "command.general.onlyplayers");
 			return true;
 		}
 		
 		if (!sender.hasPermission("locks.forgekey")) {
-			this.plugin.sendMessage(sender, plugin.getLocale().getMessage("command.general.nopermission"));
+			locale.sendMessage(sender, "command.general.nopermission");
 			return true;
 		}
 		
 		if (args.length == 0) {
-			this.plugin.sendMessage(sender, plugin.getLocale().getMessage("command.forgekey.noid"));
+			locale.sendMessage(sender, "command.forgekey.noid");
 			return true;
 		}
 		
@@ -50,14 +52,15 @@ public class ForgeKeyCmd implements CommandExecutor {
 					if (ID.equals("")) continue;
 					IDs[i] = Integer.parseInt(ID);
 				} catch (NumberFormatException e) {
-					this.plugin.sendMessage(player, plugin.getLocale().getMessage("command.general.invalidinteger")
-							.replace("%param%", ID));
+					locale.getMessage(player, "command.general.invalidinteger")
+						.param("%param%", ID).send();
 					return true;
 				}
 			}
 			
 			player.getInventory().addItem(KeyFactory.buildKey(KeyType.SMITHED).withIDs(IDs).build());
-			this.plugin.sendMessage(player, plugin.getLocale().getMessage("command.forgekey.givenkey").replace("%ID%", args[0]));
+			locale.getMessage(player, "command.forgekey.givenkey")
+				.param("%ID%", args[0]).send();
 		}
 		
 		return true;

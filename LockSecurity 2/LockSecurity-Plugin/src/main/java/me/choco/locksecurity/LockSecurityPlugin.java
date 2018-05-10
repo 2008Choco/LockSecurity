@@ -79,10 +79,11 @@ public class LockSecurityPlugin extends JavaPlugin implements LockSecurity {
 		this.playerRegistry = new PlayerRegistry(this);
 		this.saveDefaultConfig();
 		
-		// Locales
+		// Locale
 		Locale.init(this);
 		Locale.saveDefaultLocale("en_CA");
 		Locale.saveDefaultLocale("fr_CA");
+		Locale.setDefaultMessageFunction(this::sendMessage);
 		this.locale = Locale.getLocale(this.getConfig().getString("Locale", "en_CA"));
 		
 		// Transfer old data if necessary
@@ -156,7 +157,7 @@ public class LockSecurityPlugin extends JavaPlugin implements LockSecurity {
 		Bukkit.addRecipe(new ShapelessRecipe(new NamespacedKey(this, "keycombine"), new ItemBuilder(Material.BEDROCK).setName("DUAL").build()).addIngredient(2, Material.TRIPWIRE_HOOK));
 		
 		// Load all registered data
-		this.getLogger().info(locale.getMessage("Loading player JSON data from file. This may take a while"));
+		this.getLogger().info("Loading player JSON data from file. This may take a while");
 		for (File file : playerdataDir.listFiles()) {
 			OfflinePlayer rawPlayer = Bukkit.getOfflinePlayer(UUID.fromString(file.getName().replace(".json", "")));
 			
@@ -177,7 +178,7 @@ public class LockSecurityPlugin extends JavaPlugin implements LockSecurity {
 		
 		UpdateChecker checker = new UpdateChecker(this, 12650);
 		if (checker.queryUpdateCheck() && checker.requiresUpdate()) {
-			this.getLogger().info(locale.getMessage("An update is available for download on SpigotMC!"));
+			this.getLogger().info("An update is available for download on SpigotMC!");
 		}
 		
 		this.getLogger().info("Enabling plugin metrics");

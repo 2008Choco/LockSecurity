@@ -9,6 +9,7 @@ import me.choco.locksecurity.LockSecurityPlugin;
 import me.choco.locksecurity.api.data.ILockSecurityPlayer;
 import me.choco.locksecurity.api.utils.LSMode;
 import me.choco.locksecurity.registration.PlayerRegistry;
+import me.choco.locksecurity.utils.localization.Locale;
 
 public class IgnoreLocksCmd implements CommandExecutor {
 	
@@ -22,22 +23,21 @@ public class IgnoreLocksCmd implements CommandExecutor {
 	
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
+		Locale locale = plugin.getLocale();
 		if (!(sender instanceof Player)) {
-			this.plugin.sendMessage(sender, plugin.getLocale().getMessage("command.general.onlyplayers"));
+			locale.sendMessage(sender, "command.general.onlyplayers");
 			return true;
 		}
 		
 		if (!sender.hasPermission("locks.ignorelocks")) {
-			this.plugin.sendMessage(sender, plugin.getLocale().getMessage("command.general.nopermission"));
+			locale.sendMessage(sender, "command.genreal.nopermission");
 			return true;
 		}
 		
 		Player player = (Player) sender;
 		ILockSecurityPlayer lsPlayer = playerRegistry.getPlayer(player);
 		
-		this.plugin.sendMessage(sender, plugin.getLocale().getMessage(lsPlayer.toggleMode(LSMode.IGNORE_LOCKS) 
-				? "command.ignorelocks.enabled" 
-				: "command.ignorelocks.disabled"));
+		locale.sendMessage(sender, lsPlayer.toggleMode(LSMode.IGNORE_LOCKS) ? "command.ignorelocks.enabled" : "command.ignorelocks.disabled");
 		return true;
 	}
 	

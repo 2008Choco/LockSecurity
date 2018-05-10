@@ -42,9 +42,9 @@ public class DoubleChestProtectionListener implements Listener {
 				ILockedBlock lBlock = lockedBlockManager.getLockedBlock(block);
 				if (!lBlock.getOwner().equals(lPlayer)) {
 					event.setCancelled(true);
-					this.plugin.sendMessage(player, plugin.getLocale().getMessage("event.lock.cannotplace")
-							.replace("%type%", block.getType().name())
-							.replace("%player%", lBlock.getOwner().getPlayer().getName()));
+					this.plugin.getLocale().getMessage("event.lock.cannotplace")
+						.param("%type%", block.getType())
+						.param("%player%", lBlock.getOwner().getPlayer().getName()).send();
 					return;
 				}
 				

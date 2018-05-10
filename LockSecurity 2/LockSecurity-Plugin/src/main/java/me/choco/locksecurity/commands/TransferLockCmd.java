@@ -11,6 +11,7 @@ import me.choco.locksecurity.LockSecurityPlugin;
 import me.choco.locksecurity.api.data.ILockSecurityPlayer;
 import me.choco.locksecurity.api.utils.LSMode;
 import me.choco.locksecurity.registration.PlayerRegistry;
+import me.choco.locksecurity.utils.localization.Locale;
 
 public class TransferLockCmd implements CommandExecutor {
 	
@@ -24,18 +25,20 @@ public class TransferLockCmd implements CommandExecutor {
 	
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
+		Locale locale = plugin.getLocale();
+		
 		if (!(sender instanceof Player)) {
-			this.plugin.sendMessage(sender, plugin.getLocale().getMessage("command.general.onlyplayers"));
+			locale.sendMessage(sender, "command.general.onlyplayers");
 			return true;
 		}
 		
 		if (!sender.hasPermission("locks.transferlock")) {
-			this.plugin.sendMessage(sender, plugin.getLocale().getMessage("command.general.nopermission"));
+			locale.sendMessage(sender, "command.general.nopermission");
 			return true;
 		}
 		
 		if (args.length == 0) {
-			this.plugin.sendMessage(sender, plugin.getLocale().getMessage("command.general.specifyplayer"));
+			locale.sendMessage(sender, "command.general.specifyplayer");
 			return true;
 		}
 		
@@ -45,16 +48,13 @@ public class TransferLockCmd implements CommandExecutor {
 		@SuppressWarnings("deprecation")
 		OfflinePlayer target = Bukkit.getOfflinePlayer(args[0]);
 		if (!target.hasPlayedBefore()) {
-			this.plugin.sendMessage(sender, plugin.getLocale().getMessage("command.general.neverplayed")
-					.replace("%target%", args[0]));
+			locale.getMessage(sender, "command.general.neverplayed")
+				.param("%target%", args[0]).send();
 			return true;
 		}
 		
 		lsPlayer.setTransferTarget(playerRegistry.getPlayer(target));
-		
-		this.plugin.sendMessage(player, plugin.getLocale().getMessage(lsPlayer.toggleMode(LSMode.TRANSFER_LOCK)
-				? "command.transferlock.enabled"
-				: "command.transferlock.disabled"));
+		locale.sendMessage(player, lsPlayer.toggleMode(LSMode.TRANSFER_LOCK) ? "command.transferlock.enabled" : "command.transferlock.disabled");
 		return true;
 	}
 	

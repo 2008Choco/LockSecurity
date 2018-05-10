@@ -13,6 +13,7 @@ import me.choco.locksecurity.LockSecurityPlugin;
 import me.choco.locksecurity.api.data.ILockSecurityPlayer;
 import me.choco.locksecurity.api.data.ILockedBlock;
 import me.choco.locksecurity.registration.PlayerRegistry;
+import me.choco.locksecurity.utils.localization.Locale;
 
 public class LockListCmd implements CommandExecutor {
 	
@@ -28,34 +29,35 @@ public class LockListCmd implements CommandExecutor {
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 		OfflinePlayer target = (sender instanceof Player ? (Player) sender : null);
+		Locale locale = plugin.getLocale();
 		
 		if (args.length >= 1) {
 			target = Bukkit.getOfflinePlayer(args[0]);
 			if (target == null) {
-				plugin.sendMessage(sender, plugin.getLocale().getMessage("command.general.playeroffline")
-						.replace("%target%", args[0]));
+				locale.getMessage(sender, "command.general.playeroffline")
+					.param("%target%", args[0]).send();
 				return true;
 			}
 			
 			if (!target.hasPlayedBefore()) {
-				this.plugin.sendMessage(sender, plugin.getLocale().getMessage("command.general.neverplayed")
-						.replace("%target%", args[0]));
+				locale.getMessage(sender, "command.general.neverplayed")
+					.param("%target%", args[0]).send();
 				return true;
 			}
 		}
 		
 		if (target == null) {
-			this.plugin.sendMessage(sender, plugin.getLocale().getMessage("command.general.onlyplayers"));
+			locale.sendMessage(sender, "command.general.onlyplayers");
 			return true;
 		}
 		
 		// Permission check
 		if (args.length == 0 && !sender.hasPermission("locks.locklist")) {
-			this.plugin.sendMessage(sender, plugin.getLocale().getMessage("command.general.nopermission"));
+			locale.sendMessage(sender, "command.general.nopermission");
 			return true;
 		}
 		else if (args.length >= 1 && !sender.hasPermission("locks.locklistother")) {
-			this.plugin.sendMessage(sender, plugin.getLocale().getMessage("command.general.nopermission"));
+			locale.sendMessage(sender, "command.general.nopermission");
 			return true;
 		}
 		
@@ -64,8 +66,9 @@ public class LockListCmd implements CommandExecutor {
 	}
 	
 	private void displayLockInformation(CommandSender sender, ILockSecurityPlayer player) {
-		sender.sendMessage(ChatColor.translateAlternateColorCodes('&', plugin.getLocale().getMessage("command.locklist.identifier"))
-				.replace("%player%", player.getPlayer().getName()));
+		this.plugin.getLocale().getMessage(sender, "command.locklist.identifier")
+			.param("%player%", player.getPlayer().getName()).send();
+		
 		for (ILockedBlock block : player.getOwnedBlocks()) {
 			Location location = block.getLocation();
 			sender.sendMessage(ChatColor.YELLOW + "[ID: " + block.getLockID() + "] " + 

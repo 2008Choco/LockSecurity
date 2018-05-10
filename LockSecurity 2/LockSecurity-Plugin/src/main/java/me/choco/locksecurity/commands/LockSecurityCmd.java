@@ -6,6 +6,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 
 import me.choco.locksecurity.LockSecurityPlugin;
+import me.choco.locksecurity.utils.localization.Locale;
 
 public class LockSecurityCmd implements CommandExecutor {
 	
@@ -21,16 +22,18 @@ public class LockSecurityCmd implements CommandExecutor {
 	
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
+		Locale locale = plugin.getLocale();
+		
 		if (args.length >= 1) {
 			if (args[0].equalsIgnoreCase("reload")) {
 				if (!sender.hasPermission("locks.reload")) {
-					plugin.sendMessage(sender, plugin.getLocale().getMessage("command.general.nopermission"));
+					locale.sendMessage(sender, "command.general.nopermission");
 					return true;
 				}
 				
 				this.plugin.reloadConfig();
 				this.plugin.getLocale().reloadMessages();
-				this.plugin.sendMessage(sender, plugin.getLocale().getMessage("command.locksecurity.reloaded"));
+				locale.sendMessage(sender, "command.locksecurity.reloaded");
 			}
 			
 			else if (args[0].equalsIgnoreCase("version")) {

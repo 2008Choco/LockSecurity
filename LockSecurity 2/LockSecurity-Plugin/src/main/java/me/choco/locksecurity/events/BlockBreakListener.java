@@ -65,8 +65,8 @@ public class BlockBreakListener implements Listener {
 			lsPlayer.removeBlockFromOwnership(lBlockSecondary);
 		}
 		
-		this.plugin.sendMessage(player, plugin.getLocale().getMessage("command.unlock.unlocked")
-				.replace("%lockID%", String.valueOf(lBlock.getLockID())));
+		this.plugin.getLocale().getMessage(player, "command.unlock.unlocked")
+			.param("%lockID%", lBlock.getLockID()).send();
 	}
 	
 }

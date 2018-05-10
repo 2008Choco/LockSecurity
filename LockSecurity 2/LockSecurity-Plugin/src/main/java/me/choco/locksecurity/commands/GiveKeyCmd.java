@@ -8,6 +8,7 @@ import org.bukkit.entity.Player;
 
 import me.choco.locksecurity.LockSecurityPlugin;
 import me.choco.locksecurity.api.utils.KeyFactory;
+import me.choco.locksecurity.utils.localization.Locale;
 
 public class GiveKeyCmd implements CommandExecutor {
 	
@@ -24,9 +25,10 @@ public class GiveKeyCmd implements CommandExecutor {
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 		Player target = (sender instanceof Player ? (Player) sender : null);
+		Locale locale = plugin.getLocale();
 		
 		if (!sender.hasPermission("locks.givekey")) {
-			this.plugin.sendMessage(sender, plugin.getLocale().getMessage("command.general.nopermission"));
+			locale.sendMessage(sender, "command.general.nopermission");
 			return true;
 		}
 		
@@ -35,8 +37,8 @@ public class GiveKeyCmd implements CommandExecutor {
 		if (args.length >= 1) {
 			target = Bukkit.getPlayer(args[0]);
 			if (target == null) {
-				this.plugin.sendMessage(sender, plugin.getLocale().getMessage("command.general.playeroffline")
-						.replace("%target%", args[0]));
+				locale.getMessage(sender, "command.general.playeroffline")
+					.param("%target%", args[0]).send();
 				return true;
 			}
 			
@@ -44,29 +46,29 @@ public class GiveKeyCmd implements CommandExecutor {
 				try {
 					amount = Integer.parseInt(args[1]);
 				} catch (NumberFormatException e) {
-					this.plugin.sendMessage(sender, plugin.getLocale().getMessage("command.general.invalidinteger")
-							.replace("%param%", args[1]));
+					locale.getMessage(sender, "command.general.invalidinteger")
+						.param("%param%", args[1]).send();
 					return true;
 				}
 			}
 		}
 		
 		if (target == null) {
-			this.plugin.sendMessage(sender, plugin.getLocale().getMessage("command.general.specifyplayer"));
+			locale.sendMessage(sender, "command.general.specifyplayer");
 			return true;
 		}
 		
 		boolean isSelf = target.equals(sender);
-		if (!isSelf && args.length == 1)
-			this.plugin.sendMessage(sender, plugin.getLocale().getMessage("command.givekey.sentkey")
-					.replace("%target%", target.getName())
-					.replace("%count%", String.valueOf(amount)));
-		
-		this.plugin.sendMessage(target, plugin.getLocale().getMessage(isSelf ? "command.givekey.receivedkey" : "command.givekey.receivedkey.target")
-				.replace("%count%", String.valueOf(amount))
-				.replace("%target%", sender.getName()));
+		if (!isSelf && args.length == 1) {
+			locale.getMessage(sender, "command.givekey.sentkey")
+				.param("%target%", target.getName())
+				.param("%count%", amount).send();
+		}
 		
 		target.getInventory().addItem(KeyFactory.getUnsmithedKey(amount));
+		locale.getMessage(target, isSelf ? "command.givekey.receivedkey" : "command.givekey.receivedkey.target")
+			.param("%count%", amount)
+			.param("%target%", sender.getName()).send();
 		return true;
 	}
 	

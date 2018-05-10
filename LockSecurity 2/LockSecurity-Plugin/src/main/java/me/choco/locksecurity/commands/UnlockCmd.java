@@ -13,6 +13,7 @@ import me.choco.locksecurity.api.event.PlayerUnlockBlockEvent;
 import me.choco.locksecurity.api.registration.ILockedBlockManager;
 import me.choco.locksecurity.api.utils.LSMode;
 import me.choco.locksecurity.registration.PlayerRegistry;
+import me.choco.locksecurity.utils.localization.Locale;
 
 public class UnlockCmd implements CommandExecutor {
 	
@@ -28,8 +29,10 @@ public class UnlockCmd implements CommandExecutor {
 	
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
+		Locale locale = plugin.getLocale();
+		
 		if (!(sender instanceof Player)) {
-			this.plugin.sendMessage(sender, plugin.getLocale().getMessage("command.general.onlyplayers"));
+			locale.sendMessage(sender, "command.general.onlyplayers");
 			return true;
 		}
 		
@@ -37,8 +40,8 @@ public class UnlockCmd implements CommandExecutor {
 		ILockSecurityPlayer lsPlayer = playerRegistry.getPlayer(player);
 		
 		if (args.length >= 1) {
-			if (!sender.hasPermission("locks.unlock.id") || !sender.hasPermission("locks.unlock.admin")) {
-				this.plugin.sendMessage(sender, plugin.getLocale().getMessage("command.general.nopermission"));
+			if (!player.hasPermission("locks.unlock.id") && !player.hasPermission("locks.unlock.admin")) {
+				locale.sendMessage(player, "command.general.nopermission");
 				return true;
 			}
 			
@@ -46,21 +49,21 @@ public class UnlockCmd implements CommandExecutor {
 			try {
 				lockID = Integer.parseInt(args[0]);
 			} catch (NumberFormatException e) {
-				this.plugin.sendMessage(player, plugin.getLocale().getMessage("command.general.invalidlockid")
-						.replace("%ID%", args[0]));
+				locale.getMessage(player, "command.general.invalidlock")
+					.param("%ID%", args[0]).send();
 				return true;
 			}
 			
 			ILockedBlock lBlock = lockedBlockManager.getLockedBlock(lockID);
 			
 			if (lBlock == null) {
-				this.plugin.sendMessage(player, plugin.getLocale().getMessage("command.general.idnotlocked")
-						.replace("%ID%", String.valueOf(lockID)));
+				locale.getMessage(player, "command.general.idnotlocked")
+					.param("%ID%", lockID).send();
 				return true;
 			}
 			
 			if (!lsPlayer.ownsBlock(lBlock) && !sender.hasPermission("locks.unlock.admin")) {
-				this.plugin.sendMessage(player, plugin.getLocale().getMessage("command.unlock.notowner"));
+				locale.sendMessage(player, "command.unlock.notowner");
 				return true;
 			}
 			
@@ -71,19 +74,17 @@ public class UnlockCmd implements CommandExecutor {
 			
 			if (lockedBlockManager.isRegistered(lBlock)) lockedBlockManager.unregisterBlock(lBlock);
 			lBlock.getOwner().removeBlockFromOwnership(lBlock);
-			this.plugin.sendMessage(player, plugin.getLocale().getMessage("command.unlock.unlocked")
-					.replace("%lockID%", String.valueOf(lockID)));
+			locale.getMessage(player, "command.unlock.unlocked")
+				.param("%lockID%", lockID).send();
 			return true;
 		}
 		
 		if (!sender.hasPermission("locks.unlock.self")) {
-			this.plugin.sendMessage(sender, plugin.getLocale().getMessage("command.general.nopermission"));
+			locale.sendMessage(player, "command.general.nopermission");
 			return true;
 		}
 		
-		plugin.sendMessage(player, plugin.getLocale().getMessage(lsPlayer.toggleMode(LSMode.UNLOCK)
-				? "command.unlock.enabled"
-				: "command.unlock.disabled"));
+		locale.sendMessage(player, lsPlayer.toggleMode(LSMode.UNLOCK) ? "command.unlock.enabled" : "command.unlock.disabled");
 		return true;
 	}
 	

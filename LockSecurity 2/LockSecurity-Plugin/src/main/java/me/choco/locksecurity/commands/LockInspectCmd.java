@@ -14,6 +14,7 @@ import me.choco.locksecurity.api.data.ILockedBlock;
 import me.choco.locksecurity.api.registration.ILockedBlockManager;
 import me.choco.locksecurity.api.utils.LSMode;
 import me.choco.locksecurity.registration.PlayerRegistry;
+import me.choco.locksecurity.utils.localization.Locale;
 
 public class LockInspectCmd implements CommandExecutor {
 	
@@ -29,13 +30,14 @@ public class LockInspectCmd implements CommandExecutor {
 	
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
+		Locale locale = plugin.getLocale();
 		if (!(sender instanceof Player)) {
-			this.plugin.sendMessage(sender, plugin.getLocale().getMessage("command.general.onlyplayers"));
+			locale.sendMessage(sender, "command.general.onlyplayers");
 			return true;
 		}
 		
 		if (!sender.hasPermission("locks.lockinspect")) {
-			this.plugin.sendMessage(sender, plugin.getLocale().getMessage("command.general.nopermission"));
+			locale.sendMessage(sender, "command.general.nopermission");
 			return true;
 		}
 		
@@ -47,15 +49,15 @@ public class LockInspectCmd implements CommandExecutor {
 			try {
 				lockID = Integer.parseInt(args[0]);
 			} catch (NumberFormatException e) {
-				this.plugin.sendMessage(player, plugin.getLocale().getMessage("command.general.invalidlockid")
-						.replace("%ID%", args[0]));
+				locale.getMessage(player, "command.general.invalidlockid")
+					.param("%ID%", args[0]);
 			}
 			
 			ILockedBlock lBlock = lockedBlockManager.getLockedBlock(lockID);
 			
 			if (lBlock == null) {
-				this.plugin.sendMessage(player, plugin.getLocale().getMessage("command.general.idnotlocked")
-						.replace("%ID%", String.valueOf(lockID)));
+				locale.getMessage(player, "command.general.idnotlocked")
+					.param("%ID%", lockID);
 				return true;
 			}
 			
@@ -63,9 +65,7 @@ public class LockInspectCmd implements CommandExecutor {
 			return true;
 		}
 		
-		this.plugin.sendMessage(player, plugin.getLocale().getMessage(lsPlayer.toggleMode(LSMode.LOCK_INSPECT)
-				? "command.lockinspect.enabled"
-				: "command.lockinspect.disabled"));
+		locale.sendMessage(player, lsPlayer.toggleMode(LSMode.LOCK_INSPECT) ? "command.lockinspect.enabled" : "command.lockinspect.disabled");
 		return true;
 	}
 	

@@ -31,6 +31,7 @@ import me.choco.locksecurity.api.utils.KeyFactory;
 import me.choco.locksecurity.api.utils.KeyFactory.KeyType;
 import me.choco.locksecurity.api.utils.LSMode;
 import me.choco.locksecurity.registration.PlayerRegistry;
+import me.choco.locksecurity.utils.localization.Locale;
 
 public class BlockClickListener implements Listener {
 	
@@ -53,6 +54,7 @@ public class BlockClickListener implements Listener {
 		Block block = event.getClickedBlock();
 		
 		ItemStack key = player.getInventory().getItemInMainHand();
+		Locale locale = plugin.getLocale();
 		
 		/* Block is locked */
 		if (lockedBlockManager.isRegistered(block)) {
@@ -85,14 +87,14 @@ public class BlockClickListener implements Listener {
 				event.setCancelled(true);
 				
 				if (!player.hasPermission("locks.unlock.self")) {
-					this.plugin.sendMessage(player, plugin.getLocale().getMessage("event.unlock.nopermission.self")
-							.replace("%type%", block.getType().name()));
+					locale.getMessage(player, "event.unlock.nopermission.self")
+						.param("%type%", block.getType()).send();
 					return;
 				}
 				if (!player.hasPermission("locks.unlock.admin")) {
-					this.plugin.sendMessage(player, plugin.getLocale().getMessage("event.unlock.nopermission.other")
-							.replace("%type%", block.getType().name())
-							.replace("%player%", lBlock.getOwner().getPlayer().getName()));
+					locale.getMessage(player, "event.unlock.nopermission.other")
+						.param("%type%", block.getType())
+						.param("%player%", lBlock.getOwner().getPlayer().getName()).send();
 					return;
 				}
 				
@@ -111,7 +113,7 @@ public class BlockClickListener implements Listener {
 				PlayerInteractLockedBlockEvent pilbe = new PlayerInteractLockedBlockEvent(lsPlayer, lBlock, InteractResult.NO_KEY);
 				Bukkit.getPluginManager().callEvent(pilbe);
 				
-				this.plugin.sendMessage(player, plugin.getLocale().getMessage("event.key.none"));
+				locale.sendMessage(player, "event.key.none");
 				player.spawnParticle(Particle.SMOKE_NORMAL, block.getLocation().add(0.5, 1, 0.5), 5, 0.1F, 0.2F, 0.1F, 0.01F);
 				player.playSound(player.getLocation(), Sound.BLOCK_WOODEN_DOOR_CLOSE, 1, 0);
 				return;
@@ -126,7 +128,7 @@ public class BlockClickListener implements Listener {
 				PlayerInteractLockedBlockEvent pilbe = new PlayerInteractLockedBlockEvent(lsPlayer, lBlock, InteractResult.NOT_RIGHT_KEY);
 				Bukkit.getPluginManager().callEvent(pilbe);
 				
-				this.plugin.sendMessage(player, plugin.getLocale().getMessage("event.key.attemptpick"));
+				locale.sendMessage(player, "event.key.attemptpick");
 				player.playSound(player.getLocation(), Sound.BLOCK_TRIPWIRE_CLICK_OFF, 1, 2);
 				if (plugin.getConfig().getBoolean("Aesthetics.DisplayLockedSmokeParticle")) {
 					player.spawnParticle(Particle.SMOKE_NORMAL, block.getLocation().add(0.5, 1, 0.5), 5, 0.1F, 0.2F, 0.1F, 0.01F);
@@ -139,7 +141,7 @@ public class BlockClickListener implements Listener {
 			Bukkit.getPluginManager().callEvent(pilbe);
 			
 			if (keyInChest) {
-				player.sendMessage(plugin.getLocale().getMessage("event.key.inchest"));
+				locale.sendMessage(player, "event.key.inchest");
 			}
 		}
 		
@@ -148,15 +150,15 @@ public class BlockClickListener implements Listener {
 			if (lsPlayer.isModeEnabled(LSMode.IGNORE_LOCKS)) {
 				event.setCancelled(true);
 				
-				this.plugin.sendMessage(player, plugin.getLocale().getMessage("command.lockinspect.notlocked"));
+				locale.sendMessage(player, "command.lockinspect.notlocked");
 				return;
 			}
 			
 			if (!KeyFactory.isUnsmithedKey(key)) return;
 			
 			if (!player.hasPermission("locks.lock")) {
-				this.plugin.sendMessage(player, plugin.getLocale().getMessage("event.lock.nopermission")
-						.replace("%type%", block.getType().name()));
+				locale.getMessage(player, "event.lock.nopermission")
+					.param("%type%", block.getType()).send();
 				event.setCancelled(true);
 				return;
 			}
@@ -198,9 +200,9 @@ public class BlockClickListener implements Listener {
 			}
 			
 			event.setCancelled(true);
-			this.plugin.sendMessage(player, plugin.getLocale().getMessage("event.lock.registered")
-					.replace("%keyID%", String.valueOf(keyID))
-					.replace("%lockID%", String.valueOf(lockID)));
+			locale.getMessage(player, "event.lock.registered")
+				.param("%keyID%", keyID)
+				.param("%lockID%", lockID).send();
 			this.giveRespectiveLockedKey(player, key, keyID);
 			player.playSound(player.getLocation(), Sound.BLOCK_WOODEN_DOOR_CLOSE, 1, 2);
 			
@@ -209,15 +211,15 @@ public class BlockClickListener implements Listener {
 				if (!admin.getPlayer().isOnline()) return;
 				
 				Location location = block.getLocation();
-				this.plugin.sendMessage(admin.getPlayer().getPlayer(), plugin.getLocale().getMessage("command.locknotify.notification")
-						.replace("%player%", player.getName())
-						.replace("%type%", block.getType().toString())
-						.replace("%x%", String.valueOf(location.getBlockX()))
-						.replace("%y%", String.valueOf(location.getBlockY()))
-						.replace("%z%", String.valueOf(location.getBlockZ()))
-						.replace("%world%", location.getWorld().getName())
-						.replace("%lockID%", String.valueOf(lockID))
-						.replace("%keyID%", String.valueOf(keyID)));
+				locale.getMessage(admin.getPlayer().getPlayer(), "command.locknotify.notification")
+					.param("%player%", player.getName())
+					.param("%type%", block.getType().toString())
+					.param("%x%", String.valueOf(location.getBlockX()))
+					.param("%y%", String.valueOf(location.getBlockY()))
+					.param("%z%", String.valueOf(location.getBlockZ()))
+					.param("%world%", location.getWorld().getName())
+					.param("%lockID%", String.valueOf(lockID))
+					.param("%keyID%", String.valueOf(keyID)).send();
 			}
 		}
 	}
