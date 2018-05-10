@@ -121,7 +121,7 @@ public final class TransferUtils {
 	}
 	
 	private static boolean saveNewData(LockSecurityPlugin plugin, UUID ownerUUID, Location location, int lockID, int keyID) {
-		ILockSecurityPlayer player = plugin.getPlayerRegistry().getPlayer(Bukkit.getOfflinePlayer(ownerUUID));
+		ILockSecurityPlayer player = plugin.getPlayer(Bukkit.getOfflinePlayer(ownerUUID));
 		if (player == null) { // Player has never existed on the server
 			plugin.getLogger().warning("Missing player with UUID \"" + ownerUUID + "\". Ignoring...");
 			return false;

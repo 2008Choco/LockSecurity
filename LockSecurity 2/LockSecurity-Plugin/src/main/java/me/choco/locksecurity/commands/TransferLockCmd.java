@@ -9,13 +9,13 @@ import org.bukkit.entity.Player;
 
 import me.choco.locksecurity.LockSecurityPlugin;
 import me.choco.locksecurity.api.data.ILockSecurityPlayer;
-import me.choco.locksecurity.api.registration.IPlayerRegistry;
 import me.choco.locksecurity.api.utils.LSMode;
+import me.choco.locksecurity.registration.PlayerRegistry;
 
 public class TransferLockCmd implements CommandExecutor {
 	
 	private final LockSecurityPlugin plugin;
-	private final IPlayerRegistry playerRegistry;
+	private final PlayerRegistry playerRegistry;
 	
 	public TransferLockCmd(LockSecurityPlugin plugin) {
 		this.plugin = plugin;

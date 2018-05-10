@@ -7,18 +7,17 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import org.bukkit.OfflinePlayer;
+
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 
-import org.bukkit.OfflinePlayer;
-
 import me.choco.locksecurity.LockSecurityPlugin;
 import me.choco.locksecurity.api.data.ILockSecurityPlayer;
-import me.choco.locksecurity.api.registration.IPlayerRegistry;
 import me.choco.locksecurity.api.utils.LSMode;
 import me.choco.locksecurity.data.LockSecurityPlayer;
 
-public class PlayerRegistry implements IPlayerRegistry {
+public class PlayerRegistry {
 	
 	private final Map<UUID, ILockSecurityPlayer> players = new HashMap<>();
 	private final LockSecurityPlugin plugin;
@@ -32,61 +31,50 @@ public class PlayerRegistry implements IPlayerRegistry {
 		this.plugin = plugin;
 	}
 	
-	@Override
 	public ILockSecurityPlayer getPlayer(OfflinePlayer player) {
 		return getPlayer(player.getUniqueId());
 	}
 	
-	@Override
 	public ILockSecurityPlayer getPlayer(UUID player) {
 		return players.computeIfAbsent(player, LockSecurityPlayer::new);
 	}
 	
-	@Override
-	public void registerPlayer(ILockSecurityPlayer player) {
+	public void registerPlayer(LockSecurityPlayer player) {
 		Preconditions.checkArgument(player != null, "Registered players must not be null");
 		this.players.put(player.getUniqueId(), player);
 	}
 	
-	@Override
-	public void unregisterPlayer(ILockSecurityPlayer player) {
+	public void unregisterPlayer(LockSecurityPlayer player) {
 		this.unregisterPlayer(player.getUniqueId());
 	}
 	
-	@Override
 	public void unregisterPlayer(OfflinePlayer player) {
 		this.unregisterPlayer(player.getUniqueId());
 	}
 	
-	@Override
 	public void unregisterPlayer(UUID uuid) {
 		this.players.remove(uuid);
 	}
 	
-	@Override
 	public List<ILockSecurityPlayer> getPlayers() {
 		return ImmutableList.copyOf(players.values());
 	}
 	
-	@Override
 	public List<ILockSecurityPlayer> getPlayers(LSMode mode) {
 		return this.players.values().stream()
 				.filter(p -> p.isModeEnabled(mode))
 				.collect(Collectors.toList());
 	}
 	
-	@Override
 	public boolean hasJSONDataFile(OfflinePlayer player) {
 		return hasJSONDataFile(player.getUniqueId());
 	}
 	
-	@Override
 	public boolean hasJSONDataFile(UUID player) {
 		Preconditions.checkArgument(player != null, "JSON data files do not exist for null players");
 		return new File(plugin.playerdataDir, player + ".json").exists();
 	}
 	
-	@Override
 	public void clearRegistry() {
 		this.players.clear();
 	}

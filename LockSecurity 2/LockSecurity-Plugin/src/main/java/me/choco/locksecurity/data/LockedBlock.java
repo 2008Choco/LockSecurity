@@ -2,10 +2,6 @@ package me.choco.locksecurity.data;
 
 import java.util.UUID;
 
-import com.google.common.base.Preconditions;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParseException;
-
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -14,17 +10,18 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.inventory.ItemStack;
 
+import com.google.common.base.Preconditions;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
+
 import me.choco.locksecurity.LockSecurityPlugin;
 import me.choco.locksecurity.api.data.ILockSecurityPlayer;
 import me.choco.locksecurity.api.data.ILockedBlock;
 import me.choco.locksecurity.api.exception.IllegalBlockPositionException;
 import me.choco.locksecurity.api.registration.ILockedBlockManager;
-import me.choco.locksecurity.api.registration.IPlayerRegistry;
 import me.choco.locksecurity.api.utils.KeyFactory;
 
 public class LockedBlock implements ILockedBlock {
-	
-	private static final IPlayerRegistry PLAYER_REGISTRY = LockSecurityPlugin.getPlugin().getPlayerRegistry();
 	
 	private ILockedBlock secondaryComponent;
 	
@@ -237,7 +234,7 @@ public class LockedBlock implements ILockedBlock {
 		this.uuid = UUID.fromString(data.get("uuid").getAsString());
 		this.lockID = data.get("lockID").getAsInt();
 		this.keyID = data.get("keyID").getAsInt();
-		this.owner = PLAYER_REGISTRY.getPlayer(UUID.fromString(data.get("owner").getAsString()));
+		this.owner = LockSecurityPlugin.getPlugin().getPlayer(UUID.fromString(data.get("owner").getAsString()));
 		
 		JsonObject locationData = data.getAsJsonObject("location");
 		World world = Bukkit.getWorld(locationData.get("world").getAsString());

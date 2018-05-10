@@ -11,20 +11,20 @@ import me.choco.locksecurity.LockSecurityPlugin;
 import me.choco.locksecurity.api.data.ILockSecurityPlayer;
 import me.choco.locksecurity.api.data.ILockedBlock;
 import me.choco.locksecurity.api.registration.ILockedBlockManager;
-import me.choco.locksecurity.api.registration.IPlayerRegistry;
+import me.choco.locksecurity.registration.PlayerRegistry;
 
 public class DoubleChestProtectionListener implements Listener {
 	
 	private static final BlockFace[] FACES = { BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST };
 	
 	private final LockSecurityPlugin plugin;
-	private final IPlayerRegistry playerRegistry;
 	private final ILockedBlockManager lockedBlockManager;
+	private final PlayerRegistry playerRegistry;
 	
 	public DoubleChestProtectionListener(LockSecurityPlugin plugin) {
 		this.plugin = plugin;
-		this.playerRegistry = plugin.getPlayerRegistry();
 		this.lockedBlockManager = plugin.getLockedBlockManager();
+		this.playerRegistry = plugin.getPlayerRegistry();
 	}
 	
 	@EventHandler

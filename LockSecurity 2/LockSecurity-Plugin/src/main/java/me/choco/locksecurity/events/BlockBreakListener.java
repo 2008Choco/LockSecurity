@@ -13,19 +13,19 @@ import me.choco.locksecurity.api.data.ILockSecurityPlayer;
 import me.choco.locksecurity.api.data.ILockedBlock;
 import me.choco.locksecurity.api.event.PlayerUnlockBlockEvent;
 import me.choco.locksecurity.api.registration.ILockedBlockManager;
-import me.choco.locksecurity.api.registration.IPlayerRegistry;
 import me.choco.locksecurity.api.utils.LSMode;
+import me.choco.locksecurity.registration.PlayerRegistry;
 
 public class BlockBreakListener implements Listener {
 	
 	private final LockSecurityPlugin plugin;
-	private final IPlayerRegistry playerRegistry;
 	private final ILockedBlockManager lockedBlockManager;
+	private final PlayerRegistry playerRegistry;
 	
 	public BlockBreakListener(LockSecurityPlugin plugin) {
 		this.plugin = plugin;
-		this.playerRegistry = plugin.getPlayerRegistry();
 		this.lockedBlockManager = plugin.getLockedBlockManager();
+		this.playerRegistry = plugin.getPlayerRegistry();
 	}
 	
 	@EventHandler

@@ -7,19 +7,18 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import com.google.common.base.Preconditions;
-import com.google.common.collect.ImmutableList;
-
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 
+import com.google.common.base.Preconditions;
+import com.google.common.collect.ImmutableList;
+
 import me.choco.locksecurity.LockSecurityPlugin;
 import me.choco.locksecurity.api.data.ILockSecurityPlayer;
 import me.choco.locksecurity.api.data.ILockedBlock;
 import me.choco.locksecurity.api.registration.ILockedBlockManager;
-import me.choco.locksecurity.api.registration.IPlayerRegistry;
 import me.choco.locksecurity.data.LockedBlock;
 
 public class LockedBlockManager implements ILockedBlockManager {
@@ -27,7 +26,7 @@ public class LockedBlockManager implements ILockedBlockManager {
 	private int nextLockID = -1, nextKeyID = -1;
 	
 	private final List<ILockedBlock> lockedBlocks = new ArrayList<>(), unloadedBlocks = new ArrayList<>();
-	private final IPlayerRegistry playerRegistry;
+	private final PlayerRegistry playerRegistry;
 	private final LockSecurityPlugin plugin;
 	
 	/**

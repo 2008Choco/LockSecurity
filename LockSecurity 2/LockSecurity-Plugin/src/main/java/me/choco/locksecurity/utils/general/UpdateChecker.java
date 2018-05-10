@@ -6,10 +6,11 @@ import java.io.InputStreamReader;
 import java.net.URL;
 
 import org.bukkit.plugin.Plugin;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
+
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+
+import me.choco.locksecurity.LockSecurityPlugin;
 
 /**
  * A utility class to assist in update checks through the use of SpiGet
@@ -22,20 +23,7 @@ public class UpdateChecker {
 	private final String queryURL;
 	
 	private final Plugin plugin;
-	private final String pluginID;
-	
-	/**
-	 * Construct a new UpdateChecker. The update check will not execute until
-	 * {@link #queryUpdateCheck()} is invoked.
-	 * 
-	 * @param plugin the plugin to check
-	 * @param pluginName the plugin id (found on Spigot)
-	 */
-	public UpdateChecker(Plugin plugin, String pluginName) {
-		this.plugin = plugin;
-		this.pluginID = pluginName;
-		this.queryURL = "https://api.spiget.org/v2/resources/" + pluginID + "/versions?sort=-name";
-	}
+	private final int pluginID;
 	
 	/**
 	 * Construct a new UpdateChecker. The update check will not execute until
@@ -45,7 +33,20 @@ public class UpdateChecker {
 	 * @param pluginID the plugin id (found on Spigot)
 	 */
 	public UpdateChecker(Plugin plugin, int pluginID) {
-		this(plugin, String.valueOf(pluginID));
+		this.plugin = plugin;
+		this.pluginID = pluginID;
+		this.queryURL = "https://api.spiget.org/v2/resources/" + pluginID + "/versions?sort=-name";
+	}
+	
+	/**
+	 * Construct a new UpdateChecker. The update check will not execute until
+	 * {@link #queryUpdateCheck()} is invoked.
+	 * 
+	 * @param plugin the plugin to check
+	 * @param pluginName the plugin id (found on Spigot). Must be an integer
+	 */
+	public UpdateChecker(Plugin plugin, String pluginID) {
+		this(plugin, Integer.parseInt(pluginID));
 	}
 	
 	/** 
@@ -53,7 +54,7 @@ public class UpdateChecker {
 	 * 
 	 * @return the plugin identification
 	 */
-	public String getPluginID() {
+	public int getPluginID() {
 		return pluginID;
 	}
 	
@@ -61,25 +62,19 @@ public class UpdateChecker {
 	 * Query an update to the http://www.spiget.org website to retrieve 
 	 * new version information
 	 * 
-	 * @return true if the query was successfully
+	 * @return true if the query was successful, false otherwise
 	 */
 	public boolean queryUpdateCheck() {
-		try(BufferedReader reader = new BufferedReader(new InputStreamReader(new URL(queryURL).openStream()))) {
+		try (BufferedReader reader = new BufferedReader(new InputStreamReader(new URL(queryURL).openStream()))) {
 			
-			StringBuilder jsonRaw = new StringBuilder();
-			String currentLine;
-			while ((currentLine = reader.readLine()) != null)
-				jsonRaw.append(currentLine);
-			
-			JSONParser jsonParser = new JSONParser();
-			JSONObject json = (JSONObject) ((JSONArray) jsonParser.parse(jsonRaw.toString())).get(0);
-			
-			String newestVersion = (String) json.get("name");
+			JsonObject root = LockSecurityPlugin.GSON.fromJson(reader, JsonArray.class).get(0).getAsJsonObject();
+			String newestVersion = root.get("name").getAsString();
 			String currentVersion = plugin.getDescription().getVersion();
 			
 			// Version parser
 			String[] newValues = newestVersion.split("\\.");
 			String[] currentValues = currentVersion.split("\\.");
+			
 			for (int i = 0; i < (currentValues.length > newValues.length ? currentValues.length : newValues.length); i++) {
 				if (i >= newValues.length) {
 					this.requiresUpdate = true;
@@ -97,7 +92,9 @@ public class UpdateChecker {
 			}
 			
 			return true;
-		} catch (IOException | ParseException | NumberFormatException e) { return false; }
+		} catch (IOException | NumberFormatException e) {
+			return false;
+		}
 	}
 	
 	/** 

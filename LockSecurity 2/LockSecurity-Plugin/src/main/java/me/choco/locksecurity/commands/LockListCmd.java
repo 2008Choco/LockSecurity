@@ -12,12 +12,12 @@ import org.bukkit.entity.Player;
 import me.choco.locksecurity.LockSecurityPlugin;
 import me.choco.locksecurity.api.data.ILockSecurityPlayer;
 import me.choco.locksecurity.api.data.ILockedBlock;
-import me.choco.locksecurity.api.registration.IPlayerRegistry;
+import me.choco.locksecurity.registration.PlayerRegistry;
 
 public class LockListCmd implements CommandExecutor {
 	
 	private final LockSecurityPlugin plugin;
-	private final IPlayerRegistry playerRegistry;
+	private final PlayerRegistry playerRegistry;
 	
 	public LockListCmd(LockSecurityPlugin plugin) {
 		this.plugin = plugin;

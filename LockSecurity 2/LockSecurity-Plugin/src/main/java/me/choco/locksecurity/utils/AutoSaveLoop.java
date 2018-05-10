@@ -6,21 +6,21 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-import com.google.gson.JsonObject;
-
 import org.bukkit.scheduler.BukkitRunnable;
+
+import com.google.gson.JsonObject;
 
 import me.choco.locksecurity.LockSecurityPlugin;
 import me.choco.locksecurity.api.data.ILockSecurityPlayer;
 import me.choco.locksecurity.api.registration.ILockedBlockManager;
-import me.choco.locksecurity.api.registration.IPlayerRegistry;
+import me.choco.locksecurity.registration.PlayerRegistry;
 
 public final class AutoSaveLoop extends BukkitRunnable {
 	
 	private static AutoSaveLoop instance;
 	
 	private final LockSecurityPlugin plugin;
-	private final IPlayerRegistry playerRegistry;
+	private final PlayerRegistry playerRegistry;
 	private final ILockedBlockManager lockedBlockManager;
 	
 	private AutoSaveLoop(LockSecurityPlugin plugin) {

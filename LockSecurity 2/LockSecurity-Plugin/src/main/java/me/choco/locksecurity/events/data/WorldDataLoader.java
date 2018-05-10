@@ -9,12 +9,12 @@ import org.bukkit.event.player.PlayerJoinEvent;
 
 import me.choco.locksecurity.LockSecurityPlugin;
 import me.choco.locksecurity.api.registration.ILockedBlockManager;
-import me.choco.locksecurity.api.registration.IPlayerRegistry;
+import me.choco.locksecurity.registration.PlayerRegistry;
 
 public class WorldDataLoader implements Listener {
 	
 	private final ILockedBlockManager manager;
-	private final IPlayerRegistry playerRegistry;
+	private final PlayerRegistry playerRegistry;
 	
 	public WorldDataLoader(LockSecurityPlugin plugin) {
 		this.manager = plugin.getLockedBlockManager();

@@ -1,7 +1,11 @@
 package me.choco.locksecurity.api;
 
+import java.util.UUID;
+
+import org.bukkit.OfflinePlayer;
+
+import me.choco.locksecurity.api.data.ILockSecurityPlayer;
 import me.choco.locksecurity.api.registration.ILockedBlockManager;
-import me.choco.locksecurity.api.registration.IPlayerRegistry;
 
 public final class LockSecurityAPI {
 	
@@ -21,12 +25,16 @@ public final class LockSecurityAPI {
 		return implementation;
 	}
 	
-	public static IPlayerRegistry getPlayerRegistry() {
-		return implementation.getPlayerRegistry();
-	}
-	
 	public static ILockedBlockManager getLockedBlockManager() {
 		return implementation.getLockedBlockManager();
+	}
+	
+	public static ILockSecurityPlayer getPlayer(OfflinePlayer player) {
+		return implementation.getPlayer(player);
+	}
+	
+	public static ILockSecurityPlayer getPlayer(UUID player) {
+		return implementation.getPlayer(player);
 	}
 	
 }

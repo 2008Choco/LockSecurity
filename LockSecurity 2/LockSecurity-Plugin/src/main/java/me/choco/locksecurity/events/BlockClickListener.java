@@ -27,16 +27,16 @@ import me.choco.locksecurity.api.event.PlayerInteractLockedBlockEvent;
 import me.choco.locksecurity.api.event.PlayerInteractLockedBlockEvent.InteractResult;
 import me.choco.locksecurity.api.event.PlayerLockBlockEvent;
 import me.choco.locksecurity.api.registration.ILockedBlockManager;
-import me.choco.locksecurity.api.registration.IPlayerRegistry;
 import me.choco.locksecurity.api.utils.KeyFactory;
 import me.choco.locksecurity.api.utils.KeyFactory.KeyType;
 import me.choco.locksecurity.api.utils.LSMode;
+import me.choco.locksecurity.registration.PlayerRegistry;
 
 public class BlockClickListener implements Listener {
 	
 	private final LockSecurityPlugin plugin;
 	private final ILockedBlockManager lockedBlockManager;
-	private final IPlayerRegistry playerRegistry;
+	private final PlayerRegistry playerRegistry;
 	
 	public BlockClickListener(LockSecurityPlugin plugin) {
 		this.plugin = plugin;

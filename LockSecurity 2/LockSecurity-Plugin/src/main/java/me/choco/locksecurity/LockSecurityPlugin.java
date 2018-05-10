@@ -5,6 +5,20 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.UUID;
 
+import org.apache.commons.io.FileUtils;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
+import org.bukkit.OfflinePlayer;
+import org.bukkit.World;
+import org.bukkit.command.CommandSender;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.ShapedRecipe;
+import org.bukkit.inventory.ShapelessRecipe;
+import org.bukkit.plugin.PluginManager;
+import org.bukkit.plugin.java.JavaPlugin;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -12,7 +26,6 @@ import me.choco.locksecurity.api.LockSecurity;
 import me.choco.locksecurity.api.LockSecurityAPI;
 import me.choco.locksecurity.api.data.ILockSecurityPlayer;
 import me.choco.locksecurity.api.registration.ILockedBlockManager;
-import me.choco.locksecurity.api.registration.IPlayerRegistry;
 import me.choco.locksecurity.api.utils.ItemBuilder;
 import me.choco.locksecurity.api.utils.KeyFactory;
 import me.choco.locksecurity.commands.ForgeKeyCmd;
@@ -42,20 +55,6 @@ import me.choco.locksecurity.utils.general.Metrics;
 import me.choco.locksecurity.utils.general.UpdateChecker;
 import me.choco.locksecurity.utils.localization.Locale;
 
-import org.apache.commons.io.FileUtils;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
-import org.bukkit.OfflinePlayer;
-import org.bukkit.World;
-import org.bukkit.command.CommandSender;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.ShapedRecipe;
-import org.bukkit.inventory.ShapelessRecipe;
-import org.bukkit.plugin.PluginManager;
-import org.bukkit.plugin.java.JavaPlugin;
-
 public class LockSecurityPlugin extends JavaPlugin implements LockSecurity {
 	
 	private static LockSecurityPlugin instance;
@@ -63,8 +62,8 @@ public class LockSecurityPlugin extends JavaPlugin implements LockSecurity {
 	
 	private AutoSaveLoop autosave;
 	
-	private IPlayerRegistry playerRegistry;
-	private ILockedBlockManager lockedBlockManager;
+	private PlayerRegistry playerRegistry;
+	private LockedBlockManager lockedBlockManager;
 	
 	public File playerdataDir, infoFile;
 	private Locale locale;
@@ -75,8 +74,8 @@ public class LockSecurityPlugin extends JavaPlugin implements LockSecurity {
 		instance = this;
 		LockSecurityAPI.setImplementation(this);
 		
-		this.playerdataDir = new File(this.getDataFolder(), "playerdata");
-		this.infoFile = new File(this.getDataFolder(), "plugin.info");
+		this.playerdataDir = new File(getDataFolder(), "playerdata");
+		this.infoFile = new File(getDataFolder(), "plugin.info");
 		this.playerRegistry = new PlayerRegistry(this);
 		this.saveDefaultConfig();
 		
@@ -90,18 +89,20 @@ public class LockSecurityPlugin extends JavaPlugin implements LockSecurity {
 		if (!playerdataDir.exists()) {
 			if (this.playerdataDir.mkdirs()) this.getLogger().info("Successfully created new playerdata directory");
 			
-			if (new File(this.getDataFolder(), "lockinfo.db").exists())
+			if (new File(getDataFolder(), "lockinfo.db").exists())
 				TransferUtils.fromDatabase(this);
-			else if (new File(this.getDataFolder(), "locked.yml").exists())
+			else if (new File(getDataFolder(), "locked.yml").exists())
 				TransferUtils.fromFile(this);
 		}
 		
 		// Save data file(s)
 		if (!this.infoFile.exists()) {
-			try{
+			try {
 				this.infoFile.createNewFile();
 				FileUtils.write(infoFile, "nextLockID=1\nnextKeyID=1", Charset.defaultCharset());
-			} catch (IOException e) { e.printStackTrace(); }
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 			
 			this.getLogger().info("Successfully created new plugin information file");
 		}
@@ -159,10 +160,9 @@ public class LockSecurityPlugin extends JavaPlugin implements LockSecurity {
 		for (File file : playerdataDir.listFiles()) {
 			OfflinePlayer rawPlayer = Bukkit.getOfflinePlayer(UUID.fromString(file.getName().replace(".json", "")));
 			
-			ILockSecurityPlayer player = new LockSecurityPlayer(rawPlayer);
-			this.playerRegistry.registerPlayer(player);
-			
+			LockSecurityPlayer player = new LockSecurityPlayer(rawPlayer);
 			player.read(JSONUtils.readJSON(file));
+			this.playerRegistry.registerPlayer(player);
 		}
 		
 		// Load data for worlds that are already loaded (In case of a reload)
@@ -205,22 +205,37 @@ public class LockSecurityPlugin extends JavaPlugin implements LockSecurity {
 	}
 	
 	/** 
-	 * Get an instance of the LockSecurity class. This is for API usage
+	 * Get an instance of the LockSecurityPlugin class. This is for implementation
+	 * usage. For API use, see {@link LockSecurityAPI} and its various methods
 	 * 
-	 * @return an instance of LockSecurity
+	 * @return an instance of LockSecurityPlugin
 	 */
 	public static LockSecurityPlugin getPlugin() {
 		return instance;
 	}
 	
-	@Override
-	public IPlayerRegistry getPlayerRegistry() {
+	/**
+	 * Get the player registry for LockSecurity
+	 * 
+	 * @return the player registry
+	 */
+	public PlayerRegistry getPlayerRegistry() {
 		return playerRegistry;
 	}
 	
 	@Override
 	public ILockedBlockManager getLockedBlockManager() {
 		return lockedBlockManager;
+	}
+	
+	@Override
+	public ILockSecurityPlayer getPlayer(OfflinePlayer player) {
+		return playerRegistry.getPlayer(player);
+	}
+	
+	@Override
+	public ILockSecurityPlayer getPlayer(UUID player) {
+		return playerRegistry.getPlayer(player);
 	}
 	
 	/** 

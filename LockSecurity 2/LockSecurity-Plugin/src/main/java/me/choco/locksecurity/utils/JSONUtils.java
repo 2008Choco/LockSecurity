@@ -33,7 +33,9 @@ public class JSONUtils {
 		
 		try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
 			return LockSecurityPlugin.GSON.fromJson(reader, JsonObject.class);
-		} catch (IOException e) {}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		
 		return new JsonObject();
 	}
