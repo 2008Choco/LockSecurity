@@ -33,7 +33,7 @@ public class BlockBreakListener implements Listener {
 		Block block = event.getBlock();
 		
 		if (!lockedBlockManager.isLockable(block)) return;
-		if (!lockedBlockManager.isRegistered(block)) return;
+		if (!lockedBlockManager.isLockedBlock(block)) return;
 		
 		Player player = event.getPlayer();
 		ILockSecurityPlayer lsPlayer = playerRegistry.getPlayer(player);

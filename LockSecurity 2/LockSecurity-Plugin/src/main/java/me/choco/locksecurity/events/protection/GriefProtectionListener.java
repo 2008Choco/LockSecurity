@@ -26,18 +26,18 @@ public class GriefProtectionListener implements Listener {
 	
 	@EventHandler(priority = EventPriority.HIGH)
 	public void onZombieBreakLockedDoor(EntityBreakDoorEvent event) {
-		if (lockedBlockManager.isRegistered(event.getBlock())) event.setCancelled(true);
+		if (lockedBlockManager.isLockedBlock(event.getBlock())) event.setCancelled(true);
 	}
 	
 	@EventHandler
 	public void onBlockBurn(BlockBurnEvent event) {
-		if (lockedBlockManager.isRegistered(event.getBlock())) event.setCancelled(true);
+		if (lockedBlockManager.isLockedBlock(event.getBlock())) event.setCancelled(true);
 	}
 	
 	@EventHandler
 	public void onDestroyBlockBeneathDoor(BlockBreakEvent event) {
 		Block block = event.getBlock().getRelative(BlockFace.UP);
-		if (lockedBlockManager.isRegistered(block)) {
+		if (lockedBlockManager.isLockedBlock(block)) {
 			event.setCancelled(true);
 			this.plugin.getLocale().getMessage(event.getPlayer(), "event.lock.cannotbreak")
 				.param("%type%", block.getType())
@@ -47,12 +47,12 @@ public class GriefProtectionListener implements Listener {
 	
 	@EventHandler
 	public void onRedstonePowerDoor(BlockRedstoneEvent event) {
-		if (lockedBlockManager.isRegistered(event.getBlock())) event.setNewCurrent(0);
+		if (lockedBlockManager.isLockedBlock(event.getBlock())) event.setNewCurrent(0);
 	}
 	
 	@EventHandler
 	public void onHopperPullItem(InventoryMoveItemEvent event) {
-		if (lockedBlockManager.isRegistered(event.getSource().getLocation().getBlock())) event.setCancelled(true);
+		if (lockedBlockManager.isLockedBlock(event.getSource().getLocation().getBlock())) event.setCancelled(true);
 	}
 	
 }

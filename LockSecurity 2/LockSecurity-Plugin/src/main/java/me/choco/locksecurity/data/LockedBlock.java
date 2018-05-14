@@ -1,7 +1,9 @@
 package me.choco.locksecurity.data;
 
+import java.util.Objects;
 import java.util.UUID;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -120,11 +122,10 @@ public class LockedBlock implements ILockedBlock {
 	@Override
 	public void setOwner(ILockSecurityPlayer owner) {
 		Preconditions.checkArgument(owner != null, "Owner must not be null");
-		
 		this.owner.removeBlockFromOwnership(this);
-		owner.addBlockToOwnership(this);
 		
 		this.owner = owner;
+		this.owner.addBlockToOwnership(this);
 	}
 	
 	@Override
@@ -174,21 +175,22 @@ public class LockedBlock implements ILockedBlock {
 	
 	@Override
 	public void setSecondaryComponent(ILockedBlock component) {
-		setSecondaryComponent(component, false);
+		this.setSecondaryComponent(component, false);
 	}
 	
 	@Override
 	public void setSecondaryComponent(ILockedBlock component, boolean force) {
-		if (!force && !canBeSecondaryComponent(component))
+		if (!force && !canBeSecondaryComponent(component)) {
 			throw new IllegalBlockPositionException("Block is not positioned correctly to be a secondary component (From [LockID] = " + lockID);
+		}
 		
 		this.secondaryComponent = component;
 		if (secondaryComponent.getSecondaryComponent() != null) 
 			this.secondaryComponent.setSecondaryComponent(this);
 	}
 	
-	private static final BlockFace[] FACES = new BlockFace[]{ BlockFace.NORTH, BlockFace.SOUTH, BlockFace.EAST, BlockFace.WEST };
-	private static final BlockFace[] FACES_DOORS = new BlockFace[]{ BlockFace.UP, BlockFace.DOWN };
+	private static final BlockFace[] FACES = new BlockFace[] { BlockFace.NORTH, BlockFace.SOUTH, BlockFace.EAST, BlockFace.WEST };
+	private static final BlockFace[] FACES_DOORS = new BlockFace[] { BlockFace.UP, BlockFace.DOWN };
 	
 	@Override
 	public boolean canBeSecondaryComponent(ILockedBlock block) {
@@ -212,12 +214,7 @@ public class LockedBlock implements ILockedBlock {
 	
 	@Override
 	public boolean isValidKey(ItemStack key) {
-		if (KeyFactory.isUnsmithedKey(key)) return false;
-			
-		int[] IDs = KeyFactory.getIDs(key);
-		for (int ID : IDs)
-			if (ID == keyID) return true;
-		return false;
+		return !KeyFactory.isUnsmithedKey(key) && ArrayUtils.contains(KeyFactory.getIDs(key), keyID);
 	}
 	
 	@Override
@@ -261,32 +258,23 @@ public class LockedBlock implements ILockedBlock {
 	
 	@Override
 	public int hashCode() {
-		int prime = 31;
-		int result = prime + keyID;
-		result = prime * result + lockID;
-		result = prime * result + ((owner == null) ? 0 : owner.hashCode());
-		result = prime * result + ((uuid == null) ? 0 : uuid.hashCode());
+		int result = 31 + keyID;
+		
+		result = 31 * result + lockID;
+		result = 31 * result + ((owner == null) ? 0 : owner.hashCode());
+		result = 31 * result + ((uuid == null) ? 0 : uuid.hashCode());
 		
 		return result;
 	}
 	
 	@Override
 	public boolean equals(Object object) {
+		if (object == this) return true;
 		if (!(object instanceof LockedBlock)) return false;
 		
 		LockedBlock other = (LockedBlock) object;
-		if (keyID != other.keyID) return false;
-		if (lockID != other.lockID) return false;
-		
-		if (owner == null) {
-			if (other.owner != null) return false;
-		} else if (!owner.equals(other.owner)) return false;
-		
-		if (uuid == null) {
-			if (other.uuid != null) return false;
-		} else if (!uuid.equals(other.uuid)) return false;
-		
-		return true;
+		return keyID == other.keyID && lockID == other.lockID
+			&& Objects.equals(owner, other.owner) && Objects.equals(uuid, other.uuid);
 	}
 	
 }

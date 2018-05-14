@@ -1,7 +1,6 @@
 package me.choco.locksecurity.api.data;
 
 import java.io.File;
-import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -39,11 +38,11 @@ public interface ILockSecurityPlayer extends JSONSerializable {
 	public UUID getUniqueId();
 	
 	/** 
-	 * Get an immutable list of all blocks owned by this player
+	 * Get an immutable set of all blocks owned by this player
 	 * 
-	 * @return a list of all owned blocks
+	 * @return a set of all owned blocks
 	 */
-	public List<ILockedBlock> getOwnedBlocks();
+	public Set<ILockedBlock> getOwnedBlocks();
 	
 	/** 
 	 * Add a block to this player's ownership. This does not register the block to

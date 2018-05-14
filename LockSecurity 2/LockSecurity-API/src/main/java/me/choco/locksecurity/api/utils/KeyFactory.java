@@ -93,10 +93,8 @@ public class KeyFactory {
 			line = ChatColor.stripColor(line);
 			if (!line.startsWith("Key ID: ")) continue;
 			
-			line = line.replace("Key ID: ", "");
-			String[] stringIDs = line.split(", ");
-			
-			return Arrays.stream(stringIDs).mapToInt(s -> Integer.parseInt(s)).filter(i -> i > 0).toArray();
+			String[] stringIDs = line.replace("Key ID: ", "").split(", ");
+			return Arrays.stream(stringIDs).mapToInt(Integer::parseInt).filter(i -> i > 0).distinct().toArray();
 		}
 		
 		return new int[0];
@@ -114,14 +112,13 @@ public class KeyFactory {
 	 * @return keys with merged Key ID values. null if neither are smithed keys
 	 */
 	public static ItemStack mergeKeys(ItemStack key1, ItemStack key2, int amount) {
-		int[] key1IDs = getIDs(key1), key2IDs = getIDs(key2);
-		if (key1IDs == null || key2IDs == null) return null;
-		if (amount <= 0) throw new IllegalArgumentException("Cannot create an ItemStack with a negative amount");
+		Preconditions.checkNotNull(key1, "Cannot merge null key (key1)");
+		Preconditions.checkNotNull(key2, "Cannot merge null key (key2)");
+		Preconditions.checkArgument(amount >= 1, "Cannot create ItemStack with negative amount");
 		
 		// Add them up and sort in ascending order
-		int[] newIDs = ArrayUtils.addAll(key1IDs, key2IDs);
+		int[] newIDs = ArrayUtils.addAll(getIDs(key1), getIDs(key2));
 		newIDs = Arrays.stream(newIDs).distinct().sorted().toArray();
-		
 		return KeyFactory.buildKey(KeyType.SMITHED).withIDs(newIDs).setAmount(amount).build();
 	}
 	
@@ -150,11 +147,10 @@ public class KeyFactory {
 	public static class KeyBuilder {
 		
 		private final ItemBuilder keyBuilder;
-		
-		private final boolean dataModifications;
+		private final boolean smithed;
 		
 		private KeyBuilder(KeyType type) {
-			this.dataModifications = type.allowDataModifications();
+			this.smithed = type.allowDataModifications();
 			
 			this.keyBuilder = new ItemBuilder(Material.TRIPWIRE_HOOK);
 			this.keyBuilder.setName(ChatColor.GRAY + type.getItemDisplayName());
@@ -186,7 +182,8 @@ public class KeyFactory {
 		 * @return this instance of the builder. Allows for chaining
 		 */
 		public KeyBuilder withIDs(int... IDs) {
-			Preconditions.checkArgument(dataModifications, "Cannot modify data of an unsmithed key");
+			Preconditions.checkArgument(smithed, "Cannot modify data of an unsmithed key");
+			if (IDs.length == 0) return this;
 			
 			Arrays.sort(IDs);
 			StringBuilder stringIDs = new StringBuilder();

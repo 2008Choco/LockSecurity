@@ -57,7 +57,7 @@ public class BlockClickListener implements Listener {
 		Locale locale = plugin.getLocale();
 		
 		/* Block is locked */
-		if (lockedBlockManager.isRegistered(block)) {
+		if (lockedBlockManager.isLockedBlock(block)) {
 			if (lsPlayer.isModeEnabled(LSMode.IGNORE_LOCKS)) return;
 			
 			ILockedBlock lBlock = lockedBlockManager.getLockedBlock(block);

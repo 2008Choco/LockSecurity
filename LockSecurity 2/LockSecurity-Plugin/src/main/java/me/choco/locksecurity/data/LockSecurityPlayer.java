@@ -2,15 +2,14 @@ package me.choco.locksecurity.data;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.Collections;
+import java.util.EnumSet;
 import java.util.HashSet;
-import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 
 import com.google.common.base.Preconditions;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableSet;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
@@ -29,8 +28,8 @@ public class LockSecurityPlayer implements ILockSecurityPlayer {
 	
 	private final File jsonDataFile;
 	
-	private final List<ILockedBlock> ownedBlocks = new ArrayList<>();
-	private final Set<LSMode> activeModes = new HashSet<>();
+	private final Set<ILockedBlock> ownedBlocks = new HashSet<>();
+	private final Set<LSMode> activeModes = EnumSet.noneOf(LSMode.class);
 	
 	private ILockSecurityPlayer transferTarget;
 	private UUID uuid;
@@ -42,9 +41,10 @@ public class LockSecurityPlayer implements ILockSecurityPlayer {
 	 */
 	public LockSecurityPlayer(UUID uuid) {
 		Preconditions.checkArgument(uuid != null, "Player UUID cannot be null");
-		this.uuid = uuid;
 		
+		this.uuid = uuid;
 		this.jsonDataFile = new File(plugin.playerdataDir, uuid + ".json");
+		
 		if (!jsonDataFile.exists()) {
 			try {
 				this.jsonDataFile.createNewFile();
@@ -73,8 +73,8 @@ public class LockSecurityPlayer implements ILockSecurityPlayer {
 	}
 	
 	@Override
-	public List<ILockedBlock> getOwnedBlocks() {
-		return ImmutableList.copyOf(ownedBlocks);
+	public Set<ILockedBlock> getOwnedBlocks() {
+		return Collections.unmodifiableSet(ownedBlocks);
 	}
 	
 	@Override
@@ -82,7 +82,6 @@ public class LockSecurityPlayer implements ILockSecurityPlayer {
 		Preconditions.checkArgument(block != null, "Null blocks cannot be added to ownership");
 		Preconditions.checkArgument(block.getOwner() == this, "Unable to register a locked block to a user that does not own it");
 		
-		if (ownedBlocks.contains(block)) return;
 		this.ownedBlocks.add(block);
 	}
 	
@@ -112,10 +111,13 @@ public class LockSecurityPlayer implements ILockSecurityPlayer {
 	public boolean toggleMode(LSMode mode) {
 		Preconditions.checkArgument(mode != null, "Cannot toggle a null mode");
 		
-		if (activeModes.contains(mode)) this.activeModes.remove(mode);
-		else this.activeModes.add(mode);
+		if (activeModes.contains(mode)) {
+			this.activeModes.remove(mode);
+		} else {
+			this.activeModes.add(mode);
+		}
 		
-		return this.isModeEnabled(mode);
+		return activeModes.contains(mode);
 	}
 	
 	@Override
@@ -125,7 +127,7 @@ public class LockSecurityPlayer implements ILockSecurityPlayer {
 	
 	@Override
 	public Set<LSMode> getEnabledModes() {
-		return ImmutableSet.copyOf(activeModes);
+		return Collections.unmodifiableSet(activeModes);
 	}
 	
 	@Override
@@ -201,14 +203,11 @@ public class LockSecurityPlayer implements ILockSecurityPlayer {
 	
 	@Override
 	public boolean equals(Object object) {
+		if (object == this) return true;
 		if (!(object instanceof LockSecurityPlayer)) return false;
 		
 		LockSecurityPlayer other = (LockSecurityPlayer) object;
-		if (uuid == null) {
-			if (other.uuid != null) return false;
-		} else if (!uuid.equals(other.uuid)) return false;
-		
-		return true;
+		return Objects.equals(uuid, other.uuid);
 	}
 	
 }

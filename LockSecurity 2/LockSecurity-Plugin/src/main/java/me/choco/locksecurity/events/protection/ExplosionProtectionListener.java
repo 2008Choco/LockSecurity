@@ -27,7 +27,7 @@ public class ExplosionProtectionListener implements Listener {
 		
 		Iterator<Block> it = event.blockList().iterator();
 		while (it.hasNext())
-			if (lockedBlockManager.isRegistered(it.next())) it.remove();
+			if (lockedBlockManager.isLockedBlock(it.next())) it.remove();
 	}
 	
 }

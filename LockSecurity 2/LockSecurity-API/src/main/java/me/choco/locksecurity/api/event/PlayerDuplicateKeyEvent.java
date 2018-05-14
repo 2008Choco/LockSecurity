@@ -1,5 +1,7 @@
 package me.choco.locksecurity.api.event;
 
+import java.util.Arrays;
+
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.player.PlayerEvent;
@@ -17,7 +19,7 @@ public class PlayerDuplicateKeyEvent extends PlayerEvent {
 	private static final HandlerList handlers = new HandlerList();
 	
 	private final ItemStack firstKey, secondKey;
-	private final int[] IDs;
+	private final int[] ids;
 	
 	/**
 	 * Construct a new PlayerDuplicateKeyEvent
@@ -25,13 +27,13 @@ public class PlayerDuplicateKeyEvent extends PlayerEvent {
 	 * @param player the player taking part in the event
 	 * @param firstKey the first key in the crafting window
 	 * @param secondKey the second key in the crafting window
-	 * @param IDs the IDs being duplicated
+	 * @param ids the IDs being duplicated
 	 */
-	public PlayerDuplicateKeyEvent(Player player, ItemStack firstKey, ItemStack secondKey, int[] IDs) {
+	public PlayerDuplicateKeyEvent(Player player, ItemStack firstKey, ItemStack secondKey, int[] ids) {
 		super(player);
 		this.firstKey = firstKey;
 		this.secondKey = secondKey;
-		this.IDs = IDs;
+		this.ids = ids;
 	}
 	
 	/**
@@ -40,7 +42,7 @@ public class PlayerDuplicateKeyEvent extends PlayerEvent {
 	 * @return the first key
 	 */
 	public ItemStack getFirstKey() {
-		return firstKey;
+		return firstKey.clone();
 	}
 	
 	/**
@@ -49,7 +51,7 @@ public class PlayerDuplicateKeyEvent extends PlayerEvent {
 	 * @return the second key
 	 */
 	public ItemStack getSecondKey() {
-		return secondKey;
+		return secondKey.clone();
 	}
 	
 	/**
@@ -58,7 +60,7 @@ public class PlayerDuplicateKeyEvent extends PlayerEvent {
 	 * @return the ID's
 	 */
 	public int[] getIDs() {
-		return IDs;
+		return Arrays.copyOf(ids, ids.length);
 	}
 	
 	@Override

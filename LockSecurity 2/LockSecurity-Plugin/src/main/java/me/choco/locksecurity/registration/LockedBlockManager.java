@@ -3,8 +3,10 @@ package me.choco.locksecurity.registration;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.bukkit.Location;
@@ -13,7 +15,6 @@ import org.bukkit.World;
 import org.bukkit.block.Block;
 
 import com.google.common.base.Preconditions;
-import com.google.common.collect.ImmutableList;
 
 import me.choco.locksecurity.LockSecurityPlugin;
 import me.choco.locksecurity.api.data.ILockSecurityPlayer;
@@ -25,7 +26,7 @@ public class LockedBlockManager implements ILockedBlockManager {
 	
 	private int nextLockID = -1, nextKeyID = -1;
 	
-	private final List<ILockedBlock> lockedBlocks = new ArrayList<>(), unloadedBlocks = new ArrayList<>();
+	private final Set<ILockedBlock> lockedBlocks = new HashSet<>(), unloadedBlocks = new HashSet<>();
 	private final PlayerRegistry playerRegistry;
 	private final LockSecurityPlugin plugin;
 	
@@ -71,12 +72,12 @@ public class LockedBlockManager implements ILockedBlockManager {
 	}
 	
 	@Override
-	public boolean isRegistered(Location location) {
+	public boolean isLockedBlock(Location location) {
 		return getLockedBlock(location) != null;
 	}
 	
 	@Override
-	public boolean isRegistered(Block block) {
+	public boolean isLockedBlock(Block block) {
 		return getLockedBlock(block) != null;
 	}
 	
@@ -140,20 +141,20 @@ public class LockedBlockManager implements ILockedBlockManager {
 	}
 	
 	@Override
-	public List<ILockedBlock> getLockedBlocks() {
-		return ImmutableList.copyOf(lockedBlocks);
+	public Set<ILockedBlock> getLockedBlocks() {
+		return Collections.unmodifiableSet(lockedBlocks);
 	}
 	
 	@Override
-	public List<ILockedBlock> getLockedBlocks(int keyID) {
-		return this.lockedBlocks.stream()
+	public Set<ILockedBlock> getLockedBlocks(int keyID) {
+		return lockedBlocks.stream()
 				.filter(b -> b.getKeyID() == keyID)
-				.collect(Collectors.toList());
+				.collect(Collectors.toSet());
 	}
 	
 	@Override
-	public List<ILockedBlock> getUnloadedBlocks() {
-		return ImmutableList.copyOf(unloadedBlocks);
+	public Set<ILockedBlock> getUnloadedBlocks() {
+		return Collections.unmodifiableSet(unloadedBlocks);
 	}
 	
 	@Override
@@ -169,7 +170,6 @@ public class LockedBlockManager implements ILockedBlockManager {
 		
 		for (String material : lockableBlocks)
 			if (type.name().equalsIgnoreCase(material)) return true;
-		
 		return false;
 	}
 	
@@ -180,11 +180,7 @@ public class LockedBlockManager implements ILockedBlockManager {
 	
 	@Override
 	public int getNextLockID(boolean increment) {
-		if (this.nextLockID == -1) {}
-		
-		int lockID = this.nextLockID;
-		if (increment) this.nextLockID++;
-		return lockID;
+		return (increment ? nextLockID++ : nextLockID);
 	}
 	
 	@Override
@@ -194,11 +190,7 @@ public class LockedBlockManager implements ILockedBlockManager {
 	
 	@Override
 	public int getNextKeyID(boolean increment) {
-		if (this.nextKeyID == -1) {}
-		
-		int keyID = this.nextKeyID;
-		if (increment) this.nextKeyID++;
-		return keyID;
+		return (increment ? nextKeyID++ : nextKeyID);
 	}
 	
 	@Override
@@ -209,13 +201,13 @@ public class LockedBlockManager implements ILockedBlockManager {
 		this.playerRegistry.getPlayers()
 			.forEach(p -> p.getOwnedBlocks().stream()
 				.filter(b -> b.getLocation().getWorld() == world)
-				.forEach(b -> lockedBlocks.add(b))
+				.forEach(lockedBlocks::add)
 			);
 		
 		// Add all unloaded blocks to memory
 		this.unloadedBlocks.stream()
 			.filter(b -> b.getLocation().getWorld() == world)
-			.forEach(b -> lockedBlocks.add(b));
+			.forEach(lockedBlocks::add);
 		this.unloadedBlocks.removeIf(b -> b.getLocation().getWorld() == world);
 	}
 	
@@ -225,7 +217,7 @@ public class LockedBlockManager implements ILockedBlockManager {
 		
 		this.lockedBlocks.stream()
 			.filter(b -> b.getLocation().getWorld() == world)
-			.forEach(b -> unloadedBlocks.add(b));
+			.forEach(unloadedBlocks::add);
 		this.lockedBlocks.removeIf(b -> b.getLocation().getWorld() == world);
 	}
 	

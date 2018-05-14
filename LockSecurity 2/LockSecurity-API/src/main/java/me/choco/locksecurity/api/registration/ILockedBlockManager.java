@@ -1,6 +1,6 @@
 package me.choco.locksecurity.api.registration;
 
-import java.util.List;
+import java.util.Set;
 
 import me.choco.locksecurity.api.data.ILockSecurityPlayer;
 import me.choco.locksecurity.api.data.ILockedBlock;
@@ -54,7 +54,7 @@ public interface ILockedBlockManager {
 	 * @param location the location to check
 	 * @return true if a block is registered in the specified location
 	 */
-	public boolean isRegistered(Location location);
+	public boolean isLockedBlock(Location location);
 	
 	/** 
 	 * Check if a specific block is a registered locked block or not
@@ -62,7 +62,7 @@ public interface ILockedBlockManager {
 	 * @param block the block to check
 	 * @return true if the block is a registered locked block
 	 */
-	public boolean isRegistered(Block block);
+	public boolean isLockedBlock(Block block);
 	
 	/**
 	 * Get a locked block from the registry based on a location
@@ -203,7 +203,7 @@ public interface ILockedBlockManager {
 	 * 
 	 * @return a set of registered blocks
 	 */
-	public List<ILockedBlock> getLockedBlocks();
+	public Set<ILockedBlock> getLockedBlocks();
 	
 	/** 
 	 * Get a set of all locked block objects with the given Key ID
@@ -211,14 +211,14 @@ public interface ILockedBlockManager {
 	 * @param keyId the Key ID to search
 	 * @return a set of all registered blocks with the given Key ID
 	 */
-	public List<ILockedBlock> getLockedBlocks(int keyId);
+	public Set<ILockedBlock> getLockedBlocks(int keyId);
 	
 	/**
 	 * Get a set of all currently unloaded locked block objects
 	 * 
 	 * @return a set of unloaded, but registered, blocks
 	 */
-	public List<ILockedBlock> getUnloadedBlocks();
+	public Set<ILockedBlock> getUnloadedBlocks();
 	
 	/** 
 	 * Check if a block is lockable or not

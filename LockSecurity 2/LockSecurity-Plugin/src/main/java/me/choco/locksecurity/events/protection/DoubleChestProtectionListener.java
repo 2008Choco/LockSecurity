@@ -36,7 +36,7 @@ public class DoubleChestProtectionListener implements Listener {
 			for (BlockFace face : FACES) {
 				Block relative = block.getRelative(face);
 				
-				if (!relative.getType().equals(block.getType()) || !lockedBlockManager.isRegistered(block)) continue;
+				if (!relative.getType().equals(block.getType()) || !lockedBlockManager.isLockedBlock(block)) continue;
 				
 				ILockSecurityPlayer lPlayer = playerRegistry.getPlayer(player);
 				ILockedBlock lBlock = lockedBlockManager.getLockedBlock(block);
