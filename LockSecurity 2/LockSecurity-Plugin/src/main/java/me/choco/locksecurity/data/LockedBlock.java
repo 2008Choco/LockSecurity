@@ -5,6 +5,7 @@ import java.util.UUID;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -134,6 +135,16 @@ public class LockedBlock implements ILockedBlock {
 	@Override
 	public boolean isOwner(ILockSecurityPlayer player) {
 		return (player == owner);
+	}
+	
+	@Override
+	public boolean isOwner(OfflinePlayer player) {
+		return player != null && isOwner(player.getUniqueId());
+	}
+	
+	@Override
+	public boolean isOwner(UUID player) {
+		return player != null && owner.getUniqueId().equals(player);
 	}
 	
 	@Override

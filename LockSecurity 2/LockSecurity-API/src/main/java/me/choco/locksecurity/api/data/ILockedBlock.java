@@ -3,6 +3,7 @@ package me.choco.locksecurity.api.data;
 import java.util.UUID;
 
 import org.bukkit.Location;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.block.Block;
 import org.bukkit.inventory.ItemStack;
 
@@ -33,12 +34,29 @@ public interface ILockedBlock extends JSONSerializable {
 	public ILockSecurityPlayer getOwner();
 	
 	/** 
-	 * Check if the specified player is the owner of the block
+	 * Check if the specified player is the owner of the block or not
 	 * 
 	 * @param player the player to check
-	 * @return true if the player owns this block
+	 * @return true if the player owns this block, false otherwise
 	 */
 	public boolean isOwner(ILockSecurityPlayer player);
+	
+	/**
+	 * Check whether the provided player is the owner of the block or not
+	 * 
+	 * @param player the player to check
+	 * @return true if the player owns this block, false otherwise
+	 */
+	public boolean isOwner(OfflinePlayer player);
+	
+	/**
+	 * Check whether the provided player UUID is the owner of the block
+	 * or not
+	 * 
+	 * @param player the player UUID to check
+	 * @return true if the player UUID owns this block, false otherwise
+	 */
+	public boolean isOwner(UUID player);
 	
 	/** 
 	 * Get the location in which this locked block is located
