@@ -1,0 +1,213 @@
+package wtf.choco.locksecurity.data;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.Collections;
+import java.util.EnumSet;
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
+import java.util.UUID;
+
+import com.google.common.base.Preconditions;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+
+import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
+
+import wtf.choco.locksecurity.LockSecurityPlugin;
+import wtf.choco.locksecurity.api.data.ILockSecurityPlayer;
+import wtf.choco.locksecurity.api.data.ILockedBlock;
+import wtf.choco.locksecurity.api.utils.LSMode;
+import wtf.choco.locksecurity.utils.JSONUtils;
+
+public class LockSecurityPlayer implements ILockSecurityPlayer {
+	
+	private static final LockSecurityPlugin plugin = LockSecurityPlugin.getPlugin();
+	
+	private final File jsonDataFile;
+	
+	private final Set<ILockedBlock> ownedBlocks = new HashSet<>();
+	private final Set<LSMode> activeModes = EnumSet.noneOf(LSMode.class);
+	
+	private ILockSecurityPlayer transferTarget;
+	private UUID uuid;
+	
+	/**
+	 * Construct a new LSPlayer based on an existing Player's UUID
+	 * 
+	 * @param uuid the player UUID
+	 */
+	public LockSecurityPlayer(UUID uuid) {
+		Preconditions.checkArgument(uuid != null, "Player UUID cannot be null");
+		
+		this.uuid = uuid;
+		this.jsonDataFile = new File(plugin.playerdataDir, uuid + ".json");
+		
+		if (!jsonDataFile.exists()) {
+			try {
+				this.jsonDataFile.createNewFile();
+				JSONUtils.writeJSON(jsonDataFile, this.write(new JsonObject()));
+			} catch (IOException e) {}
+		}
+	}
+	
+	/**
+	 * Construct a new LSPlayer based on an existing OfflinePlayer
+	 * 
+	 * @param player the player
+	 */
+	public LockSecurityPlayer(OfflinePlayer player) {
+		this(player.getUniqueId());
+	}
+	
+	@Override
+	public OfflinePlayer getPlayer() {
+		return Bukkit.getOfflinePlayer(uuid);
+	}
+	
+	@Override
+	public UUID getUniqueId() {
+		return uuid;
+	}
+	
+	@Override
+	public Set<ILockedBlock> getOwnedBlocks() {
+		return Collections.unmodifiableSet(ownedBlocks);
+	}
+	
+	@Override
+	public void addBlockToOwnership(ILockedBlock block) {
+		Preconditions.checkArgument(block != null, "Null blocks cannot be added to ownership");
+		Preconditions.checkArgument(block.getOwner() == this, "Unable to register a locked block to a user that does not own it");
+		
+		this.ownedBlocks.add(block);
+	}
+	
+	@Override
+	public void removeBlockFromOwnership(ILockedBlock block) {
+		this.ownedBlocks.remove(block);
+	}
+	
+	@Override
+	public boolean ownsBlock(ILockedBlock block) {
+		return ownedBlocks.contains(block);
+	}
+	
+	@Override
+	public void enableMode(LSMode mode) {
+		Preconditions.checkArgument(mode != null, "Cannot enable a null mode");
+		this.activeModes.add(mode);
+	}
+	
+	@Override
+	public void disableMode(LSMode mode) {
+		Preconditions.checkArgument(mode != null, "Cannot disable a null mode");
+		this.activeModes.remove(mode);
+	}
+	
+	@Override
+	public boolean toggleMode(LSMode mode) {
+		Preconditions.checkArgument(mode != null, "Cannot toggle a null mode");
+		
+		if (activeModes.contains(mode)) {
+			this.activeModes.remove(mode);
+		} else {
+			this.activeModes.add(mode);
+		}
+		
+		return activeModes.contains(mode);
+	}
+	
+	@Override
+	public boolean isModeEnabled(LSMode mode) {
+		return this.activeModes.contains(mode);
+	}
+	
+	@Override
+	public Set<LSMode> getEnabledModes() {
+		return Collections.unmodifiableSet(activeModes);
+	}
+	
+	@Override
+	public void setTransferTarget(ILockSecurityPlayer target) {
+		this.transferTarget = target;
+	}
+	
+	@Override
+	public ILockSecurityPlayer getTransferTarget() {
+		return transferTarget;
+	}
+	
+	@Override
+	public File getJSONDataFile() {
+		return jsonDataFile;
+	}
+	
+	@Override
+	public void clearLocalData() {
+		this.activeModes.clear();
+		this.ownedBlocks.clear();
+		this.transferTarget = null;
+	}
+	
+	@Override
+	public JsonObject write(JsonObject data) {
+		data.addProperty("uuid", uuid.toString());
+		
+		JsonArray activeModesData = new JsonArray();
+		for (LSMode mode : this.activeModes) {
+			activeModesData.add(mode.getName());
+		}
+		
+		data.add("activeModes", activeModesData);
+		
+		JsonArray ownedBlocksData = new JsonArray();
+		for (ILockedBlock block : this.ownedBlocks) {
+			ownedBlocksData.add(block.write(new JsonObject()));
+		}
+		
+		data.add("ownedBlocks", ownedBlocksData);
+		
+		return data;
+	}
+	
+	@Override
+	public boolean read(JsonObject data) {
+		this.uuid = UUID.fromString(data.get("uuid").getAsString());
+		
+		JsonArray activeModesData = data.has("activeModes") ? data.getAsJsonArray("activeModes") : new JsonArray();
+		for (int i = 0; i < activeModesData.size(); i++) {
+			LSMode mode = LSMode.getByName(activeModesData.get(i).getAsString());
+			if (mode == null) continue;
+			
+			this.activeModes.add(mode);
+		}
+		
+		JsonArray ownedBlocksData = data.has("ownedBlocks") ? data.getAsJsonArray("ownedBlocks") : new JsonArray();
+		for (int i = 0; i < ownedBlocksData.size(); i++) {
+			JsonObject blockData = ownedBlocksData.get(i).getAsJsonObject();
+			LockedBlock block = new LockedBlock(blockData);
+			
+			this.ownedBlocks.add(block);
+		}
+		
+		return true;
+	}
+	
+	@Override
+	public int hashCode() {
+		return 31 + ((uuid == null) ? 0 : uuid.hashCode());
+	}
+	
+	@Override
+	public boolean equals(Object object) {
+		if (object == this) return true;
+		if (!(object instanceof LockSecurityPlayer)) return false;
+		
+		LockSecurityPlayer other = (LockSecurityPlayer) object;
+		return Objects.equals(uuid, other.uuid);
+	}
+	
+}
