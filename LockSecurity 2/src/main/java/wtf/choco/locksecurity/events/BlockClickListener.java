@@ -1,0 +1,267 @@
+package wtf.choco.locksecurity.events;
+
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
+import org.bukkit.Particle;
+import org.bukkit.Sound;
+import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
+import org.bukkit.block.BlockState;
+import org.bukkit.block.Chest;
+import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
+import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.InventoryHolder;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.material.Door;
+
+import wtf.choco.locksecurity.LockSecurity;
+import wtf.choco.locksecurity.api.KeyFactory;
+import wtf.choco.locksecurity.api.KeyFactory.KeyType;
+import wtf.choco.locksecurity.api.LSMode;
+import wtf.choco.locksecurity.api.event.PlayerInteractLockedBlockEvent;
+import wtf.choco.locksecurity.api.event.PlayerInteractLockedBlockEvent.InteractResult;
+import wtf.choco.locksecurity.api.event.PlayerLockBlockEvent;
+import wtf.choco.locksecurity.data.LockSecurityPlayer;
+import wtf.choco.locksecurity.data.LockedBlock;
+import wtf.choco.locksecurity.registration.LockedBlockManager;
+import wtf.choco.locksecurity.registration.PlayerRegistry;
+import wtf.choco.locksecurity.utils.localization.Locale;
+
+public class BlockClickListener implements Listener {
+	
+	private final LockSecurity plugin;
+	private final LockedBlockManager lockedBlockManager;
+	private final PlayerRegistry playerRegistry;
+	
+	public BlockClickListener(LockSecurity plugin) {
+		this.plugin = plugin;
+		this.lockedBlockManager = plugin.getLockedBlockManager();
+		this.playerRegistry = plugin.getPlayerRegistry();
+	}
+	
+	@EventHandler
+	public void onClickWithKey(PlayerInteractEvent event) {
+		if (!event.getAction().equals(Action.RIGHT_CLICK_BLOCK) || !lockedBlockManager.isLockable(event.getClickedBlock())) return;
+		
+		Player player = event.getPlayer();
+		LockSecurityPlayer lsPlayer = playerRegistry.getPlayer(player);
+		Block block = event.getClickedBlock();
+		
+		ItemStack key = player.getInventory().getItemInMainHand();
+		Locale locale = plugin.getLocale();
+		
+		/* Block is locked */
+		if (lockedBlockManager.isLockedBlock(block)) {
+			if (lsPlayer.isModeEnabled(LSMode.IGNORE_LOCKS)) return;
+			
+			LockedBlock lBlock = lockedBlockManager.getLockedBlock(block);
+			
+			// Inspect locks mode
+			if (lsPlayer.isModeEnabled(LSMode.LOCK_INSPECT)) {
+				event.setCancelled(true);
+				
+				this.displayInformation(player, lBlock);
+				return;
+			}
+			
+			// Transfer locks mode
+			if (lsPlayer.isModeEnabled(LSMode.TRANSFER_LOCK)) {
+				event.setCancelled(true);
+				
+				if (lsPlayer.getTransferTarget() != null) {
+					lBlock.setOwner(lsPlayer.getTransferTarget());
+					lsPlayer.setTransferTarget(null);
+				}
+				
+				lsPlayer.disableMode(LSMode.TRANSFER_LOCK);
+			}
+			
+			// Unlock mode
+			if (lsPlayer.isModeEnabled(LSMode.UNLOCK)) {
+				event.setCancelled(true);
+				
+				if (!player.hasPermission("locks.unlock.self")) {
+					locale.getMessage(player, "event.unlock.nopermission.self")
+						.param("%type%", block.getType()).send();
+					return;
+				}
+				if (!player.hasPermission("locks.unlock.admin")) {
+					locale.getMessage(player, "event.unlock.nopermission.other")
+						.param("%type%", block.getType())
+						.param("%player%", lBlock.getOwner().getPlayer().getName()).send();
+					return;
+				}
+				
+				this.lockedBlockManager.unregisterBlock(lBlock);
+				lsPlayer.removeBlockFromOwnership(lBlock);
+				lsPlayer.disableMode(LSMode.UNLOCK);
+				return;
+			}
+			
+			// No key in hand
+			if ((!lBlock.isOwner(lsPlayer) && !plugin.getConfig().getBoolean("Griefing.OwnerRequiresKey"))
+					&& key == null || !key.getType().equals(Material.TRIPWIRE_HOOK)) {
+				event.setCancelled(true);
+				
+				// PlayerInteractLockedBlockEvent - No key
+				PlayerInteractLockedBlockEvent pilbe = new PlayerInteractLockedBlockEvent(lsPlayer, lBlock, InteractResult.NO_KEY);
+				Bukkit.getPluginManager().callEvent(pilbe);
+				
+				locale.sendMessage(player, "event.key.none");
+				player.spawnParticle(Particle.SMOKE_NORMAL, block.getLocation().add(0.5, 1, 0.5), 5, 0.1F, 0.2F, 0.1F, 0.01F);
+				player.playSound(player.getLocation(), Sound.BLOCK_WOODEN_DOOR_CLOSE, 1, 0);
+				return;
+			}
+			
+			// Key validation
+			boolean keyInChest = lBlock.isOwner(lsPlayer) && isKeyInInventory(lBlock);
+			if (!lBlock.isValidKey(key) && !keyInChest) {
+				event.setCancelled(true);
+				
+				// PlayerInteractLockedBlockEvent - Not right key
+				PlayerInteractLockedBlockEvent pilbe = new PlayerInteractLockedBlockEvent(lsPlayer, lBlock, InteractResult.NOT_RIGHT_KEY);
+				Bukkit.getPluginManager().callEvent(pilbe);
+				
+				locale.sendMessage(player, "event.key.attemptpick");
+				player.playSound(player.getLocation(), Sound.BLOCK_TRIPWIRE_CLICK_OFF, 1, 2);
+				if (plugin.getConfig().getBoolean("Aesthetics.DisplayLockedSmokeParticle")) {
+					player.spawnParticle(Particle.SMOKE_NORMAL, block.getLocation().add(0.5, 1, 0.5), 5, 0.1F, 0.2F, 0.1F, 0.01F);
+				}
+				return;
+			}
+			
+			// PlayerInteractLockedBlockEvent - No key
+			PlayerInteractLockedBlockEvent pilbe = new PlayerInteractLockedBlockEvent(lsPlayer, lBlock, InteractResult.SUCCESS);
+			Bukkit.getPluginManager().callEvent(pilbe);
+			
+			if (keyInChest) {
+				locale.sendMessage(player, "event.key.inchest");
+			}
+		}
+		
+		/* Block is unlocked */
+		else{
+			if (lsPlayer.isModeEnabled(LSMode.IGNORE_LOCKS)) {
+				event.setCancelled(true);
+				
+				locale.sendMessage(player, "command.lockinspect.notlocked");
+				return;
+			}
+			
+			if (!KeyFactory.isUnsmithedKey(key)) return;
+			
+			if (!player.hasPermission("locks.lock")) {
+				locale.getMessage(player, "event.lock.nopermission")
+					.param("%type%", block.getType()).send();
+				event.setCancelled(true);
+				return;
+			}
+			
+			// PlayerLockBlockEvent
+			PlayerLockBlockEvent plbe = new PlayerLockBlockEvent(lsPlayer, block, lockedBlockManager.getNextLockID(), lockedBlockManager.getNextKeyID());
+			Bukkit.getPluginManager().callEvent(plbe);
+			if (plbe.isCancelled()) return;
+			
+			LockedBlock lBlock = lockedBlockManager.createNewLock(lsPlayer, block);
+			int keyID = lBlock.getKeyID(), lockID = lBlock.getLockID();
+			this.lockedBlockManager.registerBlock(lBlock);
+			
+			BlockState state = block.getState();
+			if (state instanceof Chest) {
+				Block toLock = null;
+				if ((toLock = this.getAdjacentChest(block)) != null) {
+					// PlayerLockBlockEvent - Secondary block
+					PlayerLockBlockEvent plbeSecondary = new PlayerLockBlockEvent(lsPlayer, toLock, lockedBlockManager.getNextLockID(), keyID);
+					Bukkit.getPluginManager().callEvent(plbeSecondary);
+					if (plbeSecondary.isCancelled()) return;
+					
+					LockedBlock lBlockSecondary = lockedBlockManager.createNewLock(lsPlayer, toLock, lockedBlockManager.getNextLockID(true), keyID, lBlock);
+					this.lockedBlockManager.registerBlock(lBlockSecondary);
+				}
+			}
+			
+			else if (state.getData() instanceof Door) {
+				Door dBlock = (Door) state.getData();
+				Block toLock = (dBlock.isTopHalf() ? block.getRelative(BlockFace.DOWN) : block.getRelative(BlockFace.UP));
+				
+				// PlayerLockBlockEvent - Secondary block
+				PlayerLockBlockEvent plbeSecondary = new PlayerLockBlockEvent(lsPlayer, toLock, lockedBlockManager.getNextLockID(), lockID);
+				Bukkit.getPluginManager().callEvent(plbeSecondary);
+				if (plbeSecondary.isCancelled()) return;
+				
+				LockedBlock lBlockSecondary = lockedBlockManager.createNewLock(lsPlayer, toLock, lockedBlockManager.getNextLockID(true), keyID, lBlock);
+				this.lockedBlockManager.registerBlock(lBlockSecondary);
+			}
+			
+			event.setCancelled(true);
+			locale.getMessage(player, "event.lock.registered")
+				.param("%keyID%", keyID)
+				.param("%lockID%", lockID).send();
+			this.giveRespectiveLockedKey(player, key, keyID);
+			player.playSound(player.getLocation(), Sound.BLOCK_WOODEN_DOOR_CLOSE, 1, 2);
+			
+			// Display notification to all administrators in admin notify mode
+			for (LockSecurityPlayer admin : playerRegistry.getPlayers(LSMode.ADMIN_NOTIFY)) {
+				if (!admin.getPlayer().isOnline()) return;
+				
+				Location location = block.getLocation();
+				locale.getMessage(admin.getPlayer().getPlayer(), "command.locknotify.notification")
+					.param("%player%", player.getName())
+					.param("%type%", block.getType().toString())
+					.param("%x%", String.valueOf(location.getBlockX()))
+					.param("%y%", String.valueOf(location.getBlockY()))
+					.param("%z%", String.valueOf(location.getBlockZ()))
+					.param("%world%", location.getWorld().getName())
+					.param("%lockID%", String.valueOf(lockID))
+					.param("%keyID%", String.valueOf(keyID)).send();
+			}
+		}
+	}
+	
+	private void giveRespectiveLockedKey(Player player, ItemStack key, int keyID) {
+		int keyAmount = key.getAmount();
+		
+		if (keyAmount > 1) key.setAmount(keyAmount - 1);
+		else player.getInventory().setItemInMainHand(null);
+		
+		player.getInventory().addItem(KeyFactory.buildKey(KeyType.SMITHED).withIDs(keyID).build());
+	}
+	
+	private boolean isKeyInInventory(LockedBlock block) {
+		BlockState state = block.getBlock().getState();
+		if (state instanceof InventoryHolder) return false;
+		
+		for (ItemStack item : ((InventoryHolder) state).getInventory())
+			if (block.isValidKey(item)) return true;
+		return false;
+	}
+	
+	private static final BlockFace[] FACES = new BlockFace[]{ BlockFace.NORTH, BlockFace.SOUTH, BlockFace.EAST, BlockFace.WEST };
+	
+	private Block getAdjacentChest(Block block) {
+		for (BlockFace face : FACES) {
+			Block relative = block.getRelative(face);
+			if (relative.getType().equals(block.getType())) return relative;
+		}
+		return null;
+	}
+	
+	private void displayInformation(Player player, LockedBlock block) {
+		OfflinePlayer owner = block.getOwner().getPlayer();
+		Location location = block.getLocation();
+		
+		player.sendMessage(ChatColor.GOLD + "- - - - - - " + ChatColor.DARK_AQUA + "Lock information " + ChatColor.GOLD + "- - - - - -");
+		player.sendMessage(ChatColor.GOLD + "Lock ID: " + ChatColor.AQUA + block.getLockID());
+		player.sendMessage(ChatColor.GOLD + "Key ID: " + ChatColor.AQUA + block.getKeyID());
+		player.sendMessage(ChatColor.GOLD + "Owner: " + ChatColor.AQUA + owner.getName() + " (" + ChatColor.GOLD + owner.getUniqueId() + ChatColor.AQUA + ")");
+		player.sendMessage(ChatColor.GOLD + "Location: " + ChatColor.AQUA + location.getWorld().getName() + " x:" + location.getBlockX() + " y:" + location.getBlockY() + " z:" + location.getBlockZ());
+	}
+	
+	
+}
