@@ -12,7 +12,7 @@ import org.bukkit.inventory.PlayerInventory;
 
 import wtf.choco.locksecurity.key.KeyFactory;
 
-public class CommandRefreshKeys implements TabExecutor {
+public final class CommandRefreshKeys implements TabExecutor {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {

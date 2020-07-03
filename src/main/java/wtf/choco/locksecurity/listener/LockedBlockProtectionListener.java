@@ -23,7 +23,7 @@ import wtf.choco.locksecurity.LockSecurity;
 import wtf.choco.locksecurity.block.LockedBlock;
 import wtf.choco.locksecurity.block.LockedBlockManager;
 
-public class LockedBlockProtectionListener implements Listener {
+public final class LockedBlockProtectionListener implements Listener {
 
     private static final Map<UUID, WarningData> LAST_WARNING = new HashMap<>();
     private static final long WARNING_TIME_MILLIS = TimeUnit.SECONDS.toMillis(5);

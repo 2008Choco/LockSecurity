@@ -24,7 +24,7 @@ import wtf.choco.locksecurity.key.KeyFactorySmithed.KeyBuilderSmithed;
 import wtf.choco.locksecurity.persistence.LSPersistentDataTypes;
 import wtf.choco.locksecurity.util.ItemBuilder;
 
-public class KeyFactorySmithed implements KeyFactoryType<KeyBuilderSmithed> {
+public final class KeyFactorySmithed implements KeyFactoryType<KeyBuilderSmithed> {
 
     KeyFactorySmithed() { }
 

@@ -16,7 +16,7 @@ import wtf.choco.locksecurity.block.LockedBlock;
 import wtf.choco.locksecurity.key.KeyFactoryUnsmithed.KeyBuilderUnsmithed;
 import wtf.choco.locksecurity.util.ItemBuilder;
 
-public class KeyFactoryUnsmithed implements KeyFactoryType<KeyBuilderUnsmithed> {
+public final class KeyFactoryUnsmithed implements KeyFactoryType<KeyBuilderUnsmithed> {
 
     KeyFactoryUnsmithed() { }
 
