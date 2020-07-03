@@ -1,0 +1,75 @@
+# In-world block features
+
+block.clonekey.no_permission = "You do not have permission to clone a key"
+
+block.destroy.not_owner = "You cannot destroy a locked %block% you do not own"
+
+block.lock.no_permission = "You do not have permission to lock this %block%"
+block.lock.notification = "%player% has locked a %block% at %position% in world %world%"
+
+block.nickname.no_permission = "You do not have permission to nickname this %block%"
+block.nickname.not_owner = "You do not own this %block% and may not give it a nickname"
+block.nickname.success = "This %block%'s nickname has been changed to '%nickname%&r'"
+
+block.unlock.no_permission = "You do not have permission to lock this %block%"
+block.unlock.not_owner = "You do not own this %block% and cannot unlock it"
+block.unlock.request = "Are you sure you want to unlock this %block%? Repeat this action to confirm..."
+block.unlock.request.cancel = "Unlock request cancelled for %block% at %position% in world %world%"
+
+
+# Command feedback
+
+command.givekey.argument.player = "You must specify a player when running this command from the console"
+command.givekey.argument.selection = "Invalid selection of entities (%selection%). Only players are supported. Are they online?"
+command.givekey.argument.position.invalid = "A complete, valid set of integer coordinates must be provided"
+command.givekey.argument.world.invalid = "Invalid or unknown world name (%world%)"
+command.givekey.multiple = "You have given %player_amount% players %amount% key(s)"
+command.givekey.not_locked = "The block at %position% in world %world% is not locked and cannot be added to a key"
+command.givekey.one = "You have given %amount% key(s) to %target%"
+command.givekey.received = "You have been given %amount% key(s) from %sender%"
+command.givekey.self = "You have given yourself %amount% key(s)"
+
+command.ignorelocks.console = "Only players are able to ignore locks"
+command.ignorelocks.disabled = "You are no longer ignoring locks"
+command.ignorelocks.enabled = "You are now ignoring locks"
+
+command.locklist.argument.player = "You must specify a player when running this command from the console"
+command.locklist.argument.selection = "Invalid selection of entities (%selection%). Only players are supported. Are they online?"
+command.locklist.argument.selection.multiple = "Only one target may be selected. (%amount%) have been selected (%selection%)"
+command.locklist.empty = "%target% does not own any blocks"
+command.locklist.entry = " - %nickname%&r %position% in %world%"
+command.locklist.header = "%target% owns blocks at the following locations:"
+command.locklist.other.no_permission = "You do not have permission to view the locklist of another player"
+
+command.locknotify.console = "Only players are able to be notified about newly locked blocks"
+command.locknotify.disabled = "You will no longer be notified about newly locked blocks"
+command.locknotify.enabled = "You will now be notified about newly locked blocks"
+command.locknotify.enabled.notice = "(This will not inform you of blocks that you lock)"
+
+command.locksecurity.reload.no_permission = "You have insufficient privileges to run this command"
+command.locksecurity.reload.success = "Plugin successfully reloaded"
+
+command.refreshkeys.console = "You must be a player to refresh keys in your inventory"
+command.refreshkeys.fail = "There were no keys in your inventory that needed refreshing"
+command.refreshkeys.success = "%amount% key(s) in your inventory have been refreshed"
+
+
+# Text component feedback
+
+message.hover.player.message = "Click to message!"
+message.hover.player.message.offline = "Player is offline. Cannot message"
+message.hover.position.teleport = "Click to teleport!"
+
+
+# Keys
+
+key.unsmithed.lore.header = "&7Unlocks = &fNone"
+key.unsmithed.name = "&fUnsmithed Key"
+
+key.smithed.lore.entry = " &7- &f%nickname%&r &f%position% in %world%"
+key.smithed.lore.header = "&7Unlocks:"
+key.smithed.lore.flag.break_on_use = "&cThis key will break on use."
+key.smithed.lore.flag.prevent_duplication = "&cThis key cannot be duplicated."
+key.smithed.lore.flag.prevent_merging = "&cThis key cannot be merged."
+key.smithed.lore.flag.prevent_resetting = "&cThis key cannot be reset."
+key.smithed.name = "&fSmithed Key"
