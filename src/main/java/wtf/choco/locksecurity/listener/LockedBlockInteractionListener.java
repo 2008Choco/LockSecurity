@@ -41,6 +41,7 @@ import org.bukkit.inventory.PlayerInventory;
 
 import wtf.choco.locksecurity.LockSecurity;
 import wtf.choco.locksecurity.api.event.block.PlayerBlockLockEvent;
+import wtf.choco.locksecurity.api.event.block.PlayerInteractLockedBlockEvent;
 import wtf.choco.locksecurity.block.LockedBlock;
 import wtf.choco.locksecurity.block.LockedBlockManager;
 import wtf.choco.locksecurity.block.LockedMultiBlock;
@@ -75,10 +76,15 @@ public final class LockedBlockInteractionListener implements Listener {
         EquipmentSlot hand = event.getHand();
 
         if (manager.isLocked(block)) { // If block is locked...
+            LockSecurityPlayer playerWrapper = plugin.getPlayerManager().get(player);
             LockedBlock lockedBlock = manager.getLockedBlock(block);
 
             // ... if the key is null and the player is sneaking, do some lock inspection!
             if (keyItem == null && player.isSneaking() && player.hasPermission("locksecurity.block.inspect")) {
+                if (!LSEventFactory.handlePlayerInteractLockedBlockEvent(playerWrapper, lockedBlock, keyItem, hand, PlayerInteractLockedBlockEvent.Action.INSPECT_BLOCK)) {
+                    return;
+                }
+
                 if (lockedBlock.hasNickname()) {
                     player.sendMessage(ChatColor.DARK_GRAY + "- - - - - - " + ChatColor.GRAY + lockedBlock.getNickname() + ChatColor.DARK_GRAY + " - - - - - -");
                 } else {
@@ -99,6 +105,11 @@ public final class LockedBlockInteractionListener implements Listener {
                     return;
                 }
 
+                // ... call interact event
+                if (!LSEventFactory.handlePlayerInteractLockedBlockEvent(playerWrapper, lockedBlock, keyItem, hand, PlayerInteractLockedBlockEvent.Action.CLONE_KEY)) {
+                    return;
+                }
+
                 ItemStack smithedKeyItem = KeyFactory.SMITHED.builder().unlocks(lockedBlock).build();
                 this.giveSmithedKey(player, hand, keyItem, smithedKeyItem, player.getGameMode() != GameMode.CREATIVE);
                 world.playSound(block.getLocation(), Sound.BLOCK_ANVIL_PLACE, 1, 2.5F);
@@ -106,13 +117,15 @@ public final class LockedBlockInteractionListener implements Listener {
                 return;
             }
 
-            LockSecurityPlayer playerWrapper = plugin.getPlayerManager().get(player);
-
             // ... validate the key in the player's hand (if any)
-            if (keyItem == null || !lockedBlock.isValidKey(event.getItem())) {
+            if (keyItem == null || !lockedBlock.isValidKey(keyItem)) {
                 // ... if the player is sneaking, let them at least place blocks
                 // or, if ignoring locks, let them open it!
                 if (!playerWrapper.isIgnoringLocks() && !player.isSneaking()) {
+                    if (!LSEventFactory.handlePlayerInteractLockedBlockEvent(playerWrapper, lockedBlock, keyItem, hand, keyItem != null ? PlayerInteractLockedBlockEvent.Action.INCORRECT_KEY : PlayerInteractLockedBlockEvent.Action.MISSING_KEY)) {
+                        return;
+                    }
+
                     player.spawnParticle(Particle.SMOKE_NORMAL, block.getLocation().add(0.5, 1.2, 0.5), 5, 0.1F, 0.2F, 0.1F, 0.01F);
                     world.playSound(block.getLocation(), Sound.BLOCK_TRIPWIRE_CLICK_OFF, 1, 2);
                     event.setCancelled(true);
@@ -171,6 +184,10 @@ public final class LockedBlockInteractionListener implements Listener {
             }
 
             /* AT THIS POINT, THE KEY IS VALID AND SHOULD OPEN THE BLOCK SUCCESSFUL */
+
+            if (!LSEventFactory.handlePlayerInteractLockedBlockEvent(playerWrapper, lockedBlock, keyItem, hand, PlayerInteractLockedBlockEvent.Action.OPEN_BLOCK)) {
+                return;
+            }
 
             // ... check for "break on use" on the key and... well, do it
             if (KeyFactory.SMITHED.hasFlag(keyItem, KeyFlag.BREAK_ON_USE)) {

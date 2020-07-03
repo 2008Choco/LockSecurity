@@ -35,8 +35,8 @@ public class PlayerBlockLockEvent extends PlayerEvent implements Cancellable {
 
         this.playerWrapper = player;
         this.lockedBlock = lockedBlock;
-        this.unsmithedKey = unsmithedKey;
-        this.smithedKey = smithedKey;
+        this.unsmithedKey = unsmithedKey.clone();
+        this.smithedKey = smithedKey.clone();
         this.hand = hand;
 
         this.consumeUnsmithedKey = (super.player.getGameMode() != GameMode.CREATIVE);
@@ -55,7 +55,7 @@ public class PlayerBlockLockEvent extends PlayerEvent implements Cancellable {
     }
 
     public void setSmithedKey(ItemStack key) {
-        this.smithedKey = key;
+        this.smithedKey = key.clone();
     }
 
     public ItemStack getSmithedKey() {

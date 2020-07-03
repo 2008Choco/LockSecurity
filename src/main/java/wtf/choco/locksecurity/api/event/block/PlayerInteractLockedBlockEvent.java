@@ -11,50 +11,51 @@ import org.bukkit.inventory.ItemStack;
 import wtf.choco.locksecurity.block.LockedBlock;
 import wtf.choco.locksecurity.player.LockSecurityPlayer;
 
-public class PlayerBlockUnlockEvent extends PlayerEvent implements Cancellable {
+public class PlayerInteractLockedBlockEvent extends PlayerEvent implements Cancellable {
 
-    private static final HandlerList HANDLER_LIST = new HandlerList();
+    private static final HandlerList HANDLERS = new HandlerList();
 
     private boolean cancelled = false;
 
-    private final LockSecurityPlayer playerWrapper;
+    private final LockSecurityPlayer player;
     private final LockedBlock lockedBlock;
-    private final ItemStack key;
+    private final ItemStack item;
     private final EquipmentSlot hand;
-    private final boolean request;
+    private final Action action;
 
-    public PlayerBlockUnlockEvent(LockSecurityPlayer player, LockedBlock lockedBlock, ItemStack key, EquipmentSlot hand, boolean request) {
+    public PlayerInteractLockedBlockEvent(LockSecurityPlayer player, LockedBlock lockedBlock, ItemStack item, EquipmentSlot hand, Action action) {
         super(player.getBukkitPlayer().get());
 
         Preconditions.checkArgument(lockedBlock != null, "lockedBlock must not be null");
-        Preconditions.checkArgument(key != null, "key must not be null");
+        Preconditions.checkArgument(item != null, "item must not be null");
         Preconditions.checkArgument(hand != null, "hand must not be null");
+        Preconditions.checkArgument(action != null, "action must not be null");
 
-        this.playerWrapper = player;
+        this.player = player;
         this.lockedBlock = lockedBlock;
-        this.key = key.clone();
+        this.item = item.clone();
         this.hand = hand;
-        this.request = request;
+        this.action = action;
     }
 
     public LockSecurityPlayer getPlayerWrapper() {
-        return playerWrapper;
+        return player;
     }
 
     public LockedBlock getLockedBlock() {
         return lockedBlock;
     }
 
-    public ItemStack getKey() {
-        return key.clone();
+    public ItemStack getItem() {
+        return item.clone();
     }
 
     public EquipmentSlot getHand() {
         return hand;
     }
 
-    public boolean isRequest() {
-        return request;
+    public Action getAction() {
+        return action;
     }
 
     @Override
@@ -69,11 +70,21 @@ public class PlayerBlockUnlockEvent extends PlayerEvent implements Cancellable {
 
     @Override
     public HandlerList getHandlers() {
-        return HANDLER_LIST;
+        return HANDLERS;
     }
 
     public static HandlerList getHandlerList() {
-        return HANDLER_LIST;
+        return HANDLERS;
+    }
+
+    public static enum Action {
+
+        OPEN_BLOCK,
+        MISSING_KEY,
+        INCORRECT_KEY,
+        INSPECT_BLOCK,
+        CLONE_KEY;
+
     }
 
 }

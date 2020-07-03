@@ -7,6 +7,7 @@ import org.bukkit.inventory.ItemStack;
 
 import wtf.choco.locksecurity.api.event.block.PlayerBlockLockEvent;
 import wtf.choco.locksecurity.api.event.block.PlayerBlockUnlockEvent;
+import wtf.choco.locksecurity.api.event.block.PlayerInteractLockedBlockEvent;
 import wtf.choco.locksecurity.api.event.key.PlayerDuplicateKeyEvent;
 import wtf.choco.locksecurity.api.event.key.PlayerMergeKeyEvent;
 import wtf.choco.locksecurity.api.event.key.PlayerResetKeyEvent;
@@ -25,6 +26,12 @@ public final class LSEventFactory {
 
     public static boolean handlePlayerBlockUnlockEvent(LockSecurityPlayer player, LockedBlock lockedBlock, ItemStack key, EquipmentSlot hand, boolean request) {
         PlayerBlockUnlockEvent event = new PlayerBlockUnlockEvent(player, lockedBlock, key, hand, request);
+        Bukkit.getPluginManager().callEvent(event);
+        return !event.isCancelled();
+    }
+
+    public static boolean handlePlayerInteractLockedBlockEvent(LockSecurityPlayer player, LockedBlock lockedBlock, ItemStack item, EquipmentSlot hand, PlayerInteractLockedBlockEvent.Action action) {
+        PlayerInteractLockedBlockEvent event = new PlayerInteractLockedBlockEvent(player, lockedBlock, item, hand, action);
         Bukkit.getPluginManager().callEvent(event);
         return !event.isCancelled();
     }
