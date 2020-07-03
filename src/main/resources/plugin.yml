@@ -1,0 +1,139 @@
+name: ${project.name}
+main: wtf.choco.locksecurity.LockSecurity
+version: ${project.version}
+description: ${project.description}
+author: Choco
+api-version: 1.16
+
+commands:
+  locksecurity:
+    description: The main LockSecurity command
+    usage: /<command> [reload]
+    aliases: [ ls ]
+
+  editkey:
+    description: Edit the flags of a key in the player's hand
+    usage: /<command> <get|set> <flag> <value>
+    permission: locksecurity.command.editkey
+    aliases: [ editkeys, keyedit, ek ]
+
+  givekey:
+    description: Give a player a key
+    usage: /<command> [player] [amount]
+    permission: locksecurity.command.givekey
+    aliases: [ givekeys ]
+
+  ignorelocks:
+    description: Toggle a mode where locked blocks may be opened without a key
+    usage: /<command>
+    permission: locksecurity.command.ignorelocks
+    aliases: [ ignorelock, il ]
+
+  locklist:
+    description: List all locks owned by a player
+    usage: /<command> [player]
+    permission: locksecurity.command.locklist
+    aliases: [ lockslist, ll ]
+
+  locknotify:
+    description: Toggle a mode where the player is notified of newly locked blocks
+    usage: /<command>
+    permission: locksecurity.command.locknotify
+    aliases: [ locknotification, ln ]
+
+  refreshkeys:
+    description: Refresh all keys in the player's inventory
+    usage: /<command>
+    permission: locksecurity.command.refreshkeys
+    aliases: [ refreshkey, keyrefresh, updatekey, updatekeys, keyupdate ]
+
+permissions:
+  locksecurity.notifyupdate:
+    description: Grant access to update notifications
+    default: op
+
+  locksecurity.command.*:
+    description: Grant access to all commands in ${project.name}
+    default: op
+    children:
+      locksecurity.command.editkey: true
+      locksecurity.command.givekey: true
+      locksecurity.command.ignorelocks: true
+      locksecurity.command.locklist: false
+      locksecurity.command.locknotify: true
+      locksecurity.command.refreshkeys: true
+      locksecurity.command.reload: true
+
+  locksecurity.command.editkey:
+    description: Grant access to the /editkey command
+
+  locksecurity.command.givekey:
+    description: Grant access to the /givekey command
+
+  locksecurity.command.ignorelocks:
+    descrition: Grant access to the /ignorelocks command
+
+  locksecurity.command.locklist:
+    description: Grant access to the /locklist command
+    default: true
+    children:
+      locksecurity.command.locklist.other: false
+
+  locksecurity.command.locklist.other:
+    description: Grant access to the <player> argument for the /locklist command
+    default: op
+
+  locksecurity.command.locknotify:
+    description: Grant access to the /locknotify command
+
+  locksecurity.command.refreshkeys:
+    description: Grant access to the /refreshkeys command
+
+  locksecurity.command.reload:
+    description: Grant access to the /locksecurity reload subcommand
+
+  locksecurity.block.*:
+    description: Grant access to various block-related functionality
+    default: true
+    children:
+      locksecurity.block.clonekey: true
+      locksecurity.block.inspect: true
+      locksecurity.block.lock: true
+      locksecurity.block.unlock: true
+      locksecurity.block.nickname: true
+
+  locksecurity.block.clonekey:
+    description: Allow the owner of a locked block to create a smithed key to unlock it by right clicking the block
+
+  locksecurity.block.inspect:
+    description: Allow a player to view information about a locked block by sneak right clicking with an empty hand
+
+  locksecurity.block.lock:
+    description: Allow a player to lock a block using an unsmithed key
+
+  locksecurity.block.unlock:
+    description: Allow a player to unlock a block using a smithed key
+
+  locksecurity.block.nickname:
+    description: Allow a player to nickname a locked block using a nametag
+
+  locksecurity.crafting.*:
+    description: Grant access to various crafting-related functionality
+    default: true
+    children:
+      locksecurity.crafting.duplicate: true
+      locksecurity.crafting.merge: true
+      locksecurity.crafting.reset: true
+      locksecurity.crafting.unsmithed: true
+
+  locksecurity.crafting.duplicate:
+    description: Allow a player to duplicate a smithed key in a crafting table
+
+  locksecurity.crafting.merge:
+    description: Allow a player to merge two smithed keys in a crafting table
+
+  locksecurity.crafting.reset:
+    description: Allow a player to reset a smithed key back to an unsmithed key in a crafting table
+
+  locksecurity.crafting.unsmithed:
+    description: Allow a player to craft an unsmithed key in a crafting table
