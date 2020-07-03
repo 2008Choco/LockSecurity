@@ -62,7 +62,154 @@ public final class LockedBlockInteractionListener implements Listener {
         this.plugin = plugin;
     }
 
-    @EventHandler(ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
+    public void onInteractWithLockedBlock(PlayerInteractEvent event) {
+        if (event.getAction() != Action.RIGHT_CLICK_BLOCK) {
+            return;
+        }
+
+        // If the block isn't locked, we handle this at a higher priority down below
+        LockedBlockManager manager = plugin.getLockedBlockManager();
+        Block block = event.getClickedBlock();
+        if (!manager.isLocked(block)) {
+            return;
+        }
+
+        ItemStack keyItem = event.getItem();
+        Player player = event.getPlayer();
+        World world = block.getWorld();
+        EquipmentSlot hand = event.getHand();
+
+        LockSecurityPlayer playerWrapper = plugin.getPlayerManager().get(player);
+        LockedBlock lockedBlock = manager.getLockedBlock(block);
+
+        // If the key is null and the player is sneaking, do some lock inspection
+        if (keyItem == null && player.isSneaking() && player.hasPermission("locksecurity.block.inspect")) {
+            // Call an interaction event (inspect block)
+            if (!LSEventFactory.handlePlayerInteractLockedBlockEvent(playerWrapper, lockedBlock, keyItem, hand, PlayerInteractLockedBlockEvent.Action.INSPECT_BLOCK)) {
+                return;
+            }
+
+            // Send the inspection message
+            if (lockedBlock.hasNickname()) {
+                player.sendMessage(ChatColor.DARK_GRAY + "- - - - - - " + ChatColor.GRAY + lockedBlock.getNickname() + ChatColor.DARK_GRAY + " - - - - - -");
+            } else {
+                player.sendMessage(ChatColor.DARK_GRAY + "- - - - - - " + ChatColor.GRAY + "(" + block.getX() + ", " + block.getY() + ", " + block.getZ() + ") : " + block.getWorld().getName() + ChatColor.DARK_GRAY + " - - - - - -");
+            }
+
+            player.spigot().sendMessage(messagePlayerComponent(lockedBlock.getOwner().getOfflineBukkitPlayer()));
+            player.sendMessage(ChatColor.GRAY + "Locked at: " + ChatColor.WHITE + lockedBlock.getLockTime().format(DateTimeFormatter.RFC_1123_DATE_TIME));
+            event.setCancelled(true);
+            return;
+        }
+
+        // If the key is unsmithed and owner is clicking, create a new key
+        if (KeyFactory.UNSMITHED.isKey(keyItem) && lockedBlock.isOwner(player)) {
+            // Check for key cloning permissions
+            if (!player.hasPermission("locksecurity.block.clonekey")) {
+                player.sendMessage("You do not have permission to clone a key");
+                return;
+            }
+
+            // Call an interaction event (clone key)
+            if (!LSEventFactory.handlePlayerInteractLockedBlockEvent(playerWrapper, lockedBlock, keyItem, hand, PlayerInteractLockedBlockEvent.Action.CLONE_KEY)) {
+                return;
+            }
+
+            // Clone the key and give it to the player
+            ItemStack smithedKeyItem = KeyFactory.SMITHED.builder().unlocks(lockedBlock).build();
+            this.giveSmithedKey(player, hand, keyItem, smithedKeyItem, player.getGameMode() != GameMode.CREATIVE);
+            world.playSound(block.getLocation(), Sound.BLOCK_ANVIL_PLACE, 1, 2.5F);
+            event.setCancelled(true);
+            return;
+        }
+
+        // Validate the key in the player's hand (if any)
+        if (keyItem == null || !lockedBlock.isValidKey(keyItem)) {
+            // If the player is sneaking, let them at least place blocks. Or if ignoring locks, let them open the block
+            if (playerWrapper.isIgnoringLocks() || player.isSneaking()) {
+                return;
+            }
+
+            // Call an interaction event (incorrect key or missing key)
+            if (!LSEventFactory.handlePlayerInteractLockedBlockEvent(playerWrapper, lockedBlock, keyItem, hand, keyItem != null ? PlayerInteractLockedBlockEvent.Action.INCORRECT_KEY : PlayerInteractLockedBlockEvent.Action.MISSING_KEY)) {
+                return;
+            }
+
+            // Stop the player from opening the chest with the wrong key
+            player.spawnParticle(Particle.SMOKE_NORMAL, block.getLocation().add(0.5, 1.2, 0.5), 5, 0.1F, 0.2F, 0.1F, 0.01F);
+            world.playSound(block.getLocation(), Sound.BLOCK_TRIPWIRE_CLICK_OFF, 1, 2);
+            event.setCancelled(true);
+            return;
+        }
+
+        // Attempt to unlock with the valid key
+        if (player.isSneaking()) {
+            event.setCancelled(true);
+
+            // Check for unlocking permissions
+            if (!player.hasPermission("locksecurity.block.unlock")) {
+                player.sendMessage("You do not have permission to unlock a block");
+                return;
+            }
+
+            if (!lockedBlock.isOwner(player)) {
+                player.sendMessage("You do not own this block and cannot unlock it");
+                return;
+            }
+
+            // Unlock confirmation
+            if (AWAITING_CONFIRMATION.add(lockedBlock)) {
+                // Call a BlockUnlockEvent as a request
+                if (!LSEventFactory.handlePlayerBlockUnlockEvent(playerWrapper, lockedBlock, keyItem, hand, true)) {
+                    AWAITING_CONFIRMATION.remove(lockedBlock);
+                    return;
+                }
+
+                player.sendMessage("Are you sure you want to unlock this block? Repeat this action to confirm...");
+                Bukkit.getScheduler().runTaskLater(plugin, () -> {
+                    if (AWAITING_CONFIRMATION.remove(lockedBlock)) {
+                        player.sendMessage("Unlock request cancelled for block at (" + block.getX() + ", " + block.getY() + ", " + block.getZ() + ") in world " + world.getName());
+                    }
+                }, 100); // 5 seconds
+                return;
+            }
+
+            // Call a BlockUnlockEvent, don't run unlocking process if cancelled
+            if (!LSEventFactory.handlePlayerBlockUnlockEvent(playerWrapper, lockedBlock, keyItem, hand, false)) {
+                return;
+            }
+
+            // Unlock the block, unregister and untrack it
+            playerWrapper.untrackOwned(lockedBlock);
+            manager.unregisterLockedBlock(lockedBlock);
+
+            // Give the player back their key
+            player.getInventory().setItem(hand, KeyFactory.SMITHED.refresh(keyItem));
+
+            world.playSound(block.getLocation(), Sound.BLOCK_WOODEN_DOOR_CLOSE, 1, 1.5F);
+            AWAITING_CONFIRMATION.remove(lockedBlock);
+            return;
+        }
+
+        /*
+         * At this point, the key is valid and should open the block successfully
+         */
+
+        // Call an interaction event
+        if (!LSEventFactory.handlePlayerInteractLockedBlockEvent(playerWrapper, lockedBlock, keyItem, hand, PlayerInteractLockedBlockEvent.Action.OPEN_BLOCK)) {
+            return;
+        }
+
+        // Check for "break on use" on the key and break it if necessary
+        if (KeyFactory.SMITHED.hasFlag(keyItem, KeyFlag.BREAK_ON_USE)) {
+            player.playEffect(hand == EquipmentSlot.HAND ? EntityEffect.BREAK_EQUIPMENT_MAIN_HAND : EntityEffect.BREAK_EQUIPMENT_OFF_HAND);
+            this.reduceItemInHand(player, hand, keyItem);
+        }
+    }
+
+    // High priority helps ensure that world protection plugins are called first. Don't want to lock WorldGuarded blocks, for instance
+    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onLockBlock(PlayerInteractEvent event) {
         if (event.getAction() != Action.RIGHT_CLICK_BLOCK) {
             return;
@@ -75,181 +222,61 @@ public final class LockedBlockInteractionListener implements Listener {
         World world = block.getWorld();
         EquipmentSlot hand = event.getHand();
 
-        if (manager.isLocked(block)) { // If block is locked...
-            LockSecurityPlayer playerWrapper = plugin.getPlayerManager().get(player);
-            LockedBlock lockedBlock = manager.getLockedBlock(block);
-
-            // ... if the key is null and the player is sneaking, do some lock inspection!
-            if (keyItem == null && player.isSneaking() && player.hasPermission("locksecurity.block.inspect")) {
-                if (!LSEventFactory.handlePlayerInteractLockedBlockEvent(playerWrapper, lockedBlock, keyItem, hand, PlayerInteractLockedBlockEvent.Action.INSPECT_BLOCK)) {
-                    return;
-                }
-
-                if (lockedBlock.hasNickname()) {
-                    player.sendMessage(ChatColor.DARK_GRAY + "- - - - - - " + ChatColor.GRAY + lockedBlock.getNickname() + ChatColor.DARK_GRAY + " - - - - - -");
-                } else {
-                    player.sendMessage(ChatColor.DARK_GRAY + "- - - - - - " + ChatColor.GRAY + "(" + block.getX() + ", " + block.getY() + ", " + block.getZ() + ") : " + block.getWorld().getName() + ChatColor.DARK_GRAY + " - - - - - -");
-                }
-
-                player.spigot().sendMessage(messagePlayerComponent(lockedBlock.getOwner().getOfflineBukkitPlayer()));
-                player.sendMessage(ChatColor.GRAY + "Locked at: " + ChatColor.WHITE + lockedBlock.getLockTime().format(DateTimeFormatter.RFC_1123_DATE_TIME));
-                event.setCancelled(true);
-                return;
-            }
-
-            // ... if the key is unsmithed and owner is clicking, create a new key!
-            if (KeyFactory.UNSMITHED.isKey(keyItem) && lockedBlock.isOwner(player)) {
-                // ... check for key cloning permissions
-                if (!player.hasPermission("locksecurity.block.clonekey")) {
-                    player.sendMessage("You do not have permission to clone a key");
-                    return;
-                }
-
-                // ... call interact event
-                if (!LSEventFactory.handlePlayerInteractLockedBlockEvent(playerWrapper, lockedBlock, keyItem, hand, PlayerInteractLockedBlockEvent.Action.CLONE_KEY)) {
-                    return;
-                }
-
-                ItemStack smithedKeyItem = KeyFactory.SMITHED.builder().unlocks(lockedBlock).build();
-                this.giveSmithedKey(player, hand, keyItem, smithedKeyItem, player.getGameMode() != GameMode.CREATIVE);
-                world.playSound(block.getLocation(), Sound.BLOCK_ANVIL_PLACE, 1, 2.5F);
-                event.setCancelled(true);
-                return;
-            }
-
-            // ... validate the key in the player's hand (if any)
-            if (keyItem == null || !lockedBlock.isValidKey(keyItem)) {
-                // ... if the player is sneaking, let them at least place blocks
-                // or, if ignoring locks, let them open it!
-                if (!playerWrapper.isIgnoringLocks() && !player.isSneaking()) {
-                    if (!LSEventFactory.handlePlayerInteractLockedBlockEvent(playerWrapper, lockedBlock, keyItem, hand, keyItem != null ? PlayerInteractLockedBlockEvent.Action.INCORRECT_KEY : PlayerInteractLockedBlockEvent.Action.MISSING_KEY)) {
-                        return;
-                    }
-
-                    player.spawnParticle(Particle.SMOKE_NORMAL, block.getLocation().add(0.5, 1.2, 0.5), 5, 0.1F, 0.2F, 0.1F, 0.01F);
-                    world.playSound(block.getLocation(), Sound.BLOCK_TRIPWIRE_CLICK_OFF, 1, 2);
-                    event.setCancelled(true);
-                    return;
-                }
-
-                return;
-            }
-
-            // ... attempt to unlock with the valid key
-            if (player.isSneaking()) {
-                event.setCancelled(true);
-
-                // ... check for unlocking permissions
-                if (!player.hasPermission("locksecurity.block.unlock")) {
-                    player.sendMessage("You do not have permission to unlock a block");
-                    return;
-                }
-
-                if (!lockedBlock.isOwner(player)) {
-                    player.sendMessage("You do not own this block and cannot unlock it");
-                    return;
-                }
-
-                // Unlock confirmation
-                if (AWAITING_CONFIRMATION.add(lockedBlock)) {
-                    // ... call a BlockUnlockEvent as a request
-                    if (!LSEventFactory.handlePlayerBlockUnlockEvent(playerWrapper, lockedBlock, keyItem, hand, true)) {
-                        AWAITING_CONFIRMATION.remove(lockedBlock);
-                        return;
-                    }
-
-                    player.sendMessage("Are you sure you want to unlock this block? Repeat this action to confirm...");
-                    Bukkit.getScheduler().runTaskLater(plugin, () -> {
-                        if (AWAITING_CONFIRMATION.remove(lockedBlock)) {
-                            player.sendMessage("Unlock request cancelled for block at (" + block.getX() + ", " + block.getY() + ", " + block.getZ() + ") in world " + world.getName());
-                        }
-                    }, 100); // 5 seconds
-                    return;
-                }
-
-                // ... call a BlockUnlockEvent, don't run unlocking process if cancelled
-                if (!LSEventFactory.handlePlayerBlockUnlockEvent(playerWrapper, lockedBlock, keyItem, hand, false)) {
-                    return;
-                }
-
-                // ... unlock the block, unregister and untrack it
-                playerWrapper.untrackOwned(lockedBlock);
-                manager.unregisterLockedBlock(lockedBlock);
-
-                // ... give the player back their key
-                player.getInventory().setItem(hand, KeyFactory.SMITHED.refresh(keyItem));
-
-                world.playSound(block.getLocation(), Sound.BLOCK_WOODEN_DOOR_CLOSE, 1, 1.5F);
-                AWAITING_CONFIRMATION.remove(lockedBlock);
-            }
-
-            /* AT THIS POINT, THE KEY IS VALID AND SHOULD OPEN THE BLOCK SUCCESSFUL */
-
-            if (!LSEventFactory.handlePlayerInteractLockedBlockEvent(playerWrapper, lockedBlock, keyItem, hand, PlayerInteractLockedBlockEvent.Action.OPEN_BLOCK)) {
-                return;
-            }
-
-            // ... check for "break on use" on the key and... well, do it
-            if (KeyFactory.SMITHED.hasFlag(keyItem, KeyFlag.BREAK_ON_USE)) {
-                player.playEffect(hand == EquipmentSlot.HAND ? EntityEffect.BREAK_EQUIPMENT_MAIN_HAND : EntityEffect.BREAK_EQUIPMENT_OFF_HAND);
-                this.reduceItemInHand(player, hand, keyItem);
-            }
+        // If the block is locked, we handle this at a lower priority above. If it's not an unsmithed key or lockable block, we don't really care anyways
+        if (!plugin.isLockableBlock(block) || manager.isLocked(block) || !KeyFactory.UNSMITHED.isKey(keyItem)) {
+            return;
         }
 
-        // If block is not locked...
-        else if (KeyFactory.UNSMITHED.isKey(keyItem) && plugin.isLockableBlock(block)) {
-            event.setCancelled(true);
+        event.setCancelled(true);
 
-            // ... check for locking permissions
-            if (!player.hasPermission("locksecurity.block.lock")) {
-                player.sendMessage("You do not have permission to lock a block");
-                return;
-            }
+        // Check for block locking permissions
+        if (!player.hasPermission("locksecurity.block.lock")) {
+            player.sendMessage("You do not have permission to lock a block");
+            return;
+        }
 
-            // ... create necessary data for and call an event
-            LockSecurityPlayerManager playerManager = plugin.getPlayerManager();
-            LockSecurityPlayer playerWrapper = playerManager.get(player);
-            LockedBlock lockedBlock = getLockedBlock(block, playerWrapper);
-            ItemStack smithedKeyItem = KeyFactory.SMITHED.builder().unlocks(lockedBlock).build();
+        // Create necessary data and call an event
+        LockSecurityPlayerManager playerManager = plugin.getPlayerManager();
+        LockSecurityPlayer playerWrapper = playerManager.get(player);
+        LockedBlock lockedBlock = getLockedBlock(block, playerWrapper);
+        ItemStack smithedKeyItem = KeyFactory.SMITHED.builder().unlocks(lockedBlock).build();
 
-            // ... call the event
-            PlayerBlockLockEvent blockLockEvent = LSEventFactory.callPlayerBlockLockEvent(playerWrapper, lockedBlock, keyItem, smithedKeyItem, hand);
-            if (blockLockEvent.isCancelled()) {
-                return;
-            }
+        PlayerBlockLockEvent blockLockEvent = LSEventFactory.callPlayerBlockLockEvent(playerWrapper, lockedBlock, keyItem, smithedKeyItem, hand);
+        if (blockLockEvent.isCancelled()) {
+            return;
+        }
 
-            smithedKeyItem = blockLockEvent.getSmithedKey();
+        smithedKeyItem = blockLockEvent.getSmithedKey(); // Update the key from the one set in the event
 
-            // ... register the locked block and track it
-            manager.registerLockedBlock(lockedBlock);
-            playerWrapper.trackOwned(lockedBlock);
+        // Register the locked block and track it
+        manager.registerLockedBlock(lockedBlock);
+        playerWrapper.trackOwned(lockedBlock);
 
-            this.giveSmithedKey(player, hand, keyItem, smithedKeyItem, blockLockEvent.shouldConsumeUnsmithedKey());
-            world.playSound(block.getLocation(), Sound.BLOCK_WOODEN_DOOR_OPEN, 1, 2);
+        this.giveSmithedKey(player, hand, keyItem, smithedKeyItem, blockLockEvent.shouldConsumeUnsmithedKey());
+        world.playSound(block.getLocation(), Sound.BLOCK_WOODEN_DOOR_OPEN, 1, 2);
 
-            // ... handle notifications for those with them enabled
-            BaseComponent[] notification = null;
-            for (Player admin : Bukkit.getOnlinePlayers()) {
-                if (admin != player && playerManager.get(admin).hasLockNotifications()) {
-                    if (notification == null) {
-                        notification = lockNotificationComponent(admin, lockedBlock, player);
-                    }
-
-                    admin.spigot().sendMessage(notification);
+        // Handle notifications for those that have them enabled
+        BaseComponent[] notification = null;
+        for (Player admin : Bukkit.getOnlinePlayers()) {
+            if (admin != player && playerManager.get(admin).hasLockNotifications()) {
+                if (notification == null) {
+                    notification = lockNotificationComponent(admin, lockedBlock, player);
                 }
+
+                admin.spigot().sendMessage(notification);
             }
         }
     }
 
-    @EventHandler(priority = EventPriority.LOW)
+    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onNicknameLockedBlock(PlayerInteractEvent event) {
-        if (event.getAction() != Action.RIGHT_CLICK_BLOCK) {
+        if (event.getAction() != Action.RIGHT_CLICK_BLOCK || event.getMaterial() != Material.NAME_TAG) {
             return;
         }
 
         LockedBlockManager manager = plugin.getLockedBlockManager();
         Block block = event.getClickedBlock();
-        if (!manager.isLocked(block) || event.getMaterial() != Material.NAME_TAG) {
+        if (!manager.isLocked(block)) {
             return;
         }
 
@@ -297,6 +324,7 @@ public final class LockedBlockInteractionListener implements Listener {
         player.getInventory().setItem(hand, modifiedItem);
     }
 
+    // Owned by: [owner]
     private TextComponent messagePlayerComponent(OfflinePlayer target) {
         TextComponent clickMessageComponent = new TextComponent(ChatColor.WHITE + target.getName());
         if (target.isOnline()) {
