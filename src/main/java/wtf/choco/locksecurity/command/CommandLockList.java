@@ -5,7 +5,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.HoverEvent;
@@ -23,7 +22,6 @@ import org.bukkit.util.StringUtil;
 
 import wtf.choco.locksecurity.LockSecurity;
 import wtf.choco.locksecurity.block.LockedBlock;
-import wtf.choco.locksecurity.player.LockSecurityPlayer;
 
 public final class CommandLockList implements TabExecutor {
 
@@ -65,14 +63,13 @@ public final class CommandLockList implements TabExecutor {
         }
 
         // Command feedback
-        LockSecurityPlayer targetPlayerWrapper = plugin.getPlayerManager().get(target);
-        Set<LockedBlock> ownedBlocks = targetPlayerWrapper.getOwnedBlocks();
+        Collection<LockedBlock> ownedBlocks = plugin.getLockedBlockManager().getLockedBlocks(target);
         if (ownedBlocks.isEmpty()) {
-            sender.sendMessage(targetPlayerWrapper.getOfflineBukkitPlayer().getName() + " does not own any blocks");
+            sender.sendMessage(target.getName() + " does not own any blocks");
         } else {
             boolean shouldShowTeleportation = (sender instanceof Player && sender.hasPermission("minecraft.command.teleport"));
 
-            sender.sendMessage(targetPlayerWrapper.getOfflineBukkitPlayer().getName() + " owns blocks at the following locations:");
+            sender.sendMessage(target.getName() + " owns blocks at the following locations:");
             for (LockedBlock block : ownedBlocks) {
                 if (shouldShowTeleportation && block.getWorld() == ((Entity) sender).getWorld()) {
                     sender.spigot().sendMessage(teleportToBlockComponent(sender, block));

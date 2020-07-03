@@ -1,17 +1,12 @@
 package wtf.choco.locksecurity.player;
 
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.Set;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
-
-import wtf.choco.locksecurity.block.LockedBlock;
 
 public final class LockSecurityPlayer {
 
@@ -19,7 +14,6 @@ public final class LockSecurityPlayer {
     private boolean lockNotifications = false;
 
     private final UUID playerUUID;
-    private final Set<LockedBlock> ownedBlocks = new HashSet<>();
 
     public LockSecurityPlayer(UUID playerUUID) {
         this.playerUUID = playerUUID;
@@ -39,26 +33,6 @@ public final class LockSecurityPlayer {
 
     public boolean is(OfflinePlayer player) {
         return player != null && player.getUniqueId().equals(playerUUID);
-    }
-
-    public void trackOwned(LockedBlock block) {
-        this.ownedBlocks.add(block);
-    }
-
-    public void untrackOwned(LockedBlock block) {
-        this.ownedBlocks.remove(block);
-    }
-
-    public boolean owns(LockedBlock block) {
-        return ownedBlocks.contains(block);
-    }
-
-    public Set<LockedBlock> getOwnedBlocks() {
-        return Collections.unmodifiableSet(ownedBlocks);
-    }
-
-    public void untrackAllOwnedBlocks() {
-        this.ownedBlocks.clear();
     }
 
     public void setIgnoringLocks(boolean ignoringLocks) {

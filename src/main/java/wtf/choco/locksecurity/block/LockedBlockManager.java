@@ -1,17 +1,22 @@
 package wtf.choco.locksecurity.block;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 import java.util.logging.Logger;
 
 import com.google.common.base.Preconditions;
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Multimap;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
+import org.bukkit.OfflinePlayer;
 import org.bukkit.block.Block;
 
 import wtf.choco.locksecurity.LockSecurity;
@@ -20,6 +25,7 @@ public final class LockedBlockManager {
 
     private final Set<LockedBlock> registered = new HashSet<>();
     private final Map<Block, LockedBlock> fromBlock = new HashMap<>();
+    private final Multimap<UUID, LockedBlock> fromPlayer = HashMultimap.create();
 
     public void registerLockedBlock(LockedBlock block) {
         Preconditions.checkArgument(block != null, "Cannot register null locked block");
@@ -28,6 +34,7 @@ public final class LockedBlockManager {
             return;
         }
 
+        this.fromPlayer.put(block.getOwner().getUniqueId(), block);
         this.fromBlock.put(block.getBlock(), block);
         if (block instanceof LockedMultiBlock) {
             this.fromBlock.put(((LockedMultiBlock) block).getSecondaryBlock(), block);
@@ -36,6 +43,10 @@ public final class LockedBlockManager {
 
     public LockedBlock getLockedBlock(Block block) {
         return fromBlock.get(block);
+    }
+
+    public Collection<LockedBlock> getLockedBlocks(OfflinePlayer player) {
+        return fromPlayer.get(player.getUniqueId());
     }
 
     public void unregisterLockedBlock(LockedBlock block) {
@@ -53,6 +64,7 @@ public final class LockedBlockManager {
             throw new IllegalStateException("Invalid state removal of locked multi block. Mismatching block states?");
         }
 
+        this.fromPlayer.remove(removed.getOwner().getUniqueId(), removed);
         return removed;
     }
 
@@ -67,6 +79,7 @@ public final class LockedBlockManager {
     public void clear() {
         this.registered.clear();
         this.fromBlock.clear();
+        this.fromPlayer.clear();
     }
 
     public JsonObject write(JsonObject object) {
@@ -97,9 +110,6 @@ public final class LockedBlockManager {
             JsonObject blockObject = blockElement.getAsJsonObject();
             this.registerLockedBlock(blockObject.has("secondaryLocation") ? new LockedMultiBlock(blockObject) : new LockedBlock(blockObject));
         }
-
-        // Update the player wrappers to hold all these objects too
-        this.registered.forEach(b -> b.getOwner().trackOwned(b));
     }
 
 }

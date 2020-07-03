@@ -48,7 +48,6 @@ public class LockedBlockProtectionListener implements Listener {
         Player player = event.getPlayer();
         if (lockedBlock.isOwner(player)) {
             manager.unregisterLockedBlock(lockedBlock);
-            lockedBlock.getOwner().untrackOwned(lockedBlock);
             block.getWorld().playSound(block.getLocation(), Sound.BLOCK_WOODEN_DOOR_CLOSE, 1, 1.5F);
             return;
         }

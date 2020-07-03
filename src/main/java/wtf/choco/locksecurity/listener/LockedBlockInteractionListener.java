@@ -180,13 +180,9 @@ public final class LockedBlockInteractionListener implements Listener {
                 return;
             }
 
-            // Unlock the block, unregister and untrack it
-            playerWrapper.untrackOwned(lockedBlock);
+            // Unlock the block and unregister it
             manager.unregisterLockedBlock(lockedBlock);
-
-            // Give the player back their key
             player.getInventory().setItem(hand, KeyFactory.SMITHED.refresh(keyItem));
-
             world.playSound(block.getLocation(), Sound.BLOCK_WOODEN_DOOR_CLOSE, 1, 1.5F);
             AWAITING_CONFIRMATION.remove(lockedBlock);
             return;
@@ -248,10 +244,8 @@ public final class LockedBlockInteractionListener implements Listener {
 
         smithedKeyItem = blockLockEvent.getSmithedKey(); // Update the key from the one set in the event
 
-        // Register the locked block and track it
+        // Register the locked block
         manager.registerLockedBlock(lockedBlock);
-        playerWrapper.trackOwned(lockedBlock);
-
         this.giveSmithedKey(player, hand, keyItem, smithedKeyItem, blockLockEvent.shouldConsumeUnsmithedKey());
         world.playSound(block.getLocation(), Sound.BLOCK_WOODEN_DOOR_OPEN, 1, 2);
 

@@ -78,6 +78,7 @@ public class LockedBlock {
     }
 
     public void setOwner(LockSecurityPlayer owner) {
+        Preconditions.checkArgument(owner != null, "owner must not be null");
         this.owner = owner;
     }
 
@@ -87,6 +88,10 @@ public class LockedBlock {
 
     public boolean isOwner(OfflinePlayer player) {
         return owner.is(player);
+    }
+
+    public boolean isOwner(LockSecurityPlayer player) {
+        return owner.equals(player);
     }
 
     public ZonedDateTime getLockTime() {
