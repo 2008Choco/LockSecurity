@@ -27,13 +27,12 @@ public class PlayerInteractLockedBlockEvent extends PlayerEvent implements Cance
         super(player.getBukkitPlayer().get());
 
         Preconditions.checkArgument(lockedBlock != null, "lockedBlock must not be null");
-        Preconditions.checkArgument(item != null, "item must not be null");
         Preconditions.checkArgument(hand != null, "hand must not be null");
         Preconditions.checkArgument(action != null, "action must not be null");
 
         this.player = player;
         this.lockedBlock = lockedBlock;
-        this.item = item.clone();
+        this.item = (item != null) ? item.clone() : null;
         this.hand = hand;
         this.action = action;
     }
@@ -47,7 +46,7 @@ public class PlayerInteractLockedBlockEvent extends PlayerEvent implements Cance
     }
 
     public ItemStack getItem() {
-        return item.clone();
+        return (item != null ? item.clone() : null);
     }
 
     public EquipmentSlot getHand() {
