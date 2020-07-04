@@ -12,6 +12,7 @@ import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.util.StringUtil;
 
 import wtf.choco.locksecurity.LockSecurity;
+import wtf.choco.locksecurity.util.LSConstants;
 import wtf.choco.locksecurity.util.UpdateChecker;
 import wtf.choco.locksecurity.util.UpdateChecker.UpdateResult;
 
@@ -36,7 +37,7 @@ public final class CommandLockSecurity implements TabExecutor {
             sender.sendMessage(ChatColor.GRAY + "Report bugs to: " + ChatColor.YELLOW + "https://github.com/2008Choco/LockSecurity/issues/");
 
             UpdateResult result = UpdateChecker.get().getLastResult();
-            if (result != null && result.requiresUpdate() && sender.hasPermission("locksecurity.notifyupdate")) {
+            if (result != null && result.requiresUpdate() && sender.hasPermission(LSConstants.LOCKSECURITY_NOTIFYUPDATE)) {
                 sender.sendMessage(ChatColor.AQUA + "New version available: " + ChatColor.GREEN + result.getNewestVersion());
             }
 
@@ -46,7 +47,7 @@ public final class CommandLockSecurity implements TabExecutor {
         }
 
         if (args[0].equalsIgnoreCase("reload")) {
-            if (!sender.hasPermission("locksecurity.command.reload")) {
+            if (!sender.hasPermission(LSConstants.LOCKSECURITY_COMMAND_RELOAD)) {
                 sender.sendMessage(ChatColor.RED + "You have insufficient privileges to run this command");
                 return true;
             }
@@ -66,7 +67,7 @@ public final class CommandLockSecurity implements TabExecutor {
             List<String> suggestions = new ArrayList<>();
             suggestions.add("version");
             suggestions.add("info");
-            if (sender.hasPermission("locksecurity.command.reload")) {
+            if (sender.hasPermission(LSConstants.LOCKSECURITY_COMMAND_RELOAD)) {
                 suggestions.add("reload");
             }
 

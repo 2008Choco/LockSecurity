@@ -50,6 +50,7 @@ import wtf.choco.locksecurity.key.KeyFactory;
 import wtf.choco.locksecurity.player.LockSecurityPlayer;
 import wtf.choco.locksecurity.player.LockSecurityPlayerManager;
 import wtf.choco.locksecurity.util.ItemBuilder;
+import wtf.choco.locksecurity.util.LSConstants;
 import wtf.choco.locksecurity.util.LSEventFactory;
 
 public final class LockedBlockInteractionListener implements Listener {
@@ -84,7 +85,7 @@ public final class LockedBlockInteractionListener implements Listener {
         LockedBlock lockedBlock = manager.getLockedBlock(block);
 
         // If the key is null and the player is sneaking, do some lock inspection
-        if (keyItem == null && player.isSneaking() && player.hasPermission("locksecurity.block.inspect")) {
+        if (keyItem == null && player.isSneaking() && player.hasPermission(LSConstants.LOCKSECURITY_BLOCK_INSPECT)) {
             // Call an interaction event (inspect block)
             if (!LSEventFactory.handlePlayerInteractLockedBlockEvent(playerWrapper, lockedBlock, keyItem, hand, PlayerInteractLockedBlockEvent.Action.INSPECT_BLOCK)) {
                 return;
@@ -106,7 +107,7 @@ public final class LockedBlockInteractionListener implements Listener {
         // If the key is unsmithed and owner is clicking, create a new key
         if (KeyFactory.UNSMITHED.isKey(keyItem) && lockedBlock.isOwner(player)) {
             // Check for key cloning permissions
-            if (!player.hasPermission("locksecurity.block.clonekey")) {
+            if (!player.hasPermission(LSConstants.LOCKSECURITY_BLOCK_CLONEKEY)) {
                 player.sendMessage("You do not have permission to clone a key");
                 return;
             }
@@ -148,7 +149,7 @@ public final class LockedBlockInteractionListener implements Listener {
             event.setCancelled(true);
 
             // Check for unlocking permissions
-            if (!player.hasPermission("locksecurity.block.unlock")) {
+            if (!player.hasPermission(LSConstants.LOCKSECURITY_BLOCK_UNLOCK)) {
                 player.sendMessage("You do not have permission to unlock a block");
                 return;
             }
@@ -226,7 +227,7 @@ public final class LockedBlockInteractionListener implements Listener {
         event.setCancelled(true);
 
         // Check for block locking permissions
-        if (!player.hasPermission("locksecurity.block.lock")) {
+        if (!player.hasPermission(LSConstants.LOCKSECURITY_BLOCK_LOCK)) {
             player.sendMessage("You do not have permission to lock a block");
             return;
         }
@@ -281,7 +282,7 @@ public final class LockedBlockInteractionListener implements Listener {
 
         event.setCancelled(true);
         Player player = event.getPlayer();
-        if (!player.hasPermission("locksecurity.block.nickname")) {
+        if (!player.hasPermission(LSConstants.LOCKSECURITY_BLOCK_NICKNAME)) {
             player.sendMessage("You do not have permission to nickname this " + block.getType().getKey().getKey().replace("_", " "));
             return;
         }
@@ -347,7 +348,7 @@ public final class LockedBlockInteractionListener implements Listener {
 
         componentBuilder.append(" has locked a " + block.getType().getKey().getKey().replace("_", " ") + " at ", FormatRetention.NONE);
         componentBuilder.append("(" + block.getX() + ", " + block.getY() + ", " + block.getZ() + ") in world " + block.getWorld().getName());
-        if (admin.hasPermission("minecraft.command.teleport")) {
+        if (admin.hasPermission(LSConstants.MINECRAFT_COMMAND_TELEPORT)) {
             componentBuilder.event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponent[] { new TextComponent("Click to teleport!") }));
             componentBuilder.event(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/minecraft:teleport " + admin.getName() + " " + block.getX() + " " + block.getY() + " " + block.getZ()));
         }

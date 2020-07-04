@@ -22,6 +22,7 @@ import org.bukkit.util.StringUtil;
 
 import wtf.choco.locksecurity.LockSecurity;
 import wtf.choco.locksecurity.block.LockedBlock;
+import wtf.choco.locksecurity.util.LSConstants;
 
 public final class CommandLockList implements TabExecutor {
 
@@ -57,7 +58,7 @@ public final class CommandLockList implements TabExecutor {
         }
 
         OfflinePlayer target = (OfflinePlayer) targets.get(0);
-        if (target != sender && !sender.hasPermission("locksecurity.command.locklist.other")) {
+        if (target != sender && !sender.hasPermission(LSConstants.LOCKSECURITY_COMMAND_LOCKLIST_OTHER)) {
             sender.sendMessage("You do not have permission to view the locklist of another player");
             return true;
         }
@@ -67,7 +68,7 @@ public final class CommandLockList implements TabExecutor {
         if (ownedBlocks.isEmpty()) {
             sender.sendMessage(target.getName() + " does not own any blocks");
         } else {
-            boolean shouldShowTeleportation = (sender instanceof Player && sender.hasPermission("minecraft.command.teleport"));
+            boolean shouldShowTeleportation = (sender instanceof Player && sender.hasPermission(LSConstants.MINECRAFT_COMMAND_TELEPORT));
 
             sender.sendMessage(target.getName() + " owns blocks at the following locations:");
             for (LockedBlock block : ownedBlocks) {
@@ -90,7 +91,7 @@ public final class CommandLockList implements TabExecutor {
 
             List<String> suggestions = new ArrayList<>(players.size() + 3);
             suggestions.add("@p");
-            if (sender.hasPermission("locksecurity.command.locklist.other")) {
+            if (sender.hasPermission(LSConstants.LOCKSECURITY_COMMAND_LOCKLIST_OTHER)) {
                 suggestions.add("@a");
                 suggestions.add("@r");
                 players.forEach(p -> suggestions.add(p.getName()));

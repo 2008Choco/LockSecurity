@@ -67,8 +67,8 @@ public final class LockSecurity extends JavaPlugin {
     public void onEnable() {
         instance = this;
         this.saveDefaultConfig();
-        if (!Files.exists(getDataFolder().toPath().resolve("resource_pack/LockSecurityRP.zip"))) {
-            this.saveResource("resource_pack/LockSecurityRP.zip", false);
+        if (!Files.exists(getDataFolder().toPath().resolve(LSConstants.PATH_RESOURCE_PACK))) {
+            this.saveResource(LSConstants.PATH_RESOURCE_PACK, false);
         }
 
         Logger logger = getLogger();
@@ -217,7 +217,7 @@ public final class LockSecurity extends JavaPlugin {
         recipe.setIngredient('w', new MaterialChoice(Tag.PLANKS));
         recipe.setIngredient('i', Material.IRON_INGOT);
         recipe.setIngredient('n', Material.IRON_NUGGET);
-        recipe.setGroup(getName().toLowerCase(java.util.Locale.ROOT) + ":unsmithed_key");
+        recipe.setGroup(LSConstants.RECIPE_CATEGORY_UNSMITHED_KEY);
         Bukkit.addRecipe(recipe);
     }
 
