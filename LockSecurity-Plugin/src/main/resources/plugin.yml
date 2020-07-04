@@ -3,6 +3,7 @@ main: wtf.choco.locksecurity.LockSecurity
 version: ${project.version}
 description: ${project.description}
 author: Choco
+website: https://github.com/2008Choco/LockSecurity
 api-version: 1.16
 
 commands:

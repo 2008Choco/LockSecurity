@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <artifactId>LockSecurity-Plugin</artifactId>
   <name>LockSecurity</name>
-  <description>The Bukkit plugin for LockSecurity</description>
+  <description>Lock containers with a key and distribute them to your most trusted friends</description>
   <packaging>jar</packaging>
 
   <parent>

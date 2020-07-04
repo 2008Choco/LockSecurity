@@ -3,8 +3,6 @@
   <groupId>wtf.choco</groupId>
   <artifactId>LockSecurity</artifactId>
   <version>3.0.0</version>
-  <name>LockSecurity</name>
-  <description>Lock containers with a key and distribute them to your most trusted friends</description>
   <packaging>pom</packaging>
 
   <modules>
