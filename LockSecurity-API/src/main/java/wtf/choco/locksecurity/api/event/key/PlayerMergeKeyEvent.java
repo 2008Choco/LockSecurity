@@ -9,6 +9,12 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+/**
+ * Called when a player merges two smithed keys in a crafting table.
+ *
+ * @since 3.0.0
+ * @author Parker Hawke - Choco
+ */
 public class PlayerMergeKeyEvent extends PlayerEvent implements Cancellable {
 
     private static final HandlerList HANDLER_LIST = new HandlerList();
@@ -26,20 +32,40 @@ public class PlayerMergeKeyEvent extends PlayerEvent implements Cancellable {
         this.output = output;
     }
 
+    /**
+     * Get the first smithed key in the crafting inventory.
+     *
+     * @return the first smithed key
+     */
     @NotNull
     public ItemStack getFirstKey() {
         return firstKey.clone();
     }
 
+    /**
+     * Get the second smithed key in the crafting inventory.
+     *
+     * @return the second smithed key
+     */
     @NotNull
     public ItemStack getSecondKey() {
         return secondKey.clone();
     }
 
+    /**
+     * Set the output of this duplication.
+     *
+     * @param output the output
+     */
     public void setOutput(@Nullable ItemStack output) {
         this.output = output;
     }
 
+    /**
+     * Get the output of this duplication.
+     *
+     * @return the output
+     */
     @Nullable
     public ItemStack getOutput() {
         return output;

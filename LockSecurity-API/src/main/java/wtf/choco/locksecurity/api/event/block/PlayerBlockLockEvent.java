@@ -14,6 +14,12 @@ import org.jetbrains.annotations.NotNull;
 import wtf.choco.locksecurity.api.block.ILockedBlock;
 import wtf.choco.locksecurity.api.player.ILockSecurityPlayer;
 
+/**
+ * Called when a player locks a block.
+ *
+ * @since 3.0.0
+ * @author Parker Hawke - Choco
+ */
 public class PlayerBlockLockEvent extends PlayerEvent implements Cancellable {
 
     private static final HandlerList HANDLER_LIST = new HandlerList();
@@ -44,40 +50,84 @@ public class PlayerBlockLockEvent extends PlayerEvent implements Cancellable {
         this.consumeUnsmithedKey = (super.player.getGameMode() != GameMode.CREATIVE);
     }
 
+    /**
+     * Get the {@link ILockSecurityPlayer} wrapper for the player involved in this event.
+     *
+     * @return the player wrapper
+     */
     @NotNull
     public ILockSecurityPlayer getPlayerWrapper() {
         return playerWrapper;
     }
 
+    /**
+     * Get the {@link ILockedBlock} involved in this event. This block has not yet been
+     * registered by the time this event has been called, therefore a reference should not
+     * be held if the event has been cancelled.
+     *
+     * @return the locked block
+     */
     @NotNull
     public ILockedBlock getLockedBlock() {
         return lockedBlock;
     }
 
+    /**
+     * Get the unsmithed key used to lock the block. Changes made to this item will not be
+     * reflected in the player's inventory.
+     *
+     * @return the unsmithed key
+     */
     @NotNull
     public ItemStack getUnsmithedKey() {
         return unsmithedKey.clone();
     }
 
+    /**
+     * Set the smithed key to be returned to the player once the event has succeeded.
+     *
+     * @param key the key to give
+     */
     @NotNull
     public void setSmithedKey(ItemStack key) {
         this.smithedKey = key.clone();
     }
 
+    /**
+     * Get the smithed key to be returned to the player once the event has succeeded.
+     *
+     * @return the smithed key
+     */
     @NotNull
     public ItemStack getSmithedKey() {
         return smithedKey.clone();
     }
 
+    /**
+     * Get the hand used in this event.
+     *
+     * @return the hand
+     */
     @NotNull
     public EquipmentSlot getHand() {
         return hand;
     }
 
+    /**
+     * Set whether or not to consumed the unsmithed key.
+     *
+     * @param consumeUnsmithedKey whether or not to consume the unsmithed key
+     */
     public void setConsumeUnsmithedKey(boolean consumeUnsmithedKey) {
         this.consumeUnsmithedKey = consumeUnsmithedKey;
     }
 
+    /**
+     * Check whether or not the unsmithed key should be consumed. For creative players, this
+     * value will already be set to false.
+     *
+     * @return whether or not to consume the unsmithed key
+     */
     public boolean shouldConsumeUnsmithedKey() {
         return consumeUnsmithedKey;
     }

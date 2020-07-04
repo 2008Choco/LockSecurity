@@ -14,6 +14,12 @@ import org.jetbrains.annotations.Nullable;
 import wtf.choco.locksecurity.api.block.ILockedBlock;
 import wtf.choco.locksecurity.api.player.ILockSecurityPlayer;
 
+/**
+ * Called when a player interacts with a locked block.
+ *
+ * @since 3.0.0
+ * @author Parker Hawke - Choco
+ */
 public class PlayerInteractLockedBlockEvent extends PlayerEvent implements Cancellable {
 
     private static final HandlerList HANDLERS = new HandlerList();
@@ -40,26 +46,51 @@ public class PlayerInteractLockedBlockEvent extends PlayerEvent implements Cance
         this.action = action;
     }
 
+    /**
+     * Get the {@link ILockSecurityPlayer} wrapper for the player involved in this event.
+     *
+     * @return the player wrapper
+     */
     @NotNull
     public ILockSecurityPlayer getPlayerWrapper() {
         return player;
     }
 
+    /**
+     * Get the {@link ILockedBlock} involved in this event.
+     *
+     * @return the locked block
+     */
     @NotNull
     public ILockedBlock getLockedBlock() {
         return lockedBlock;
     }
 
+    /**
+     * Get the item used to interact with this block, if any.
+     *
+     * @return the item used. null if none
+     */
     @Nullable
     public ItemStack getItem() {
         return (item != null ? item.clone() : null);
     }
 
+    /**
+     * Get the hand used in this event.
+     *
+     * @return the hand
+     */
     @NotNull
     public EquipmentSlot getHand() {
         return hand;
     }
 
+    /**
+     * Get this event's action.
+     *
+     * @return the action
+     */
     @NotNull
     public Action getAction() {
         return action;
@@ -86,12 +117,38 @@ public class PlayerInteractLockedBlockEvent extends PlayerEvent implements Cance
         return HANDLERS;
     }
 
+
+    /**
+     * The action that occurred in this event.
+     *
+     * @since 3.0.0
+     * @author Parker Hawke - Choco
+     */
     public static enum Action {
 
+        /**
+         * The player has successfully opened the block with a valid key.
+         */
         OPEN_BLOCK,
+
+        /**
+         * The player has failed to open the block as they do not have a key in hand.
+         */
         MISSING_KEY,
+
+        /**
+         * The player has failed to open the block as they do not have the correct key.
+         */
         INCORRECT_KEY,
+
+        /**
+         * The player has inspected the block for more information.
+         */
         INSPECT_BLOCK,
+
+        /**
+         * The player has cloned an unsmithed key into a smithed key for the clicked block.
+         */
         CLONE_KEY;
 
     }

@@ -9,6 +9,12 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+/**
+ * Called when a player resets a key in a crafting inventory.
+ *
+ * @since 3.0.0
+ * @author Parker Hawke - Choco
+ */
 public class PlayerResetKeyEvent extends PlayerEvent implements Cancellable {
 
     private static final HandlerList HANDLER_LIST = new HandlerList();
@@ -25,15 +31,30 @@ public class PlayerResetKeyEvent extends PlayerEvent implements Cancellable {
         this.output = output;
     }
 
+    /**
+     * Get the smithed key to be reset.
+     *
+     * @return the smithed key
+     */
     @NotNull
     public ItemStack getKey() {
         return key.clone();
     }
 
+    /**
+     * Set the output of this duplication.
+     *
+     * @param output the output
+     */
     public void setOutput(@Nullable ItemStack output) {
         this.output = output;
     }
 
+    /**
+     * Get the output of this duplication.
+     *
+     * @return the output
+     */
     @Nullable
     public ItemStack getOutput() {
         return output;
