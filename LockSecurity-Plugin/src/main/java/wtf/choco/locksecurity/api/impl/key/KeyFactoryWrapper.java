@@ -6,8 +6,6 @@ import com.google.common.base.Preconditions;
 
 import org.bukkit.inventory.ItemStack;
 
-import org.jetbrains.annotations.Nullable;
-
 import wtf.choco.locksecurity.api.block.ILockedBlock;
 import wtf.choco.locksecurity.api.key.IKeyBuilder;
 import wtf.choco.locksecurity.api.key.IKeyFactory;
@@ -25,7 +23,7 @@ public final class KeyFactoryWrapper<T extends IKeyBuilder, I extends KeyBuilder
     }
 
     @Override
-    public boolean isKey(@Nullable ItemStack item) {
+    public boolean isKey(ItemStack item) {
         return getHandle().isKey(item);
     }
 
@@ -40,7 +38,7 @@ public final class KeyFactoryWrapper<T extends IKeyBuilder, I extends KeyBuilder
     }
 
     @Override
-    public ItemStack merge(@Nullable ItemStack firstKey, @Nullable ItemStack secondKey, int amount) {
+    public ItemStack merge(ItemStack firstKey, ItemStack secondKey, int amount) {
         return getHandle().merge(firstKey, secondKey, amount);
     }
 

@@ -10,9 +10,6 @@ import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.inventory.ItemStack;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
 import wtf.choco.locksecurity.api.block.ILockedBlock;
 import wtf.choco.locksecurity.api.impl.player.LockSecurityPlayerWrapper;
 import wtf.choco.locksecurity.api.player.ILockSecurityPlayer;
@@ -72,7 +69,7 @@ public class LockedBlockWrapper implements ILockedBlock {
     }
 
     @Override
-    public @NotNull ZonedDateTime getLockTime() {
+    public ZonedDateTime getLockTime() {
         return getHandle().getLockTime();
     }
 
@@ -82,7 +79,7 @@ public class LockedBlockWrapper implements ILockedBlock {
     }
 
     @Override
-    public @Nullable String getNickname() {
+    public String getNickname() {
         return getHandle().getNickname();
     }
 
