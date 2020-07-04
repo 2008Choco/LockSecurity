@@ -48,7 +48,6 @@ import wtf.choco.locksecurity.block.LockedBlockManager;
 import wtf.choco.locksecurity.block.LockedMultiBlock;
 import wtf.choco.locksecurity.key.KeyFactory;
 import wtf.choco.locksecurity.player.LockSecurityPlayer;
-import wtf.choco.locksecurity.player.LockSecurityPlayerManager;
 import wtf.choco.locksecurity.util.ItemBuilder;
 import wtf.choco.locksecurity.util.LSConstants;
 import wtf.choco.locksecurity.util.LSEventFactory;
@@ -81,7 +80,7 @@ public final class LockedBlockInteractionListener implements Listener {
         World world = block.getWorld();
         EquipmentSlot hand = event.getHand();
 
-        LockSecurityPlayer playerWrapper = plugin.getPlayerManager().get(player);
+        LockSecurityPlayer playerWrapper = plugin.getPlayer(player);
         LockedBlock lockedBlock = manager.getLockedBlock(block);
 
         // If the key is null and the player is sneaking, do some lock inspection
@@ -233,8 +232,7 @@ public final class LockedBlockInteractionListener implements Listener {
         }
 
         // Create necessary data and call an event
-        LockSecurityPlayerManager playerManager = plugin.getPlayerManager();
-        LockSecurityPlayer playerWrapper = playerManager.get(player);
+        LockSecurityPlayer playerWrapper = plugin.getPlayer(player);
         LockedBlock lockedBlock = getLockedBlock(block, playerWrapper);
         ItemStack smithedKeyItem = KeyFactory.SMITHED.builder().unlocks(lockedBlock).build();
 
@@ -253,7 +251,7 @@ public final class LockedBlockInteractionListener implements Listener {
         // Handle notifications for those that have them enabled
         BaseComponent[] notification = null;
         for (Player admin : Bukkit.getOnlinePlayers()) {
-            if (admin != player && playerManager.get(admin).hasLockNotifications()) {
+            if (admin != player && plugin.getPlayer(admin).hasLockNotifications()) {
                 if (notification == null) {
                     notification = lockNotificationComponent(admin, lockedBlock, player);
                 }

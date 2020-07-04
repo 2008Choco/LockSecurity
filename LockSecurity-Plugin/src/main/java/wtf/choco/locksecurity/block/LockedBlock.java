@@ -147,7 +147,7 @@ public class LockedBlock {
         Preconditions.checkState(object.has("location"), "Attempted to read locked block with missing location");
 
         UUID playerUUID = UUID.fromString(object.get("owner").getAsString());
-        this.owner = LockSecurity.getInstance().getPlayerManager().get(Bukkit.getOfflinePlayer(playerUUID));
+        this.owner = LockSecurity.getInstance().getPlayer(Bukkit.getOfflinePlayer(playerUUID));
 
         JsonObject locationObject = object.getAsJsonObject("location");
         {

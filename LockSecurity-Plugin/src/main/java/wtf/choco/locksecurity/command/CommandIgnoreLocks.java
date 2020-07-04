@@ -26,7 +26,7 @@ public final class CommandIgnoreLocks implements TabExecutor {
             return true;
         }
 
-        LockSecurityPlayer player = plugin.getPlayerManager().get((Player) sender);
+        LockSecurityPlayer player = plugin.getPlayer((Player) sender);
         player.setIgnoringLocks(!player.isIgnoringLocks());
         sender.sendMessage("You are " + (player.isIgnoringLocks() ? "now" : "no longer") + " ignoring locks");
         return true;

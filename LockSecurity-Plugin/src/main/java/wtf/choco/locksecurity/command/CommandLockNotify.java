@@ -26,7 +26,7 @@ public final class CommandLockNotify implements TabExecutor {
             return true;
         }
 
-        LockSecurityPlayer player = plugin.getPlayerManager().get((Player) sender);
+        LockSecurityPlayer player = plugin.getPlayer((Player) sender);
         player.setLockNotifications(!player.hasLockNotifications());
         sender.sendMessage("You are " + (player.hasLockNotifications() ? "now" : "no longer") + " being notified about newly locked blocks");
         if (player.hasLockNotifications()) {

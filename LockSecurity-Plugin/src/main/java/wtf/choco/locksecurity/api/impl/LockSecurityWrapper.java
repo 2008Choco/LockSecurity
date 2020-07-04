@@ -45,7 +45,7 @@ public class LockSecurityWrapper implements ILockSecurity {
     @Override
     public ILockSecurityPlayer getLockSecurityPlayer(OfflinePlayer player) {
         Preconditions.checkArgument(player != null, "player cannot be null");
-        return plugin.getPlayerManager().get(player).getAPIWrapper();
+        return plugin.getPlayer(player).getAPIWrapper();
     }
 
     @Override

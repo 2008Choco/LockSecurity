@@ -8,9 +8,13 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.EnumSet;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 import java.util.logging.Logger;
 
+import com.google.common.base.Preconditions;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.stream.JsonWriter;
@@ -19,6 +23,7 @@ import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.Tag;
 import org.bukkit.block.Block;
 import org.bukkit.command.PluginCommand;
@@ -44,7 +49,7 @@ import wtf.choco.locksecurity.key.KeyFactory;
 import wtf.choco.locksecurity.listener.KeyItemListener;
 import wtf.choco.locksecurity.listener.LockedBlockInteractionListener;
 import wtf.choco.locksecurity.listener.LockedBlockProtectionListener;
-import wtf.choco.locksecurity.player.LockSecurityPlayerManager;
+import wtf.choco.locksecurity.player.LockSecurityPlayer;
 import wtf.choco.locksecurity.util.LSConstants;
 import wtf.choco.locksecurity.util.UpdateChecker;
 import wtf.choco.locksecurity.util.UpdateChecker.UpdateReason;
@@ -59,7 +64,7 @@ public final class LockSecurity extends JavaPlugin {
     private BukkitTask updateTask;
 
     private final LockedBlockManager lockedBlockManager = new LockedBlockManager();
-    private final LockSecurityPlayerManager playerManager = new LockSecurityPlayerManager();
+    private final Map<UUID, LockSecurityPlayer> players = new HashMap<>();
 
     private final Set<Material> lockableBlocks = EnumSet.noneOf(Material.class);
 
@@ -164,7 +169,7 @@ public final class LockSecurity extends JavaPlugin {
         }
 
         this.lockedBlockManager.clear();
-        this.playerManager.clear();
+        this.players.clear();
         this.lockableBlocks.clear();
 
         if (updateTask != null) {
@@ -176,8 +181,9 @@ public final class LockSecurity extends JavaPlugin {
         return lockedBlockManager;
     }
 
-    public LockSecurityPlayerManager getPlayerManager() {
-        return playerManager;
+    public LockSecurityPlayer getPlayer(OfflinePlayer player) {
+        Preconditions.checkArgument(player != null, "Cannot get LockSecurityPlayer wrapper for null player");
+        return players.computeIfAbsent(player.getUniqueId(), LockSecurityPlayer::new);
     }
 
     public boolean isLockable(Material material) {
