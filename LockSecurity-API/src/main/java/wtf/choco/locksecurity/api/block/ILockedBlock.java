@@ -78,6 +78,21 @@ public interface ILockedBlock {
     public int getZ();
 
     /**
+     * Set the owner of this locked block.
+     *
+     * @param owner the owner to set. Must not be null
+     */
+    public void setOwner(@NotNull ILockSecurityPlayer owner);
+
+    /**
+     * Get the owner of this locked block.
+     *
+     * @return the owner
+     */
+    @NotNull
+    public ILockSecurityPlayer getOwner();
+
+    /**
      * Check whether or not the specified player is the owner of this locked block.
      *
      * @param player the player to check

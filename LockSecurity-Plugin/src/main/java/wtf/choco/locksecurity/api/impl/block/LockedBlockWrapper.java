@@ -3,6 +3,8 @@ package wtf.choco.locksecurity.api.impl.block;
 import java.time.ZonedDateTime;
 import java.util.Objects;
 
+import com.google.common.base.Preconditions;
+
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
@@ -56,6 +58,17 @@ public class LockedBlockWrapper implements ILockedBlock {
     @Override
     public int getZ() {
         return getHandle().getZ();
+    }
+
+    @Override
+    public void setOwner(ILockSecurityPlayer owner) {
+        Preconditions.checkArgument(owner != null, "owner must not be null");
+        this.getHandle().setOwner(((LockSecurityPlayerWrapper) owner).getHandle());
+    }
+
+    @Override
+    public ILockSecurityPlayer getOwner() {
+        return getHandle().getOwner().getAPIWrapper();
     }
 
     @Override
