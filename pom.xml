@@ -5,34 +5,21 @@
   <version>3.0.0</version>
   <name>LockSecurity</name>
   <description>Lock containers with a key and distribute them to your most trusted friends</description>
+  <packaging>pom</packaging>
 
-  <properties>
-    <resourcepack.directory>resource_pack</resourcepack.directory>
-  </properties>
+  <modules>
+  	<module>LockSecurity-API</module>
+  	<module>LockSecurity-Plugin</module>
+  </modules>
 
   <repositories>
     <repository>
       <id>spigot-repo</id>
       <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
     </repository>
-    <repository>
-      <id>CodeMC</id>
-      <url>https://repo.codemc.org/repository/maven-public</url>
-    </repository>
   </repositories>
 
   <build>
-    <resources>
-      <resource>
-        <directory>src/main/resources</directory>
-        <filtering>true</filtering>
-        <excludes>
-          <exclude>${resourcepack.directory}/assets/**</exclude>
-          <exclude>${resourcepack.directory}/pack.mcmeta</exclude>
-        </excludes>
-      </resource>
-    </resources>
-
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -53,28 +40,6 @@
           <skipTests>true</skipTests>
         </configuration>
       </plugin>
-
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-shade-plugin</artifactId>
-        <version>3.2.4</version>
-        <configuration>
-          <relocations>
-            <relocation>
-              <pattern>org.bstats</pattern>
-              <shadedPattern>wtf.choco.locksecurity.metrics</shadedPattern>
-            </relocation>
-          </relocations>
-        </configuration>
-        <executions>
-          <execution>
-            <phase>package</phase>
-            <goals>
-              <goal>shade</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
     </plugins>
   </build>
 
@@ -84,12 +49,6 @@
       <artifactId>spigot-api</artifactId>
       <version>1.16.1-R0.1-SNAPSHOT</version>
       <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.bstats</groupId>
-      <artifactId>bstats-bukkit</artifactId>
-      <version>1.7</version>
-      <scope>compile</scope>
     </dependency>
   </dependencies>
 </project>
