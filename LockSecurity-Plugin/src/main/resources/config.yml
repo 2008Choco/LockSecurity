@@ -1,10 +1,15 @@
 Metrics: true
 PerformUpdateChecks: true
-Locale: en_US
 
-ModelData:
-  UnsmithedKey: 1
-  SmithedKey: 2
+Keys:
+  Unsmithed:
+    ModelData: 1
+    RecipeYield: 1
+  Smithed:
+    ModelData: 2
+  AllowKeyDuplication: true
+  AllowKeyMerging: true
+  AllowKeyResetting: true
 
 LockableBlocks:
 - 'minecraft:chest'

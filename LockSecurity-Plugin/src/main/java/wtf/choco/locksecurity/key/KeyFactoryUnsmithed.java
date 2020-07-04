@@ -18,6 +18,7 @@ import wtf.choco.locksecurity.api.key.KeyFlag;
 import wtf.choco.locksecurity.block.LockedBlock;
 import wtf.choco.locksecurity.key.KeyFactoryUnsmithed.KeyBuilderUnsmithed;
 import wtf.choco.locksecurity.util.ItemBuilder;
+import wtf.choco.locksecurity.util.LSConstants;
 
 public final class KeyFactoryUnsmithed implements KeyFactoryType<KeyBuilderUnsmithed> {
 
@@ -78,7 +79,7 @@ public final class KeyFactoryUnsmithed implements KeyFactoryType<KeyBuilderUnsmi
 
             // Assign model data
             FileConfiguration config = LockSecurity.getInstance().getConfig();
-            int modelData = config.getInt("ModelData.UnsmithedKey", 0);
+            int modelData = config.getInt(LSConstants.KEYS_UNSMITHED_MODEL_DATA, 0);
             if (modelData != 0) {
                 keyItem.modelData(modelData);
             }

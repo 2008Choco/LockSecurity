@@ -45,6 +45,7 @@ import wtf.choco.locksecurity.listener.KeyItemListener;
 import wtf.choco.locksecurity.listener.LockedBlockInteractionListener;
 import wtf.choco.locksecurity.listener.LockedBlockProtectionListener;
 import wtf.choco.locksecurity.player.LockSecurityPlayerManager;
+import wtf.choco.locksecurity.util.LSConstants;
 import wtf.choco.locksecurity.util.UpdateChecker;
 import wtf.choco.locksecurity.util.UpdateChecker.UpdateReason;
 
@@ -91,7 +92,7 @@ public final class LockSecurity extends JavaPlugin {
 
         // Register listeners
         PluginManager pluginManager = Bukkit.getPluginManager();
-        pluginManager.registerEvents(new KeyItemListener(), this);
+        pluginManager.registerEvents(new KeyItemListener(this), this);
         pluginManager.registerEvents(new LockedBlockInteractionListener(this), this);
         pluginManager.registerEvents(new LockedBlockProtectionListener(this), this);
 
@@ -119,14 +120,14 @@ public final class LockSecurity extends JavaPlugin {
         Bukkit.addRecipe(new ShapelessRecipe(KeyFactory.RECIPE_KEY_RESET, KeyItemListener.IMPOSSIBLE_RECIPE_RESULT).addIngredient(1, Material.TRIPWIRE_HOOK));
 
         // Enable metrics
-        if (getConfig().getBoolean("Metrics", true)) {
+        if (getConfig().getBoolean(LSConstants.METRICS, true)) {
             new Metrics(this, 7892); // https://bstats.org/what-is-my-plugin-id
             logger.info("Successfully enabled metrics. Thanks for keeping these enabled!");
         }
 
         // Update check
         UpdateChecker.init(this, 12650);
-        if (getConfig().getBoolean("PerformUpdateChecks", true)) {
+        if (getConfig().getBoolean(LSConstants.PERFORM_UPDATE_CHECKS, true)) {
             this.updateTask = Bukkit.getScheduler().runTaskTimerAsynchronously(this, () -> {
                 UpdateChecker.get().requestUpdateCheck().whenComplete((result, exception) -> {
                     if (result.requiresUpdate()) {
@@ -211,7 +212,7 @@ public final class LockSecurity extends JavaPlugin {
     }
 
     private void registerKeyRecipe(String top, String middle, String bottom, NamespacedKey key) {
-        ShapedRecipe recipe = new ShapedRecipe(key, KeyFactory.createUnsmithedKey());
+        ShapedRecipe recipe = new ShapedRecipe(key, KeyFactory.createUnsmithedKey(getConfig().getInt(LSConstants.KEYS_UNSMITHED_RECIPE_YIELD, 1)));
         recipe.shape(top, middle, bottom);
         recipe.setIngredient('w', new MaterialChoice(Tag.PLANKS));
         recipe.setIngredient('i', Material.IRON_INGOT);

@@ -26,6 +26,7 @@ import wtf.choco.locksecurity.block.LockedBlock;
 import wtf.choco.locksecurity.key.KeyFactorySmithed.KeyBuilderSmithed;
 import wtf.choco.locksecurity.persistence.LSPersistentDataTypes;
 import wtf.choco.locksecurity.util.ItemBuilder;
+import wtf.choco.locksecurity.util.LSConstants;
 
 public final class KeyFactorySmithed implements KeyFactoryType<KeyBuilderSmithed> {
 
@@ -320,7 +321,7 @@ public final class KeyFactorySmithed implements KeyFactoryType<KeyBuilderSmithed
 
             // Assign model data
             FileConfiguration config = LockSecurity.getInstance().getConfig();
-            int modelData = config.getInt("ModelData.SmithedKey", 0);
+            int modelData = config.getInt(LSConstants.KEYS_SMITHED_MODEL_DATA, 0);
             if (modelData != 0) {
                 builder.modelData(modelData);
             }

@@ -6,6 +6,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Sound;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -22,12 +23,14 @@ import org.bukkit.inventory.Recipe;
 import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.inventory.ShapelessRecipe;
 
+import wtf.choco.locksecurity.LockSecurity;
 import wtf.choco.locksecurity.api.event.key.PlayerDuplicateKeyEvent;
 import wtf.choco.locksecurity.api.event.key.PlayerMergeKeyEvent;
 import wtf.choco.locksecurity.api.event.key.PlayerResetKeyEvent;
 import wtf.choco.locksecurity.api.key.KeyFlag;
 import wtf.choco.locksecurity.key.KeyFactory;
 import wtf.choco.locksecurity.util.ItemBuilder;
+import wtf.choco.locksecurity.util.LSConstants;
 import wtf.choco.locksecurity.util.LSEventFactory;
 
 public final class KeyItemListener implements Listener {
@@ -39,6 +42,12 @@ public final class KeyItemListener implements Listener {
             .build();
 
     private static final NamespacedKey CHEST_RECIPE_KEY = Material.CHEST.getKey();
+
+    private final LockSecurity plugin;
+
+    public KeyItemListener(LockSecurity plugin) {
+        this.plugin = plugin;
+    }
 
     @EventHandler(priority = EventPriority.HIGH)
     public void onAttemptToPlaceKey(BlockPlaceEvent event) {
@@ -71,6 +80,7 @@ public final class KeyItemListener implements Listener {
         HumanEntity viewer = event.getView().getPlayer();
         Recipe recipe = event.getRecipe();
         CraftingInventory inventory = event.getInventory();
+        FileConfiguration config = plugin.getConfig();
 
         if (recipe instanceof ShapedRecipe && KeyFactory.UNSMITHED_KEY_RECIPES.contains(((ShapedRecipe) recipe).getKey()) && !viewer.hasPermission("locksecurity.crafting.unsmithed")) {
             inventory.setResult(null);
@@ -113,7 +123,7 @@ public final class KeyItemListener implements Listener {
 
             if (KeyFactory.SMITHED.isKey(firstKey)) {
                 // Two smithed keys - merging the two keys (if not already the same)
-                if (KeyFactory.SMITHED.isKey(secondKey) && !firstKey.isSimilar(secondKey) && player.hasPermission("locksecurity.crafting.merge")) {
+                if (KeyFactory.SMITHED.isKey(secondKey) && !firstKey.isSimilar(secondKey) && config.getBoolean(LSConstants.KEYS_ALLOW_KEY_MERGING, true) && player.hasPermission("locksecurity.crafting.merge")) {
                     // Check key flags. If either prevent merging, don't merge
                     if (firstKeyFlags.contains(KeyFlag.PREVENT_MERGING) || secondKeyFlags.contains(KeyFlag.PREVENT_MERGING)) {
                         return;
@@ -131,7 +141,7 @@ public final class KeyItemListener implements Listener {
                 }
 
                 // A smithed key and an unsmithed key - Duplicate the smithed key
-                else if (KeyFactory.UNSMITHED.isKey(secondKey) && player.hasPermission("locksecurity.crafting.duplicate") && !firstKeyFlags.contains(KeyFlag.PREVENT_DUPLICATION)) {
+                else if (KeyFactory.UNSMITHED.isKey(secondKey) && config.getBoolean(LSConstants.KEYS_ALLOW_KEY_DUPLICATION, true) && player.hasPermission("locksecurity.crafting.duplicate") && !firstKeyFlags.contains(KeyFlag.PREVENT_DUPLICATION)) {
                     PlayerDuplicateKeyEvent duplicateKeyEvent = LSEventFactory.callPlayerDuplicateKeyEvent(player, firstKey, secondKey, ItemBuilder.modify(firstKey).amount(2).build());
                     if (!duplicateKeyEvent.isCancelled()) {
                         inventory.setResult(duplicateKeyEvent.getOutput());
@@ -140,7 +150,7 @@ public final class KeyItemListener implements Listener {
             }
 
             // A smithed key and an unsmithed key - Duplicate the smithed key
-            else if (KeyFactory.UNSMITHED.isKey(firstKey) && KeyFactory.SMITHED.isKey(secondKey) && player.hasPermission("locksecurity.crafting.duplicate") && !firstKeyFlags.contains(KeyFlag.PREVENT_DUPLICATION)) {
+            else if (KeyFactory.UNSMITHED.isKey(firstKey) && KeyFactory.SMITHED.isKey(secondKey) && config.getBoolean(LSConstants.KEYS_ALLOW_KEY_DUPLICATION, true) && player.hasPermission("locksecurity.crafting.duplicate") && !firstKeyFlags.contains(KeyFlag.PREVENT_DUPLICATION)) {
                 PlayerDuplicateKeyEvent duplicateKeyEvent = LSEventFactory.callPlayerDuplicateKeyEvent(player, secondKey, firstKey, ItemBuilder.modify(secondKey).amount(2).build());
                 if (!duplicateKeyEvent.isCancelled()) {
                     inventory.setResult(duplicateKeyEvent.getOutput());
@@ -150,6 +160,12 @@ public final class KeyItemListener implements Listener {
 
         // Convert a smithed key back into a smithed key
         else if (recipeKey.equals(KeyFactory.RECIPE_KEY_RESET)) {
+            inventory.setResult(null);
+
+            if (!config.getBoolean(LSConstants.KEYS_ALLOW_KEY_RESETTING, true)) {
+                return;
+            }
+
             // Try to find the key in the crafting matrix
             ItemStack keyItem = null;
             for (ItemStack matrixItem : inventory.getMatrix()) {
@@ -157,8 +173,6 @@ public final class KeyItemListener implements Listener {
                     break;
                 }
             }
-
-            inventory.setResult(null);
 
             boolean preventReset = KeyFactory.SMITHED.hasFlag(keyItem, KeyFlag.PREVENT_RESETTING);
             if (KeyFactory.SMITHED.isKey(keyItem) && player.hasPermission("locksecurity.crafting.reset") && !preventReset) {
