@@ -1,4 +1,4 @@
-# Created by https://www.gitignore.io/api/java,eclipse,netbeans,intellij
+# Created by https://www.gitignore.io/api/java,eclipse,netbeans,intellij,maven
 
 ### Eclipse ###
 
@@ -25,9 +25,6 @@ local.properties
 
 # Code Recommenders
 .recommenders/
-
-### Eclipse Maven ###
-dependency-reduced-pom.xml
 
 ### Eclipse Patch ###
 # Eclipse Core		
@@ -95,11 +92,23 @@ cmake-build-debug/
 hs_err_pid*
 
 ### NetBeans ###
-nbproject/private/
+**/nbproject/private/
+**/nbproject/Makefile-*.mk
+**/nbproject/Package-*.bash
 build/
 nbbuild/
 dist/
 nbdist/
 .nb-gradle/
-nbactions.xml
-/target/
+
+### Maven ###
+**/target/**
+**/pom.xml.tag
+**/pom.xml.releaseBackup
+**/pom.xml.versionsBackup
+**/pom.xml.next
+**/release.properties
+**/dependency-reduced-pom.xml
+**/buildNumber.properties
+**/.mvn/timing.properties
+**/.mvn/wrapper/maven-wrapper.jar
