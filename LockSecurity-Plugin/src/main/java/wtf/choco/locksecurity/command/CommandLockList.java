@@ -91,18 +91,11 @@ public final class CommandLockList implements TabExecutor {
 
             List<String> suggestions = new ArrayList<>(players.size() + 3);
             suggestions.add("@p");
-            if (sender.hasPermission(LSConstants.LOCKSECURITY_COMMAND_LOCKLIST_OTHER)) {
+            if (sender.hasPermission(LSConstants.LOCKSECURITY_COMMAND_LOCKLIST_OTHER) || players.size() == 1 /* It will only select them anyways, so why not */) {
                 suggestions.add("@a");
                 suggestions.add("@r");
                 players.forEach(p -> suggestions.add(p.getName()));
-            }
-            else {
-                // It will only select them anyways, so why not
-                if (players.size() == 1) {
-                    suggestions.add("@a");
-                    suggestions.add("@r");
-                }
-
+            } else if (players.size() > 1) {
                 suggestions.add(sender.getName());
             }
 
