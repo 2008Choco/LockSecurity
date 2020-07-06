@@ -10,6 +10,7 @@ import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import wtf.choco.locksecurity.api.block.ILockedBlock;
 import wtf.choco.locksecurity.api.player.ILockSecurityPlayer;
@@ -88,9 +89,8 @@ public class PlayerBlockLockEvent extends PlayerEvent implements Cancellable {
      *
      * @param key the key to give
      */
-    @NotNull
-    public void setSmithedKey(ItemStack key) {
-        this.smithedKey = key.clone();
+    public void setSmithedKey(@Nullable ItemStack key) {
+        this.smithedKey = (key != null ? key.clone() : null);
     }
 
     /**
@@ -98,9 +98,9 @@ public class PlayerBlockLockEvent extends PlayerEvent implements Cancellable {
      *
      * @return the smithed key
      */
-    @NotNull
+    @Nullable
     public ItemStack getSmithedKey() {
-        return smithedKey.clone();
+        return (smithedKey != null ? smithedKey.clone() : null);
     }
 
     /**

@@ -24,12 +24,12 @@ public interface IKeyFactory<T extends IKeyBuilder> {
     /**
      * The unsmithed key factory.
      */
-    public static final IKeyFactory<@NotNull IKeyBuilderUnsmithed> UNSMITHED = LockSecurityAPI.getKeyFactory(IKeyBuilderUnsmithed.class);
+    public static final IKeyFactory<IKeyBuilderUnsmithed> UNSMITHED = LockSecurityAPI.getKeyFactory(IKeyBuilderUnsmithed.class);
 
     /**
      * The smithed key factory.
      */
-    public static final IKeyFactory<@NotNull IKeyBuilderSmithed> SMITHED = LockSecurityAPI.getKeyFactory(IKeyBuilderSmithed.class);
+    public static final IKeyFactory<IKeyBuilderSmithed> SMITHED = LockSecurityAPI.getKeyFactory(IKeyBuilderSmithed.class);
 
     /**
      * Check whether or not the supplied {@link ItemStack} is a valid key for this factory.
