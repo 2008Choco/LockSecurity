@@ -1,3 +1,6 @@
+# Hello! Please keep "Metrics" enabled unless you suffer from performance issues. This information is SUPER useful
+# as a plugin developer and I would appreciate if it's kept enabled :) Thank you!
+
 Metrics: true
 PerformUpdateChecks: true
 

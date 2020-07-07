@@ -19,7 +19,6 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.stream.JsonWriter;
 
-import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -50,6 +49,7 @@ import wtf.choco.locksecurity.key.KeyFactory;
 import wtf.choco.locksecurity.listener.KeyItemListener;
 import wtf.choco.locksecurity.listener.LockedBlockInteractionListener;
 import wtf.choco.locksecurity.listener.LockedBlockProtectionListener;
+import wtf.choco.locksecurity.metrics.StatHandler;
 import wtf.choco.locksecurity.player.LockSecurityPlayer;
 import wtf.choco.locksecurity.util.LSConstants;
 import wtf.choco.locksecurity.util.UpdateChecker;
@@ -130,7 +130,7 @@ public final class LockSecurity extends JavaPlugin {
 
         // Enable metrics
         if (getConfig().getBoolean(LSConstants.METRICS, true)) {
-            new Metrics(this, 7892); // https://bstats.org/what-is-my-plugin-id
+            StatHandler.init(this, 7892); // https://bstats.org/what-is-my-plugin-id
             logger.info("Successfully enabled metrics. Thanks for keeping these enabled!");
         }
 
