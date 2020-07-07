@@ -75,6 +75,7 @@ public final class LockedBlockInteractionListener implements Listener {
             return;
         }
 
+        String blockType = block.getType().getKey().getKey().toLowerCase().replace("_", " ");
         ItemStack keyItem = event.getItem();
         Player player = event.getPlayer();
         World world = block.getWorld();
@@ -107,7 +108,7 @@ public final class LockedBlockInteractionListener implements Listener {
         if (KeyFactory.UNSMITHED.isKey(keyItem) && lockedBlock.isOwner(player)) {
             // Check for key cloning permissions
             if (!player.hasPermission(LSConstants.LOCKSECURITY_BLOCK_CLONEKEY)) {
-                player.sendMessage("You do not have permission to clone a key");
+                player.sendMessage(LockSecurity.WARNING_PREFIX + "You do not have permission to " + ChatColor.GREEN + "clone " + ChatColor.GRAY + "this key.");
                 return;
             }
 
@@ -149,12 +150,12 @@ public final class LockedBlockInteractionListener implements Listener {
 
             // Check for unlocking permissions
             if (!player.hasPermission(LSConstants.LOCKSECURITY_BLOCK_UNLOCK)) {
-                player.sendMessage("You do not have permission to unlock a block");
+                player.sendMessage(LockSecurity.WARNING_PREFIX + "You do not have permission to unlock a " + ChatColor.YELLOW + blockType + ChatColor.GRAY + ".");
                 return;
             }
 
             if (!lockedBlock.isOwner(player)) {
-                player.sendMessage("You do not own this block and cannot unlock it");
+                player.sendMessage(LockSecurity.WARNING_PREFIX + "You do not own this " + ChatColor.YELLOW + blockType + ChatColor.GRAY + " and cannot unlock it.");
                 return;
             }
 
@@ -166,10 +167,11 @@ public final class LockedBlockInteractionListener implements Listener {
                     return;
                 }
 
-                player.sendMessage("Are you sure you want to unlock this block? Repeat this action to confirm...");
+                player.sendMessage(LockSecurity.QUESTION_PREFIX + "Are you sure you want to unlock this " + ChatColor.YELLOW + blockType + ChatColor.GRAY + "?");
+                player.sendMessage(ChatColor.GRAY.toString() + ChatColor.ITALIC + "Repeat this action to confirm...");
                 Bukkit.getScheduler().runTaskLater(plugin, () -> {
                     if (AWAITING_CONFIRMATION.remove(lockedBlock)) {
-                        player.sendMessage("Unlock request cancelled for block at (" + block.getX() + ", " + block.getY() + ", " + block.getZ() + ") in world " + world.getName());
+                        player.sendMessage(ChatColor.GRAY + "Unlock request " + ChatColor.RED + "cancelled " + ChatColor.GRAY + "for " + ChatColor.YELLOW + blockType + ChatColor.GRAY + " at " + ChatColor.AQUA + "(" + block.getX() + ", " + block.getY() + ", " + block.getZ() + ") " + ChatColor.GRAY + "in world " + ChatColor.GREEN + world.getName() + ChatColor.GRAY + ".");
                     }
                 }, 100); // 5 seconds
                 return;
@@ -227,7 +229,7 @@ public final class LockedBlockInteractionListener implements Listener {
 
         // Check for block locking permissions
         if (!player.hasPermission(LSConstants.LOCKSECURITY_BLOCK_LOCK)) {
-            player.sendMessage("You do not have permission to lock a block");
+            player.sendMessage(LockSecurity.WARNING_PREFIX + "You do not have permission to lock a block");
             return;
         }
 
@@ -279,15 +281,17 @@ public final class LockedBlockInteractionListener implements Listener {
         }
 
         event.setCancelled(true);
+        String blockType = block.getType().getKey().getKey().toLowerCase().replace("_", " ");
         Player player = event.getPlayer();
+
         if (!player.hasPermission(LSConstants.LOCKSECURITY_BLOCK_NICKNAME)) {
-            player.sendMessage("You do not have permission to nickname this " + block.getType().getKey().getKey().replace("_", " "));
+            player.sendMessage(LockSecurity.WARNING_PREFIX + "You do not have permission to nickname this " + ChatColor.YELLOW + blockType + ChatColor.GRAY + ".");
             return;
         }
 
         LockedBlock lockedBlock = manager.getLockedBlock(block);
         if (!lockedBlock.isOwner(player)) {
-            player.sendMessage("You do not own this block and may not give it a nickname");
+            player.sendMessage(LockSecurity.WARNING_PREFIX + "You do not own this " + ChatColor.YELLOW + blockType + ChatColor.GRAY + " and may not give it a nickname.");
             return;
         }
 
@@ -297,7 +301,7 @@ public final class LockedBlockInteractionListener implements Listener {
             this.reduceItemInHand(player, event.getHand(), nametagItem);
         }
 
-        player.sendMessage("This block's nickname has been changed to \"" + nickname + ChatColor.RESET + "\"");
+        player.sendMessage(ChatColor.GRAY + "This block's nickname has been changed to \"" + nickname + ChatColor.GRAY + "\".");
     }
 
     private void giveSmithedKey(Player player, EquipmentSlot hand, ItemStack unsmithedKey, ItemStack smithedKey, boolean consume) {
@@ -319,7 +323,11 @@ public final class LockedBlockInteractionListener implements Listener {
 
     // Owned by: [owner]
     private TextComponent messagePlayerComponent(OfflinePlayer target) {
-        TextComponent clickMessageComponent = new TextComponent(ChatColor.WHITE + target.getName());
+        String targetName = (target.getName() != null ? target.getName() : "Unknown");
+        TextComponent clickMessageComponent = new TextComponent(targetName);
+        clickMessageComponent.setColor(net.md_5.bungee.api.ChatColor.WHITE);
+        clickMessageComponent.setItalic(target.getName() == null);
+
         if (target.isOnline()) {
             clickMessageComponent.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponent[] {
                     new TextComponent(target.getName() + "\n" + target.getUniqueId().toString() + "\n\nClick to message!"),
@@ -327,11 +335,12 @@ public final class LockedBlockInteractionListener implements Listener {
             clickMessageComponent.setClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/tell " + target.getName() + " "));
         } else {
             clickMessageComponent.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponent[] {
-                    new TextComponent(target.getName() + "\n" + target.getUniqueId().toString() + "\n\nPlayer is offline. Cannot message."),
+                    new TextComponent(targetName + "\n" + target.getUniqueId().toString() + "\n\nPlayer is offline. Cannot message."),
             }));
         }
 
-        TextComponent component = new TextComponent(ChatColor.GRAY + "Owned by: ");
+        TextComponent component = new TextComponent("Owned by: ");
+        component.setColor(net.md_5.bungee.api.ChatColor.GRAY);
         component.addExtra(clickMessageComponent);
         return component;
     }

@@ -19,6 +19,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.StringUtil;
 
+import wtf.choco.locksecurity.LockSecurity;
 import wtf.choco.locksecurity.api.key.KeyFlag;
 import wtf.choco.locksecurity.key.KeyFactory;
 
@@ -29,19 +30,19 @@ public final class CommandEditKey implements TabExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (!(sender instanceof Player)) {
-            sender.sendMessage("Only players are able to edit keys");
+            sender.sendMessage("Only players are able to edit keys.");
             return true;
         }
 
         if (args.length == 0) {
-            sender.sendMessage("Missing argument. /" + label + " <get|set>");
+            sender.sendMessage(LockSecurity.WARNING_PREFIX + "Missing argument. " + ChatColor.YELLOW + "/" + label + " <get|set>");
             return true;
         }
 
         Player player = (Player) sender;
         ItemStack item = player.getInventory().getItemInMainHand();
         if (!KeyFactory.SMITHED.isKey(item)) {
-            sender.sendMessage("You must be holding a " + ChatColor.GRAY + "Smithed Key" + ChatColor.RESET + " in your hand");
+            sender.sendMessage(LockSecurity.WARNING_PREFIX + "You must be holding a " + ChatColor.ITALIC + "Smithed Key " + ChatColor.GRAY + "in your hand.");
             return true;
         }
 
@@ -49,32 +50,32 @@ public final class CommandEditKey implements TabExecutor {
             if (args.length >= 2) {
                 Optional<KeyFlag> optionalFlag = Enums.getIfPresent(KeyFlag.class, args[1].toUpperCase()).toJavaUtil();
                 if (!optionalFlag.isPresent()) {
-                    sender.sendMessage("Unknown key flag, \"" + args[1] + "\". Could not get");
+                    sender.sendMessage(LockSecurity.WARNING_PREFIX + "Unknown key flag, \"" + ChatColor.YELLOW + args[1] + ChatColor.GRAY + "\". Could not get value.");
                     return true;
                 }
 
                 KeyFlag flag = optionalFlag.get();
-                sender.sendMessage(WordUtils.capitalize(flag.name().toLowerCase().replace("_", " ")) + ": " + (KeyFactory.SMITHED.hasFlag(item, flag) ? ChatColor.GREEN + "true" : ChatColor.RED + "false"));
+                sender.sendMessage(ChatColor.GRAY + WordUtils.capitalize(flag.name().toLowerCase().replace("_", " ")) + ": " + (KeyFactory.SMITHED.hasFlag(item, flag) ? ChatColor.GREEN + "true" : ChatColor.RED + "false"));
             }
 
             // List all flags
             else {
                 Set<KeyFlag> flags = KeyFactory.SMITHED.getFlags(item);
                 for (KeyFlag flag : KeyFlag.values()) {
-                    sender.sendMessage(WordUtils.capitalize(flag.name().toLowerCase().replace("_", " ")) + ": " + (flags.contains(flag) ? ChatColor.GREEN + "true" : ChatColor.RED + "false"));
+                    sender.sendMessage(ChatColor.GRAY + WordUtils.capitalize(flag.name().toLowerCase().replace("_", " ")) + ": " + (flags.contains(flag) ? ChatColor.GREEN + "true" : ChatColor.RED + "false"));
                 }
             }
         }
 
         else if (args[0].equalsIgnoreCase("set")) {
             if (args.length < 3) {
-                sender.sendMessage("Missing argument. /" + label + " set " + (args.length == 2 ? "<flag>" : args[1]) + " <value>");
+                sender.sendMessage(LockSecurity.WARNING_PREFIX + "Missing argument. " + ChatColor.YELLOW + "/" + label + " set " + (args.length == 2 ? "<flag>" : args[1]) + " <value>");
                 return true;
             }
 
             Optional<KeyFlag> optionalFlag = Enums.getIfPresent(KeyFlag.class, args[1].toUpperCase()).toJavaUtil();
             if (!optionalFlag.isPresent()) {
-                sender.sendMessage("Unknown key flag, \"" + args[1] + "\". Could not set");
+                sender.sendMessage(LockSecurity.WARNING_PREFIX + "Unknown key flag, \"" + ChatColor.YELLOW + args[1] + ChatColor.GRAY + "\". Could not set.");
                 return true;
             }
 
@@ -83,17 +84,17 @@ public final class CommandEditKey implements TabExecutor {
             boolean current = KeyFactory.SMITHED.hasFlag(item, flag);
 
             if (newState == current) {
-                sender.sendMessage("Key is unchanged. Flag " + flag + " is already set to " + newState);
+                sender.sendMessage(ChatColor.GRAY + "Key is unchanged. Flag " + ChatColor.YELLOW + flag + ChatColor.GRAY + " is already set to " + (newState ? ChatColor.GREEN : ChatColor.RED) + newState + ChatColor.GRAY + ".");
                 return true;
             }
 
             ItemStack modified = KeyFactory.SMITHED.modify(item).withFlag(flag, newState).build(item.getAmount());
             player.getInventory().setItemInMainHand(modified);
-            sender.sendMessage("Set the flag " + flag + " to " + (newState ? ChatColor.GREEN + "true" : ChatColor.RED + "false"));
+            sender.sendMessage(ChatColor.GRAY + "Set the flag " + ChatColor.YELLOW + flag + ChatColor.GRAY + " to " + (newState ? ChatColor.GREEN : ChatColor.RED) + newState + ChatColor.GRAY + ".");
         }
 
         else {
-            sender.sendMessage("Unrecognized argument, \"" + args[0] + "\". /" + label + " <get|set>");
+            sender.sendMessage(LockSecurity.WARNING_PREFIX + "Unrecognized argument, \"" + ChatColor.RED + args[0] + ChatColor.GRAY + "\". " + ChatColor.YELLOW + "/" + label + " <get|set>");
         }
 
         return true;

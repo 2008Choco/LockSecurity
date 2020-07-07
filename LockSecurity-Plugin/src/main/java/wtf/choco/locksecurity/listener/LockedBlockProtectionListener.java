@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
+import org.bukkit.ChatColor;
 import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -53,7 +54,8 @@ public final class LockedBlockProtectionListener implements Listener {
         }
 
         // Non-owners cannot break locked blocks
-        LAST_WARNING.computeIfAbsent(player.getUniqueId(), u -> new WarningData()).warnIfNecessary(player, block, "You cannot destroy a locked block you do not own");
+        String blockType = block.getType().getKey().getKey().toLowerCase().replace("_", " ");
+        LAST_WARNING.computeIfAbsent(player.getUniqueId(), u -> new WarningData()).warnIfNecessary(player, block, LockSecurity.WARNING_PREFIX + "You cannot destroy a " + ChatColor.YELLOW + blockType + ChatColor.GRAY + " you do not own");
         event.setCancelled(true);
     }
 

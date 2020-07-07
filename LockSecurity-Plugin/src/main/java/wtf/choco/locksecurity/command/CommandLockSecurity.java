@@ -37,8 +37,17 @@ public final class CommandLockSecurity implements TabExecutor {
             sender.sendMessage(ChatColor.GRAY + "Report bugs to: " + ChatColor.YELLOW + "https://github.com/2008Choco/LockSecurity/issues/");
 
             UpdateResult result = UpdateChecker.get().getLastResult();
-            if (result != null && result.requiresUpdate() && sender.hasPermission(LSConstants.LOCKSECURITY_NOTIFYUPDATE)) {
-                sender.sendMessage(ChatColor.AQUA + "New version available: " + ChatColor.GREEN + result.getNewestVersion());
+            if (result != null && sender.hasPermission(LSConstants.LOCKSECURITY_NOTIFYUPDATE)) {
+                switch (result.getReason()) {
+                    case NEW_UPDATE:
+                        sender.sendMessage(ChatColor.AQUA + "New version available: " + ChatColor.GREEN + ChatColor.BOLD + result.getNewestVersion());
+                        break;
+                    case UNRELEASED_VERSION:
+                        sender.sendMessage(ChatColor.RED.toString() + ChatColor.BOLD + "[WARNING] " + ChatColor.GRAY + "You are on a development build!");
+                        break;
+                    default:
+                        break;
+                }
             }
 
             sender.sendMessage("");

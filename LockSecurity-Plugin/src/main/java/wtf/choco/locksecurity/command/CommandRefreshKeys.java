@@ -3,6 +3,7 @@ package wtf.choco.locksecurity.command;
 import java.util.Collections;
 import java.util.List;
 
+import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
@@ -17,7 +18,7 @@ public final class CommandRefreshKeys implements TabExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (!(sender instanceof Player)) {
-            sender.sendMessage("[!] You must be a player to run this command. You don't have an inventory, silly!");
+            sender.sendMessage("You must be a player to run this command. You don't have an inventory, silly!");
             return true;
         }
 
@@ -40,9 +41,9 @@ public final class CommandRefreshKeys implements TabExecutor {
         }
 
         if (refreshed != 0) {
-            player.sendMessage(refreshed + " key" + (refreshed > 1 ? "s" : "") + " in your inventory have been refreshed");
+            player.sendMessage(ChatColor.YELLOW.toString() + refreshed + " key" + (refreshed > 1 ? "s" : "") + ChatColor.GRAY + " in your inventory have been refreshed.");
         } else {
-            player.sendMessage("There were no keys in your inventory that needed refreshing");
+            player.sendMessage(ChatColor.GRAY + "There were " + ChatColor.YELLOW + "no keys " + ChatColor.GRAY + "in your inventory that needed refreshing");
         }
 
         return true;

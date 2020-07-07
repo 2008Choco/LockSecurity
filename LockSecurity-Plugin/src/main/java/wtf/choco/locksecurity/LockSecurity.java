@@ -21,6 +21,7 @@ import com.google.gson.stream.JsonWriter;
 
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.OfflinePlayer;
@@ -57,6 +58,9 @@ import wtf.choco.locksecurity.util.UpdateChecker.UpdateReason;
 public final class LockSecurity extends JavaPlugin {
 
     public static final Gson GSON = new Gson();
+
+    public static final String WARNING_PREFIX = ChatColor.RED.toString() + ChatColor.BOLD + "[!] " + ChatColor.GRAY;
+    public static final String QUESTION_PREFIX = ChatColor.YELLOW.toString() + ChatColor.BOLD + "[?] " + ChatColor.GRAY;
 
     private static LockSecurity instance;
 
@@ -137,7 +141,7 @@ public final class LockSecurity extends JavaPlugin {
                 UpdateChecker.get().requestUpdateCheck().whenComplete((result, exception) -> {
                     if (result.requiresUpdate()) {
                         logger.info(String.format("An update is available! LockSecurity %s may be downloaded on SpigotMC", result.getNewestVersion()));
-                        Bukkit.broadcast("A new version is available for download (Version " + result.getNewestVersion() + ")", "locksecurity.notifyupdate");
+                        Bukkit.broadcast(ChatColor.GRAY + "[" + ChatColor.YELLOW + "LockSecurity" + ChatColor.GRAY + "] A " + ChatColor.GREEN + "new version " + ChatColor.GRAY + "is available for download (Version " + ChatColor.YELLOW + result.getNewestVersion() + ")", "locksecurity.notifyupdate");
                         return;
                     }
 

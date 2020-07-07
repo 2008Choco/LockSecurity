@@ -11,6 +11,7 @@ import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -43,34 +44,34 @@ public final class CommandLockList implements TabExecutor {
             targets.removeIf(e -> e.getType() != EntityType.PLAYER);
         }
         else if (!(sender instanceof Player)) {
-            sender.sendMessage("[!] You must specify a player when running this command from the console");
+            sender.sendMessage(LockSecurity.WARNING_PREFIX + "You must specify a player when running this command from the console.");
             return false;
         }
 
         if (targets.isEmpty()) {
-            sender.sendMessage("Invalid selection of entities (" + args[0] + "). Only players are supported. Are they online?");
+            sender.sendMessage(LockSecurity.WARNING_PREFIX + "Invalid selection of entities (" + ChatColor.YELLOW + args[0] + ChatColor.GRAY + "). Only " + ChatColor.AQUA + "players " + ChatColor.GRAY + "are supported. Are they online?");
             return true;
         }
 
         if (targets.size() > 1) {
-            sender.sendMessage("Only one target may be selected. (" + targets.size() + ") have been selected (" + args[0] + ")");
+            sender.sendMessage(LockSecurity.WARNING_PREFIX + "Only one target may be selected. (" + ChatColor.YELLOW + targets.size() + ChatColor.GRAY + ") have been selected (" + ChatColor.AQUA + args[0] + ChatColor.GRAY + ").");
             return true;
         }
 
         OfflinePlayer target = (OfflinePlayer) targets.get(0);
         if (target != sender && !sender.hasPermission(LSConstants.LOCKSECURITY_COMMAND_LOCKLIST_OTHER)) {
-            sender.sendMessage("You do not have permission to view the locklist of another player");
+            sender.sendMessage(LockSecurity.WARNING_PREFIX + "You do not have permission to view the locklist of another player");
             return true;
         }
 
         // Command feedback
         Collection<LockedBlock> ownedBlocks = plugin.getLockedBlockManager().getLockedBlocks(target);
         if (ownedBlocks.isEmpty()) {
-            sender.sendMessage(target.getName() + " does not own any blocks");
+            sender.sendMessage(ChatColor.YELLOW + target.getName() + ChatColor.GRAY + " does not own any blocks");
         } else {
             boolean shouldShowTeleportation = (sender instanceof Player && sender.hasPermission(LSConstants.MINECRAFT_COMMAND_TELEPORT));
 
-            sender.sendMessage(target.getName() + " owns blocks at the following locations:");
+            sender.sendMessage(ChatColor.YELLOW + target.getName() + ChatColor.GRAY + " owns blocks at the following locations:");
             for (LockedBlock block : ownedBlocks) {
                 if (shouldShowTeleportation && block.getWorld() == ((Entity) sender).getWorld()) {
                     sender.spigot().sendMessage(teleportToBlockComponent(sender, block));

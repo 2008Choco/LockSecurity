@@ -8,6 +8,7 @@ import java.util.List;
 
 import org.apache.commons.lang.math.NumberUtils;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.command.Command;
@@ -42,12 +43,12 @@ public final class CommandGiveKey implements TabExecutor {
             targets.removeIf(e -> e.getType() != EntityType.PLAYER);
         }
         else if (!(sender instanceof Player)) {
-            sender.sendMessage("[!] You must specify a player when running this command from the console");
+            sender.sendMessage("You must specify a player when running this command from the console");
             return false;
         }
 
         if (targets.isEmpty()) {
-            sender.sendMessage("Invalid selection of entities (" + args[0] + "). Only players are supported. Are they online?");
+            sender.sendMessage(LockSecurity.WARNING_PREFIX + "Invalid selection of entities (" + ChatColor.YELLOW + args[0] + ChatColor.GRAY + "). Only players are supported. Are they online?");
             return true;
         }
 
@@ -58,7 +59,7 @@ public final class CommandGiveKey implements TabExecutor {
         // ... specifying block position arguments (x y z world) for a smithed key
         if (args.length >= 3) {
             if (args.length < 5 || !NumberUtils.isNumber(args[2]) || !NumberUtils.isNumber(args[3]) || !NumberUtils.isNumber(args[4])) {
-                sender.sendMessage("A complete, valid set of integer coordinates must be provided");
+                sender.sendMessage(LockSecurity.WARNING_PREFIX + "A complete, valid set of " + ChatColor.YELLOW + "coordinates " + ChatColor.GRAY + "must be provided.");
                 return true;
             }
 
@@ -68,7 +69,7 @@ public final class CommandGiveKey implements TabExecutor {
             }
 
             if (world == null) {
-                sender.sendMessage("Invalid or unknown world name");
+                sender.sendMessage(LockSecurity.WARNING_PREFIX + "Invalid or unknown world name, " + ChatColor.AQUA + args[5]);
                 return true;
             }
 
@@ -78,7 +79,7 @@ public final class CommandGiveKey implements TabExecutor {
 
             LockedBlock lockedBlock = plugin.getLockedBlockManager().getLockedBlock(world.getBlockAt(x, y, z));
             if (lockedBlock == null) {
-                sender.sendMessage("The block at (" + x + ", " + y + ", " + z + ") in world " + world.getName() + " is not locked and cannot be added to a key");
+                sender.sendMessage(LockSecurity.WARNING_PREFIX + "The block at " + ChatColor.YELLOW + "(" + x + ", " + y + ", " + z + ") in world " + ChatColor.AQUA + world.getName() + ChatColor.GRAY + " is not locked and cannot be added to a key.");
                 return true;
             }
 
@@ -93,10 +94,10 @@ public final class CommandGiveKey implements TabExecutor {
 
         // Command feedback
         if (targets.size() > 1) {
-            sender.sendMessage("You have given " + targets.size() + " players " + (amount > 1 ? amount + " keys" : "a key"));
+            sender.sendMessage(ChatColor.GRAY + "You have given " + ChatColor.YELLOW + targets.size() + ChatColor.GRAY + " players " + ChatColor.AQUA + (amount > 1 ? amount + " keys" : "a key") + ChatColor.GRAY + ".");
             targets.forEach(e -> {
                 if (e != sender) {
-                    e.sendMessage("You have been given " + (amount > 1 ? amount + " keys" : "a key") + " from " + sender.getName());
+                    e.sendMessage(ChatColor.GRAY.toString() + ChatColor.ITALIC + "You have been given " + ChatColor.YELLOW + ChatColor.ITALIC + (amount > 1 ? amount + " keys" : "a key") + ChatColor.GRAY + ChatColor.ITALIC + " from " + ChatColor.AQUA + ChatColor.ITALIC + sender.getName() + ChatColor.GRAY + ".");
                 }
             });
         }
@@ -104,9 +105,9 @@ public final class CommandGiveKey implements TabExecutor {
             Entity target = targets.get(0);
             boolean self = (target == sender);
 
-            target.sendMessage("You have " + (self ? "given yourself " : "been given ") + (amount > 1 ? amount + " keys" : "a key") + (self ? "" : " from " + sender.getName()));
+            target.sendMessage(ChatColor.GRAY.toString() + ChatColor.ITALIC + "You have " + (self ? "given " + ChatColor.AQUA + ChatColor.ITALIC + "yourself " : "been given ") + ChatColor.YELLOW + ChatColor.ITALIC + (amount > 1 ? amount + " keys" : "a key") + ChatColor.GRAY + ChatColor.ITALIC + (self ? "" : " from " + ChatColor.AQUA + ChatColor.ITALIC + sender.getName()) + ChatColor.GRAY + ".");
             if (!self) {
-                sender.sendMessage("You have given " + (amount > 1 ? amount + " keys" : "a key") + " to " + target.getName());
+                sender.sendMessage(ChatColor.GRAY + "You have given " + ChatColor.YELLOW + (amount > 1 ? amount + " keys" : "a key") + ChatColor.GRAY + " to " + ChatColor.AQUA + target.getName());
             }
         }
 
