@@ -4,6 +4,8 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
+import com.google.gson.JsonObject;
+
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
@@ -54,6 +56,22 @@ public final class LockSecurityPlayer {
 
     public boolean hasLockNotifications() {
         return lockNotifications;
+    }
+
+    public JsonObject write(JsonObject object) {
+        object.addProperty("ignoringLocks", ignoringLocks);
+        object.addProperty("lockNotifications", lockNotifications);
+        return object;
+    }
+
+    public void read(JsonObject object) {
+        if (object.has("ignoringLocks")) {
+            this.ignoringLocks = object.get("ignoringLocks").getAsBoolean();
+        }
+
+        if (object.has("lockNotifications")) {
+            this.lockNotifications = object.get("lockNotifications").getAsBoolean();
+        }
     }
 
     public ILockSecurityPlayer getAPIWrapper() {

@@ -16,7 +16,9 @@ import java.util.logging.Logger;
 
 import com.google.common.base.Preconditions;
 import com.google.gson.Gson;
+import com.google.gson.JsonIOException;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonSyntaxException;
 import com.google.gson.stream.JsonWriter;
 
 import org.bukkit.Bukkit;
@@ -28,6 +30,7 @@ import org.bukkit.Tag;
 import org.bukkit.block.Block;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.command.TabExecutor;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.RecipeChoice.MaterialChoice;
 import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.inventory.ShapelessRecipe;
@@ -49,6 +52,7 @@ import wtf.choco.locksecurity.key.KeyFactory;
 import wtf.choco.locksecurity.listener.KeyItemListener;
 import wtf.choco.locksecurity.listener.LockedBlockInteractionListener;
 import wtf.choco.locksecurity.listener.LockedBlockProtectionListener;
+import wtf.choco.locksecurity.listener.PlayerWrapperStateListener;
 import wtf.choco.locksecurity.metrics.StatHandler;
 import wtf.choco.locksecurity.player.LockSecurityPlayer;
 import wtf.choco.locksecurity.util.LSConstants;
@@ -64,7 +68,7 @@ public final class LockSecurity extends JavaPlugin {
 
     private static LockSecurity instance;
 
-    private File blocksFile;
+    private File blocksFile, playerDataDirectory;
     private BukkitTask updateTask;
 
     private final LockedBlockManager lockedBlockManager = new LockedBlockManager();
@@ -99,11 +103,37 @@ public final class LockSecurity extends JavaPlugin {
             this.getLogger().info("Done!");
         }
 
+        this.playerDataDirectory = new File(getDataFolder(), "playerData/");
+        this.playerDataDirectory.mkdirs();
+
+        // Read from file all online players (support for /reload)
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            LockSecurityPlayer playerWrapper = getPlayer(player);
+            UUID uuid = player.getUniqueId();
+
+            File playerDataFile = new File(playerDataDirectory, uuid.toString() + ".json");
+            if (!playerDataFile.exists()) {
+                return;
+            }
+
+            // We can do this synchronously on startup
+            try (BufferedReader reader = new BufferedReader(new FileReader(playerDataFile))) {
+                JsonObject object = LockSecurity.GSON.fromJson(reader, JsonObject.class);
+                playerWrapper.read(object);
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (JsonSyntaxException | JsonIOException e) {
+                this.getLogger().warning("Could not load player data for player \"" + player.getName() + "\" (" + uuid + "). Deleting...");
+                playerDataFile.delete();
+            }
+        }
+
         // Register listeners
         PluginManager pluginManager = Bukkit.getPluginManager();
         pluginManager.registerEvents(new KeyItemListener(this), this);
         pluginManager.registerEvents(new LockedBlockInteractionListener(this), this);
         pluginManager.registerEvents(new LockedBlockProtectionListener(this), this);
+        pluginManager.registerEvents(new PlayerWrapperStateListener(this), this);
 
         // Register commands
         this.registerCommandSafely("locksecurity", new CommandLockSecurity(this));
@@ -172,6 +202,20 @@ public final class LockSecurity extends JavaPlugin {
             e.printStackTrace();
         }
 
+        // Write to file all online players that have not yet left
+        this.playerDataDirectory.mkdirs();
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            LockSecurityPlayer playerWrapper = getPlayer(player);
+            UUID uuid = player.getUniqueId();
+
+            File playerDataFile = new File(playerDataDirectory, uuid.toString() + ".json");
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter(playerDataFile))) {
+                writer.write(LockSecurity.GSON.toJson(playerWrapper.write(new JsonObject())));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
         this.lockedBlockManager.clear();
         this.players.clear();
         this.lockableBlocks.clear();
@@ -188,6 +232,10 @@ public final class LockSecurity extends JavaPlugin {
     public LockSecurityPlayer getPlayer(OfflinePlayer player) {
         Preconditions.checkArgument(player != null, "Cannot get LockSecurityPlayer wrapper for null player");
         return players.computeIfAbsent(player.getUniqueId(), LockSecurityPlayer::new);
+    }
+
+    public File getPlayerDataDirectory() {
+        return playerDataDirectory;
     }
 
     public boolean isLockable(Material material) {
