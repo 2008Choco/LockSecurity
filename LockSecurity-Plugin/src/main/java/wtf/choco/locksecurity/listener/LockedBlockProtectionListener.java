@@ -7,7 +7,10 @@ import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
+import org.bukkit.Particle;
 import org.bukkit.Sound;
+import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
@@ -80,19 +83,26 @@ public final class LockedBlockProtectionListener implements Listener {
 
     @EventHandler
     public void onPistonMoveLockedBlock(BlockPistonExtendEvent event) {
-        this.cancelPistonMovement(event, event.getBlocks());
+        this.cancelPistonMovement(event, event.getBlock(), event.getBlocks(), Sound.BLOCK_PISTON_EXTEND);
     }
 
     @EventHandler
     public void onPistonMoveLockedBlock(BlockPistonRetractEvent event) {
-        this.cancelPistonMovement(event, event.getBlocks());
+        this.cancelPistonMovement(event, event.getBlock(), event.getBlocks(), Sound.BLOCK_PISTON_CONTRACT);
     }
 
-    private void cancelPistonMovement(Cancellable event, List<Block> blocks) {
+    private void cancelPistonMovement(Cancellable event, Block piston, List<Block> blocks, Sound sound) {
         LockedBlockManager manager = plugin.getLockedBlockManager();
 
         for (Block block : blocks) {
             if (manager.isLocked(block)) {
+                World world = piston.getWorld();
+                Location pistonLocation = piston.getLocation();
+
+                world.spawnParticle(Particle.SMOKE_NORMAL, block.getLocation().add(0.5, 1.2, 0.5), 5, 0.1F, 0.2F, 0.1F, 0.01F);
+                world.playSound(pistonLocation, Sound.BLOCK_FIRE_EXTINGUISH, 1.0F, 1.25F);
+                world.playSound(pistonLocation, sound, 1.0F, 1.75F);
+
                 event.setCancelled(true);
                 break;
             }
