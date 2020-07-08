@@ -17,6 +17,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.EntityEffect;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
+import org.bukkit.Nameable;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
@@ -263,7 +264,7 @@ public final class LockedBlockInteractionListener implements Listener {
         }
     }
 
-    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.HIGH)
     public void onNicknameLockedBlock(PlayerInteractEvent event) {
         if (event.getAction() != Action.RIGHT_CLICK_BLOCK || event.getMaterial() != Material.NAME_TAG) {
             return;
@@ -297,6 +298,14 @@ public final class LockedBlockInteractionListener implements Listener {
 
         String nickname = nametagItem.getItemMeta().getDisplayName();
         lockedBlock.setNickname(nickname);
+
+        // Set the name of Nameable tile entities as well
+        BlockState state = block.getState();
+        if (state instanceof Nameable) {
+            ((Nameable) state).setCustomName(nickname);
+            state.update(false, false);
+        }
+
         if (player.getGameMode() != GameMode.CREATIVE) {
             this.reduceItemInHand(player, event.getHand(), nametagItem);
         }
