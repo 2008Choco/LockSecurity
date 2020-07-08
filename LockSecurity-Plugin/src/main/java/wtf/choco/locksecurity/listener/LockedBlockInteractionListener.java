@@ -109,7 +109,7 @@ public final class LockedBlockInteractionListener implements Listener {
         if (KeyFactory.UNSMITHED.isKey(keyItem) && lockedBlock.isOwner(player)) {
             // Check for key cloning permissions
             if (!player.hasPermission(LSConstants.LOCKSECURITY_BLOCK_CLONEKEY)) {
-                player.sendMessage(LockSecurity.WARNING_PREFIX + "You do not have permission to " + ChatColor.GREEN + "clone " + ChatColor.GRAY + "this key.");
+                player.sendMessage(LSConstants.WARNING_PREFIX + "You do not have permission to " + ChatColor.GREEN + "clone " + ChatColor.GRAY + "this key.");
                 return;
             }
 
@@ -151,12 +151,12 @@ public final class LockedBlockInteractionListener implements Listener {
 
             // Check for unlocking permissions
             if (!player.hasPermission(LSConstants.LOCKSECURITY_BLOCK_UNLOCK)) {
-                player.sendMessage(LockSecurity.WARNING_PREFIX + "You do not have permission to unlock a " + ChatColor.YELLOW + blockType + ChatColor.GRAY + ".");
+                player.sendMessage(LSConstants.WARNING_PREFIX + "You do not have permission to unlock a " + ChatColor.YELLOW + blockType + ChatColor.GRAY + ".");
                 return;
             }
 
             if (!lockedBlock.isOwner(player)) {
-                player.sendMessage(LockSecurity.WARNING_PREFIX + "You do not own this " + ChatColor.YELLOW + blockType + ChatColor.GRAY + " and cannot unlock it.");
+                player.sendMessage(LSConstants.WARNING_PREFIX + "You do not own this " + ChatColor.YELLOW + blockType + ChatColor.GRAY + " and cannot unlock it.");
                 return;
             }
 
@@ -168,7 +168,7 @@ public final class LockedBlockInteractionListener implements Listener {
                     return;
                 }
 
-                player.sendMessage(LockSecurity.QUESTION_PREFIX + "Are you sure you want to unlock this " + ChatColor.YELLOW + blockType + ChatColor.GRAY + "?");
+                player.sendMessage(LSConstants.QUESTION_PREFIX + "Are you sure you want to unlock this " + ChatColor.YELLOW + blockType + ChatColor.GRAY + "?");
                 player.sendMessage(ChatColor.GRAY.toString() + ChatColor.ITALIC + "Repeat this action to confirm...");
                 Bukkit.getScheduler().runTaskLater(plugin, () -> {
                     if (AWAITING_CONFIRMATION.remove(lockedBlock)) {
@@ -230,7 +230,7 @@ public final class LockedBlockInteractionListener implements Listener {
 
         // Check for block locking permissions
         if (!player.hasPermission(LSConstants.LOCKSECURITY_BLOCK_LOCK)) {
-            player.sendMessage(LockSecurity.WARNING_PREFIX + "You do not have permission to lock a block");
+            player.sendMessage(LSConstants.WARNING_PREFIX + "You do not have permission to lock a block");
             return;
         }
 
@@ -238,9 +238,9 @@ public final class LockedBlockInteractionListener implements Listener {
         int maxLocks = plugin.getConfig().getInt(String.format(LSConstants.MAX_LOCKS_WORLD, world.getName()), -1);
         if (!player.hasPermission(LSConstants.LOCKSECURITY_BLOCK_LOCK_IGNORELIMIT) && maxLocks >= 0 && manager.getLockedBlocks(player).size() >= maxLocks) {
             if (maxLocks == 0) {
-                player.sendMessage(LockSecurity.WARNING_PREFIX + "Locks are not permitted in this world");
+                player.sendMessage(LSConstants.WARNING_PREFIX + "Locks are not permitted in this world");
             } else {
-                player.sendMessage(LockSecurity.WARNING_PREFIX + "You have reached the maximum amount of locks in this world (" + ChatColor.YELLOW + maxLocks + ChatColor.GRAY + ")");
+                player.sendMessage(LSConstants.WARNING_PREFIX + "You have reached the maximum amount of locks in this world (" + ChatColor.YELLOW + maxLocks + ChatColor.GRAY + ")");
             }
 
             return;
@@ -298,13 +298,13 @@ public final class LockedBlockInteractionListener implements Listener {
         Player player = event.getPlayer();
 
         if (!player.hasPermission(LSConstants.LOCKSECURITY_BLOCK_NICKNAME)) {
-            player.sendMessage(LockSecurity.WARNING_PREFIX + "You do not have permission to nickname this " + ChatColor.YELLOW + blockType + ChatColor.GRAY + ".");
+            player.sendMessage(LSConstants.WARNING_PREFIX + "You do not have permission to nickname this " + ChatColor.YELLOW + blockType + ChatColor.GRAY + ".");
             return;
         }
 
         LockedBlock lockedBlock = manager.getLockedBlock(block);
         if (!lockedBlock.isOwner(player)) {
-            player.sendMessage(LockSecurity.WARNING_PREFIX + "You do not own this " + ChatColor.YELLOW + blockType + ChatColor.GRAY + " and may not give it a nickname.");
+            player.sendMessage(LSConstants.WARNING_PREFIX + "You do not own this " + ChatColor.YELLOW + blockType + ChatColor.GRAY + " and may not give it a nickname.");
             return;
         }
 

@@ -2,6 +2,8 @@ package wtf.choco.locksecurity.util;
 
 import java.util.Locale;
 
+import org.bukkit.ChatColor;
+
 import wtf.choco.locksecurity.LockSecurity;
 
 public final class LSConstants {
@@ -46,6 +48,9 @@ public final class LSConstants {
 
 
     // Miscellaneous
+
+    public static final String WARNING_PREFIX = ChatColor.RED.toString() + ChatColor.BOLD + "[!] " + ChatColor.GRAY;
+    public static final String QUESTION_PREFIX = ChatColor.YELLOW.toString() + ChatColor.BOLD + "[?] " + ChatColor.GRAY;
 
     public static final String PATH_RESOURCE_PACK = "resourcePack/LockSecurityRP.zip";
     public static final String RECIPE_CATEGORY_UNSMITHED_KEY = LockSecurity.getInstance().getName().toLowerCase(Locale.ROOT) + ":unsmithed_key";

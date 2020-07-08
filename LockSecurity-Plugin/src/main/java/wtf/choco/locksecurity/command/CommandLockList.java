@@ -44,23 +44,23 @@ public final class CommandLockList implements TabExecutor {
             targets.removeIf(e -> e.getType() != EntityType.PLAYER);
         }
         else if (!(sender instanceof Player)) {
-            sender.sendMessage(LockSecurity.WARNING_PREFIX + "You must specify a player when running this command from the console.");
+            sender.sendMessage(LSConstants.WARNING_PREFIX + "You must specify a player when running this command from the console.");
             return false;
         }
 
         if (targets.isEmpty()) {
-            sender.sendMessage(LockSecurity.WARNING_PREFIX + "Invalid selection of entities (" + ChatColor.YELLOW + args[0] + ChatColor.GRAY + "). Only " + ChatColor.AQUA + "players " + ChatColor.GRAY + "are supported. Are they online?");
+            sender.sendMessage(LSConstants.WARNING_PREFIX + "Invalid selection of entities (" + ChatColor.YELLOW + args[0] + ChatColor.GRAY + "). Only " + ChatColor.AQUA + "players " + ChatColor.GRAY + "are supported. Are they online?");
             return true;
         }
 
         if (targets.size() > 1) {
-            sender.sendMessage(LockSecurity.WARNING_PREFIX + "Only one target may be selected. (" + ChatColor.YELLOW + targets.size() + ChatColor.GRAY + ") have been selected (" + ChatColor.AQUA + args[0] + ChatColor.GRAY + ").");
+            sender.sendMessage(LSConstants.WARNING_PREFIX + "Only one target may be selected. (" + ChatColor.YELLOW + targets.size() + ChatColor.GRAY + ") have been selected (" + ChatColor.AQUA + args[0] + ChatColor.GRAY + ").");
             return true;
         }
 
         OfflinePlayer target = (OfflinePlayer) targets.get(0);
         if (target != sender && !sender.hasPermission(LSConstants.LOCKSECURITY_COMMAND_LOCKLIST_OTHER)) {
-            sender.sendMessage(LockSecurity.WARNING_PREFIX + "You do not have permission to view the locklist of another player");
+            sender.sendMessage(LSConstants.WARNING_PREFIX + "You do not have permission to view the locklist of another player");
             return true;
         }
 

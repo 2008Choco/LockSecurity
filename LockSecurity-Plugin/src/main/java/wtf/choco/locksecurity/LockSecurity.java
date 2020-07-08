@@ -63,9 +63,6 @@ public final class LockSecurity extends JavaPlugin {
 
     public static final Gson GSON = new Gson();
 
-    public static final String WARNING_PREFIX = ChatColor.RED.toString() + ChatColor.BOLD + "[!] " + ChatColor.GRAY;
-    public static final String QUESTION_PREFIX = ChatColor.YELLOW.toString() + ChatColor.BOLD + "[?] " + ChatColor.GRAY;
-
     private static LockSecurity instance;
 
     private File blocksFile, playerDataDirectory;

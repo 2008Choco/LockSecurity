@@ -23,6 +23,7 @@ import org.bukkit.util.StringUtil;
 import wtf.choco.locksecurity.LockSecurity;
 import wtf.choco.locksecurity.block.LockedBlock;
 import wtf.choco.locksecurity.key.KeyFactory;
+import wtf.choco.locksecurity.util.LSConstants;
 
 public final class CommandGiveKey implements TabExecutor {
 
@@ -48,7 +49,7 @@ public final class CommandGiveKey implements TabExecutor {
         }
 
         if (targets.isEmpty()) {
-            sender.sendMessage(LockSecurity.WARNING_PREFIX + "Invalid selection of entities (" + ChatColor.YELLOW + args[0] + ChatColor.GRAY + "). Only players are supported. Are they online?");
+            sender.sendMessage(LSConstants.WARNING_PREFIX + "Invalid selection of entities (" + ChatColor.YELLOW + args[0] + ChatColor.GRAY + "). Only players are supported. Are they online?");
             return true;
         }
 
@@ -59,7 +60,7 @@ public final class CommandGiveKey implements TabExecutor {
         // ... specifying block position arguments (x y z world) for a smithed key
         if (args.length >= 3) {
             if (args.length < 5 || !NumberUtils.isNumber(args[2]) || !NumberUtils.isNumber(args[3]) || !NumberUtils.isNumber(args[4])) {
-                sender.sendMessage(LockSecurity.WARNING_PREFIX + "A complete, valid set of " + ChatColor.YELLOW + "coordinates " + ChatColor.GRAY + "must be provided.");
+                sender.sendMessage(LSConstants.WARNING_PREFIX + "A complete, valid set of " + ChatColor.YELLOW + "coordinates " + ChatColor.GRAY + "must be provided.");
                 return true;
             }
 
@@ -69,7 +70,7 @@ public final class CommandGiveKey implements TabExecutor {
             }
 
             if (world == null) {
-                sender.sendMessage(LockSecurity.WARNING_PREFIX + "Invalid or unknown world name, " + ChatColor.AQUA + args[5]);
+                sender.sendMessage(LSConstants.WARNING_PREFIX + "Invalid or unknown world name, " + ChatColor.AQUA + args[5]);
                 return true;
             }
 
@@ -79,7 +80,7 @@ public final class CommandGiveKey implements TabExecutor {
 
             LockedBlock lockedBlock = plugin.getLockedBlockManager().getLockedBlock(world.getBlockAt(x, y, z));
             if (lockedBlock == null) {
-                sender.sendMessage(LockSecurity.WARNING_PREFIX + "The block at " + ChatColor.YELLOW + "(" + x + ", " + y + ", " + z + ") in world " + ChatColor.AQUA + world.getName() + ChatColor.GRAY + " is not locked and cannot be added to a key.");
+                sender.sendMessage(LSConstants.WARNING_PREFIX + "The block at " + ChatColor.YELLOW + "(" + x + ", " + y + ", " + z + ") in world " + ChatColor.AQUA + world.getName() + ChatColor.GRAY + " is not locked and cannot be added to a key.");
                 return true;
             }
 

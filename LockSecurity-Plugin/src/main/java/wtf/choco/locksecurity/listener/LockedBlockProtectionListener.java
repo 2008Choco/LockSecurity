@@ -35,6 +35,7 @@ import wtf.choco.locksecurity.LockSecurity;
 import wtf.choco.locksecurity.block.LockedBlock;
 import wtf.choco.locksecurity.block.LockedBlockManager;
 import wtf.choco.locksecurity.block.LockedMultiBlock;
+import wtf.choco.locksecurity.util.LSConstants;
 
 public final class LockedBlockProtectionListener implements Listener {
 
@@ -81,7 +82,7 @@ public final class LockedBlockProtectionListener implements Listener {
 
         // Non-owners cannot break locked blocks
         String blockType = block.getType().getKey().getKey().toLowerCase().replace("_", " ");
-        this.warnIfNecessary(player, block, LockSecurity.WARNING_PREFIX + "You cannot destroy a " + ChatColor.YELLOW + blockType + ChatColor.GRAY + " you do not own");
+        this.warnIfNecessary(player, block, LSConstants.WARNING_PREFIX + "You cannot destroy a " + ChatColor.YELLOW + blockType + ChatColor.GRAY + " you do not own");
         event.setCancelled(true);
     }
 
@@ -126,7 +127,7 @@ public final class LockedBlockProtectionListener implements Listener {
 
                 // At this point, we're pretty confident it's a locked chest to become a double chest!
                 String blockType = block.getType().getKey().getKey().toLowerCase().replace("_", " ");
-                this.warnIfNecessary(player, block, LockSecurity.WARNING_PREFIX + "You cannot place a double chest against a " + ChatColor.YELLOW + blockType + ChatColor.GRAY + " you do not own");
+                this.warnIfNecessary(player, block, LSConstants.WARNING_PREFIX + "You cannot place a double chest against a " + ChatColor.YELLOW + blockType + ChatColor.GRAY + " you do not own");
                 event.setCancelled(true);
                 break;
             }
@@ -154,7 +155,7 @@ public final class LockedBlockProtectionListener implements Listener {
         }
 
         String blockType = blockAbove.getType().getKey().getKey().toLowerCase().replace("_", " ");
-        this.warnIfNecessary(event.getPlayer(), block, LockSecurity.WARNING_PREFIX + "You cannot destroy the block below this " + ChatColor.YELLOW + blockType + ChatColor.GRAY + " as you do not own it.");
+        this.warnIfNecessary(event.getPlayer(), block, LSConstants.WARNING_PREFIX + "You cannot destroy the block below this " + ChatColor.YELLOW + blockType + ChatColor.GRAY + " as you do not own it.");
         event.setCancelled(true);
     }
 
