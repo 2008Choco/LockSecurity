@@ -13,6 +13,7 @@ import org.bukkit.Sound;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.block.BlockState;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.type.Chest;
 import org.bukkit.entity.Player;
@@ -32,6 +33,7 @@ import org.bukkit.event.entity.EntityExplodeEvent;
 import wtf.choco.locksecurity.LockSecurity;
 import wtf.choco.locksecurity.block.LockedBlock;
 import wtf.choco.locksecurity.block.LockedBlockManager;
+import wtf.choco.locksecurity.block.LockedMultiBlock;
 
 public final class LockedBlockProtectionListener implements Listener {
 
@@ -61,6 +63,18 @@ public final class LockedBlockProtectionListener implements Listener {
         if (lockedBlock.isOwner(player)) {
             manager.unregisterLockedBlock(lockedBlock);
             block.getWorld().playSound(block.getLocation(), Sound.BLOCK_WOODEN_DOOR_CLOSE, 1, 1.5F);
+
+            // If it's a double chest, let's re-register it as a single locked block
+            BlockState state = block.getState();
+            if (lockedBlock instanceof LockedMultiBlock && state instanceof org.bukkit.block.Chest) {
+                LockedMultiBlock lockedMultiBlock = (LockedMultiBlock) lockedBlock;
+                Block firstChest = lockedMultiBlock.getBlock(), secondChest = lockedMultiBlock.getSecondaryBlock();
+                Block remainingChest = (firstChest.equals(block) ? secondChest : firstChest);
+
+                LockedBlock newLockedBlock = new LockedBlock(remainingChest, lockedBlock.getOwner(), lockedBlock.getLockTime());
+                manager.registerLockedBlock(newLockedBlock);
+            }
+
             return;
         }
 
@@ -87,11 +101,6 @@ public final class LockedBlockProtectionListener implements Listener {
                     continue;
                 }
 
-                // We should let the owner do whatever they want, really
-                if (lockedBlockManager.getLockedBlock(doubleChest).isOwner(player)) {
-                    continue;
-                }
-
                 BlockData doubleChestBlockData = doubleChest.getBlockData();
                 if (!(doubleChestBlockData instanceof Chest)) {
                     continue;
@@ -100,6 +109,18 @@ public final class LockedBlockProtectionListener implements Listener {
                 BlockFace doubleChestFacing = ((Chest) doubleChestBlockData).getFacing();
                 if (facing != doubleChestFacing) {
                     continue;
+                }
+
+                // If it's the owner, re-register the locked block as a double locked block
+                LockedBlock existingLockedBlock = lockedBlockManager.getLockedBlock(doubleChest);
+                if (existingLockedBlock.isOwner(player)) {
+                    lockedBlockManager.unregisterLockedBlock(existingLockedBlock);
+                    LockedMultiBlock newLockedBlock = new LockedMultiBlock(doubleChest, block, existingLockedBlock.getOwner(), existingLockedBlock.getLockTime());
+                    lockedBlockManager.registerLockedBlock(newLockedBlock);
+
+                    // We'll place the lock sound too (a notification probably isn't necessary though)
+                    block.getWorld().playSound(block.getLocation(), Sound.BLOCK_WOODEN_DOOR_OPEN, 1, 2);
+                    break;
                 }
 
                 // At this point, we're pretty confident it's a locked chest to become a double chest!
