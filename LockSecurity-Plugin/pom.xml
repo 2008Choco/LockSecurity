@@ -12,7 +12,7 @@
   </parent>
 
   <properties>
-    <resourcepack.directory>resource_pack</resourcepack.directory>
+    <resourcepack.directory>resourcePack</resourcepack.directory>
   </properties>
 
   <repositories>

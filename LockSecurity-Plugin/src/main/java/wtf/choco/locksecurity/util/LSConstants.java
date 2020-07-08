@@ -44,7 +44,7 @@ public final class LSConstants {
 
     // Miscellaneous
 
-    public static final String PATH_RESOURCE_PACK = "resource_pack/LockSecurityRP.zip";
+    public static final String PATH_RESOURCE_PACK = "resourcePack/LockSecurityRP.zip";
     public static final String RECIPE_CATEGORY_UNSMITHED_KEY = LockSecurity.getInstance().getName().toLowerCase(Locale.ROOT) + ":unsmithed_key";
 
     private LSConstants() { }
