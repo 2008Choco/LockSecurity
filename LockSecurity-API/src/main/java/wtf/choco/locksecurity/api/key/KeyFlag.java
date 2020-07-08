@@ -35,10 +35,15 @@ public enum KeyFlag {
     /**
      * The key should hide coordinates in the key's lore.
      */
-    HIDE_BLOCK_COORDINATES(0x10);
+    HIDE_BLOCK_COORDINATES(0x10),
+
+    /**
+     * The key should hide the lore applied by other key flags. Very meta...
+     */
+    HIDE_FLAG_LORE(0x20);
 
 
-    public static final int BITMASK = 0b11111;
+    public static final int BITMASK = 0b111111;
 
     private final int bit;
     private final String loreEntry;

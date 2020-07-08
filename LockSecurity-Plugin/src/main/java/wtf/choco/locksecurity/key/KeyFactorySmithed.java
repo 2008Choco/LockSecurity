@@ -14,7 +14,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
@@ -141,7 +140,6 @@ public final class KeyFactorySmithed implements KeyFactoryType<KeyBuilderSmithed
 
         private List<LockedBlock> unlocks = Collections.emptyList();
         private int flagBitmask = 0x00;
-        private boolean showFlagLore = true;
 
         private final IKeyBuilderSmithed apiWrapper = new KeyBuilderSmithedWrapper(this);
 
@@ -149,23 +147,8 @@ public final class KeyFactorySmithed implements KeyFactoryType<KeyBuilderSmithed
             Preconditions.checkArgument(key != null, "Cannot refresh null key");
             Preconditions.checkArgument(isKey(key), "item is not a key (isKey(ItemStack) == false)");
 
-            ItemMeta meta = key.getItemMeta();
-
             this.unlocks(key);
             this.flagBitmask = getBitmask(key);
-            this.showFlagLore = false;
-
-            // Hacky, but the only way to do this without having it stored as a bit in the bitmask
-            List<String> lore = meta.getLore();
-            if (lore != null) {
-                for (KeyFlag flag : KeyFlag.values()) {
-                    String loreEntry = flag.getLoreEntry();
-                    if (loreEntry != null && lore.contains(loreEntry)) {
-                        this.showFlagLore = true;
-                        break;
-                    }
-                }
-            }
         }
 
         private KeyBuilderSmithed() { }
@@ -265,8 +248,7 @@ public final class KeyFactorySmithed implements KeyFactoryType<KeyBuilderSmithed
         }
 
         public KeyBuilderSmithed hideFlagLore(boolean hide) {
-            this.showFlagLore = !hide;
-            return this;
+            return withFlag(KeyFlag.HIDE_FLAG_LORE, hide);
         }
 
         public KeyBuilderSmithed hideFlagLore() {
@@ -301,6 +283,7 @@ public final class KeyFactorySmithed implements KeyFactoryType<KeyBuilderSmithed
                     lore.add(blockEntry.toString());
                 }
 
+                boolean showFlagLore = (flagBitmask & KeyFlag.HIDE_FLAG_LORE.getBit()) == 0;
                 if (showFlagLore && (flagBitmask & KeyFlag.BITMASK) != 0) {
                     lore.add("");
 
