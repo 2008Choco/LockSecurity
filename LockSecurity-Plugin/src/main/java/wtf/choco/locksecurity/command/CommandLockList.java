@@ -68,7 +68,8 @@ public final class CommandLockList implements TabExecutor {
         Collection<LockedBlock> ownedBlocks = plugin.getLockedBlockManager().getLockedBlocks(target);
         if (ownedBlocks.isEmpty()) {
             sender.sendMessage(ChatColor.YELLOW + target.getName() + ChatColor.GRAY + " does not own any blocks");
-        } else {
+        }
+        else {
             boolean shouldShowTeleportation = (sender instanceof Player && sender.hasPermission(LSConstants.MINECRAFT_COMMAND_TELEPORT));
 
             sender.sendMessage(ChatColor.YELLOW + target.getName() + ChatColor.GRAY + " owns blocks at the following locations:");

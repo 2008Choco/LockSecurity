@@ -38,7 +38,7 @@ public final class KeyItemListener implements Listener {
     public static final ItemStack IMPOSSIBLE_RECIPE_RESULT = ItemBuilder.of(Material.BARRIER)
             .name(ChatColor.GRAY + "Impossible")
             .lore(ChatColor.WHITE + "If you're seeing this item in a recipe,",
-                    ChatColor.WHITE + "something went wrong...")
+                  ChatColor.WHITE + "something went wrong...")
             .build();
 
     private static final NamespacedKey CHEST_RECIPE_KEY = Material.CHEST.getKey();

@@ -97,7 +97,7 @@ public final class LockSecurity extends JavaPlugin {
                 e.printStackTrace();
             }
 
-            this.getLogger().info("Done!");
+            logger.info("Done!");
         }
 
         this.playerDataDirectory = new File(getDataFolder(), "playerData/");
@@ -120,7 +120,7 @@ public final class LockSecurity extends JavaPlugin {
             } catch (IOException e) {
                 e.printStackTrace();
             } catch (JsonSyntaxException | JsonIOException e) {
-                this.getLogger().warning("Could not load player data for player \"" + player.getName() + "\" (" + uuid + "). Deleting...");
+                logger.warning("Could not load player data for player \"" + player.getName() + "\" (" + uuid + "). Deleting...");
                 playerDataFile.delete();
             }
         }

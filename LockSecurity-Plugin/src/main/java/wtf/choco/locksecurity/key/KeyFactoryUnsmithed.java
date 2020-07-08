@@ -69,13 +69,11 @@ public final class KeyFactoryUnsmithed implements KeyFactoryType<KeyBuilderUnsmi
 
         private final IKeyBuilderUnsmithed apiWrapper = new KeyBuilderUnsmithedWrapper(this);
 
-        private KeyBuilderUnsmithed() { }
+        private KeyBuilderUnsmithed() {}
 
         @Override
         public ItemStack build(int amount) {
-            ItemBuilder keyItem = ItemBuilder.of(Material.TRIPWIRE_HOOK)
-                    .name(ChatColor.WHITE + "Unsmithed Key")
-                    .lore(Arrays.asList(ChatColor.GRAY + "Unlocks: " + ChatColor.WHITE + "None"));
+            ItemBuilder keyItem = ItemBuilder.of(Material.TRIPWIRE_HOOK).name(ChatColor.WHITE + "Unsmithed Key").lore(Arrays.asList(ChatColor.GRAY + "Unlocks: " + ChatColor.WHITE + "None"));
 
             // Assign model data
             FileConfiguration config = LockSecurity.getInstance().getConfig();

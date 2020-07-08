@@ -112,14 +112,12 @@ public class LockedMultiBlock extends LockedBlock {
 
     @Override
     public boolean equals(Object other) {
-        return this == other || (other instanceof LockedMultiBlock && super.equals(other)
-                && Objects.equals(secondaryBlock, ((LockedMultiBlock) other).secondaryBlock));
+        return this == other || (other instanceof LockedMultiBlock && super.equals(other) && Objects.equals(secondaryBlock, ((LockedMultiBlock) other).secondaryBlock));
     }
 
     @Override
     public String toString() {
-        return String.format("LockedMultiBlock:{OwnerUUID:\"%s\", World:\"%s\", Positions:[{X:%d, Y:%d, Z:%d}, {X:%d, Y:%d, Z:%d}]}",
-                getOwner().getUniqueId(), getWorld().getName(), getX(), getY(), getZ(), getXSecondary(), getYSecondary(), getZSecondary());
+        return String.format("LockedMultiBlock:{OwnerUUID:\"%s\", World:\"%s\", Positions:[{X:%d, Y:%d, Z:%d}, {X:%d, Y:%d, Z:%d}]}", getOwner().getUniqueId(), getWorld().getName(), getX(), getY(), getZ(), getXSecondary(), getYSecondary(), getZSecondary());
     }
 
 }

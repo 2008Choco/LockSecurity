@@ -35,13 +35,13 @@ public final class UpdateChecker {
 
     public static final VersionScheme VERSION_SCHEME_DECIMAL = (first, second) -> {
         String[] firstSplit = splitVersionInfo(first),
-                        secondSplit = splitVersionInfo(second);
+                secondSplit = splitVersionInfo(second);
         if (firstSplit == null || secondSplit == null)
             return null;
 
         for (int i = 0; i < Math.min(firstSplit.length, secondSplit.length); i++) {
             int currentValue = NumberUtils.toInt(firstSplit[i]),
-                            newestValue = NumberUtils.toInt(secondSplit[i]);
+                    newestValue = NumberUtils.toInt(secondSplit[i]);
 
             if (newestValue > currentValue) {
                 return second;
@@ -98,7 +98,7 @@ public final class UpdateChecker {
 
                 JsonObject versionObject = element.getAsJsonArray().get(0).getAsJsonObject();
                 String current = plugin.getDescription().getVersion(),
-                                newest = versionObject.get("name").getAsString();
+                        newest = versionObject.get("name").getAsString();
                 String latest = versionScheme.compareVersions(current, newest);
 
                 if (latest == null) {

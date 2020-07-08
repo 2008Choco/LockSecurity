@@ -85,7 +85,8 @@ public final class CommandGiveKey implements TabExecutor {
             }
 
             keyItem = KeyFactory.SMITHED.builder().unlocks(lockedBlock).build(amount);
-        } else {
+        }
+        else {
             keyItem = KeyFactory.createUnsmithedKey(amount);
         }
 

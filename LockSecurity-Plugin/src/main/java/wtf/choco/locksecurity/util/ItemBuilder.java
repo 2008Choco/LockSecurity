@@ -17,7 +17,8 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 
 /**
- * A utility class to assist in the creation of ItemStacks in the confines of a single line.
+ * A utility class to assist in the creation of ItemStacks in the confines of a single
+ * line.
  *
  * @author Parker Hawke - Choco
  */
@@ -44,8 +45,9 @@ public final class ItemBuilder {
     }
 
     /**
-     * Get a new instance of an ItemBuilder given a (non-null and non-air) {@link Material} and
-     * a quantity greater than 0 and less than or equal to {@link Material#getMaxStackSize()}.
+     * Get a new instance of an ItemBuilder given a (non-null and non-air)
+     * {@link Material} and a quantity greater than 0 and less than or equal to
+     * {@link Material#getMaxStackSize()}.
      *
      * @param type the type of item to build
      * @param amount the item amount
@@ -57,7 +59,8 @@ public final class ItemBuilder {
     }
 
     /**
-     * Get a new instance of an ItemBuilder given a (non-null and non-air) {@link Material}.
+     * Get a new instance of an ItemBuilder given a (non-null and non-air)
+     * {@link Material}.
      *
      * @param type the type of item to build
      *
@@ -69,10 +72,10 @@ public final class ItemBuilder {
 
     /**
      * Get a new instance of ItemBuilder to modify an existing {@link ItemStack}. The
-     * ItemStack passed will be cloned, therefore the passed reference will not be modified,
-     * but rather a copy of it. The result of {@link #build()} will be a separate item with
-     * the changes applied from this builder instance. The provided item acts as a base for
-     * the values in this builder.
+     * ItemStack passed will be cloned, therefore the passed reference will not be
+     * modified, but rather a copy of it. The result of {@link #build()} will be a
+     * separate item with the changes applied from this builder instance. The provided
+     * item acts as a base for the values in this builder.
      *
      * @param item the item to build
      *
@@ -97,12 +100,11 @@ public final class ItemBuilder {
      * Apply a method from a more specific type of ItemMeta to this ItemBuilder instance.
      * If the type provided is unsupported by this ItemBuilder (according to
      * {@link #isSupportedMeta(Class)}), this method will throw an exception, therefore it
-     * is recommended that it be checked before invoking this method if you are unsure as to
-     * what is and is not supported.
+     * is recommended that it be checked before invoking this method if you are unsure as
+     * to what is and is not supported.
      *
      * @param type the type of ItemMeta to apply
      * @param applier the function to apply to the ItemMeta instance
-     *
      * @param <T> The ItemMeta type to be applied in the consumer function
      *
      * @return this instance. Allows for chained method calls
@@ -178,8 +180,8 @@ public final class ItemBuilder {
     }
 
     /**
-     * Set the item damage. Some items may not display damage or accept the damage attribute at
-     * all, in which case this method will simply fail silently.
+     * Set the item damage. Some items may not display damage or accept the damage
+     * attribute at all, in which case this method will simply fail silently.
      *
      * @param damage the damage to set
      *
@@ -193,8 +195,9 @@ public final class ItemBuilder {
     }
 
     /**
-     * Set the item amount. This damage must range between 1 and {@link Material#getMaxStackSize()}
-     * according to the type being built in this ItemBuilder instance.
+     * Set the item amount. This damage must range between 1 and
+     * {@link Material#getMaxStackSize()} according to the type being built in this
+     * ItemBuilder instance.
      *
      * @param amount the amount to set
      *
@@ -208,8 +211,9 @@ public final class ItemBuilder {
     }
 
     /**
-     * Apply an enchantment with the specified level to the item. This method does not respect the
-     * level limitations of an enchantment (i.e. Sharpness VI may be applied if desired).
+     * Apply an enchantment with the specified level to the item. This method does not
+     * respect the level limitations of an enchantment (i.e. Sharpness VI may be applied
+     * if desired).
      *
      * @param enchantment the enchantment to add
      * @param level the enchantment level to set
