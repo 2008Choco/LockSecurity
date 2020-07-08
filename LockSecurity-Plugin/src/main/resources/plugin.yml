@@ -111,6 +111,12 @@ permissions:
 
   locksecurity.block.lock:
     description: Allow a player to lock a block using an unsmithed key
+    children:
+      locksecurity.block.lock.ignorelimit: false
+
+  locksecurity.block.lock.ignorelimit:
+    description: Ignore the block limit in every world
+    default: op
 
   locksecurity.block.unlock:
     description: Allow a player to unlock a block using a smithed key

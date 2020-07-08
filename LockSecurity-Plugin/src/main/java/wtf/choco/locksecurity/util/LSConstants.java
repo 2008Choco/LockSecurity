@@ -18,6 +18,8 @@ public final class LSConstants {
     public static final String KEYS_ALLOW_KEY_MERGING = "Keys.AllowKeyMerging";
     public static final String KEYS_ALLOW_KEY_RESETTING = "Keys.AllowKeyRestting";
 
+    public static final String MAX_LOCKS_WORLD = "MaxLocks.%s";
+
     public static final String LOCKABLE_BLOCKS = "LockableBlocks";
 
 
@@ -26,6 +28,7 @@ public final class LSConstants {
     public static final String LOCKSECURITY_BLOCK_CLONEKEY = "locksecurity.block.clonekey";
     public static final String LOCKSECURITY_BLOCK_INSPECT = "locksecurity.block.inspect";
     public static final String LOCKSECURITY_BLOCK_LOCK = "locksecurity.block.lock";
+    public static final String LOCKSECURITY_BLOCK_LOCK_IGNORELIMIT = "locksecurity.block.lock.ignorelimit";
     public static final String LOCKSECURITY_BLOCK_NICKNAME = "locksecurity.block.nickname";
     public static final String LOCKSECURITY_BLOCK_UNLOCK = "locksecurity.block.unlock";
 

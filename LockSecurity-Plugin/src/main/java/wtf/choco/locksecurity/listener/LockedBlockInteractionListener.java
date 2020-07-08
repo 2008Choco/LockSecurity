@@ -234,6 +234,18 @@ public final class LockedBlockInteractionListener implements Listener {
             return;
         }
 
+        // Check for the maximum lock count for this world
+        int maxLocks = plugin.getConfig().getInt(String.format(LSConstants.MAX_LOCKS_WORLD, world.getName()), -1);
+        if (!player.hasPermission(LSConstants.LOCKSECURITY_BLOCK_LOCK_IGNORELIMIT) && maxLocks >= 0 && manager.getLockedBlocks(player).size() >= maxLocks) {
+            if (maxLocks == 0) {
+                player.sendMessage(LockSecurity.WARNING_PREFIX + "Locks are not permitted in this world");
+            } else {
+                player.sendMessage(LockSecurity.WARNING_PREFIX + "You have reached the maximum amount of locks in this world (" + ChatColor.YELLOW + maxLocks + ChatColor.GRAY + ")");
+            }
+
+            return;
+        }
+
         // Create necessary data and call an event
         LockSecurityPlayer playerWrapper = plugin.getPlayer(player);
         LockedBlock lockedBlock = getLockedBlock(block, playerWrapper);

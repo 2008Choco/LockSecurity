@@ -14,6 +14,11 @@ Keys:
   AllowKeyMerging: true
   AllowKeyResetting: true
 
+MaxLocks:
+  world: -1
+  world_nether: 0
+  world_the_end: 0
+
 LockableBlocks:
 - 'minecraft:chest'
 - 'minecraft:trapped_chest'
