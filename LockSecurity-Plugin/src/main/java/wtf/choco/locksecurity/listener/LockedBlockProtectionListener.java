@@ -10,6 +10,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
+import org.bukkit.Tag;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -131,6 +132,52 @@ public final class LockedBlockProtectionListener implements Listener {
             }
         }
     }
+
+    // Hacky and door-exclusive, I don't know if any other blocks can do this. See below for explanation
+    @EventHandler
+    public void onBreakBlockBelowDoor(BlockBreakEvent event) {
+        Block block = event.getBlock();
+        if (Tag.WOODEN_DOORS.isTagged(block.getType())) {
+            return;
+        }
+
+        Block blockAbove = block.getRelative(BlockFace.UP);
+        LockedBlockManager lockedBlockManager = plugin.getLockedBlockManager();
+        if (!Tag.WOODEN_DOORS.isTagged(blockAbove.getType()) || !lockedBlockManager.isLocked(blockAbove)) {
+            return;
+        }
+
+        LockedBlock lockedBlock = lockedBlockManager.getLockedBlock(blockAbove);
+        if (lockedBlock.isOwner(event.getPlayer())) {
+            lockedBlockManager.unregisterLockedBlock(lockedBlock);
+            return;
+        }
+
+        String blockType = blockAbove.getType().getKey().getKey().toLowerCase().replace("_", " ");
+        this.warnIfNecessary(event.getPlayer(), block, LockSecurity.WARNING_PREFIX + "You cannot destroy the block below this " + ChatColor.YELLOW + blockType + ChatColor.GRAY + " as you do not own it.");
+        event.setCancelled(true);
+    }
+
+    /*
+     * I'm leaving this here because yes... I did try this and it doesn't work. BlockPhysicsEvent on a door will break the lower half but not the top.
+     * Maybe I'm just using the event wrong but honestly, I don't think the cancel for the bottom half is working properly... Maybe file an issue on the JIRA?
+
+    @EventHandler
+    public void onBlockPhysicsLockedBlock(BlockPhysicsEvent event) {
+        if (event.getSourceBlock().getType() != Material.AIR) {
+            return;
+        }
+
+        Block block = event.getBlock();
+        LockedBlockManager lockedBlockManager = plugin.getLockedBlockManager();
+        if (!lockedBlockManager.isLocked(block)) {
+            return;
+        }
+
+        event.setCancelled(true);
+    }
+
+    */
 
     @EventHandler
     public void onExplodeLockedBlock(BlockExplodeEvent event) {
