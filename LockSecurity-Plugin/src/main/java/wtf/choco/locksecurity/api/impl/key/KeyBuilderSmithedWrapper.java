@@ -120,6 +120,7 @@ public final class KeyBuilderSmithedWrapper implements IKeyBuilderSmithed {
 
     @Override
     public ItemStack build(int amount) {
+        Preconditions.checkArgument(amount > 0, "amount must be > 0");
         return getHandle().build(amount);
     }
 

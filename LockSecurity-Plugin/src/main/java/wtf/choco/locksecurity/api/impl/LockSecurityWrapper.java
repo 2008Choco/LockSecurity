@@ -16,7 +16,7 @@ import wtf.choco.locksecurity.api.key.IKeyFactory;
 import wtf.choco.locksecurity.api.player.ILockSecurityPlayer;
 import wtf.choco.locksecurity.key.KeyFactory;
 
-public class LockSecurityWrapper implements ILockSecurity {
+public final class LockSecurityWrapper implements ILockSecurity {
 
     private final LockSecurity plugin;
     private final IKeyFactory<IKeyBuilderUnsmithed> unsmithedKeyFactory;
@@ -55,6 +55,7 @@ public class LockSecurityWrapper implements ILockSecurity {
 
     @Override
     public boolean isLockable(Material material) {
+        Preconditions.checkArgument(material != null, "material cannot be null");
         return plugin.isLockable(material);
     }
 

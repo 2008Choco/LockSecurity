@@ -20,6 +20,8 @@ public interface IKeyBuilder {
      * @param amount the amount of keys to create
      *
      * @return the built key(s)
+     *
+     * @throws IllegalArgumentException if amount is <= 0
      */
     @NotNull
     public ItemStack build(int amount);

@@ -78,7 +78,7 @@ public class LockedBlockWrapper implements ILockedBlock {
 
     @Override
     public boolean isOwner(ILockSecurityPlayer player) {
-        return getHandle().isOwner(((LockSecurityPlayerWrapper) player).getHandle());
+        return player != null && getHandle().isOwner(((LockSecurityPlayerWrapper) player).getHandle());
     }
 
     @Override

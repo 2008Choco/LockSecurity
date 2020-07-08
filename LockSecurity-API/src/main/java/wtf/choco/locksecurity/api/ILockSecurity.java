@@ -28,6 +28,9 @@ public interface ILockSecurity {
      *
      * @throws UnsupportedOperationException if the provided {@link IKeyBuilder} is not
      * supported by LockSecurity
+     *
+     * @see IKeyFactory#UNSMITHED
+     * @see IKeyFactory#SMITHED
      */
     @NotNull
     public <T extends IKeyBuilder> IKeyFactory<T> getKeyFactory(@NotNull Class<T> type);
