@@ -368,18 +368,24 @@ public final class LockedBlockInteractionListener implements Listener {
 
     // [owner] has locked a [type] at (x, y, z) in world [world]
     private BaseComponent[] lockNotificationComponent(Player admin, LockedBlock block, Player owner) {
-        ComponentBuilder componentBuilder = new ComponentBuilder(owner.getName());
+        ComponentBuilder componentBuilder = new ComponentBuilder(owner.getName()).color(net.md_5.bungee.api.ChatColor.GOLD);
         componentBuilder.event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponent[] {
                 new TextComponent(owner.getName() + "\n" + owner.getUniqueId().toString() + "\n\nClick to message!"),
         }));
         componentBuilder.event(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/tell " + owner.getName() + " "));
 
-        componentBuilder.append(" has locked a " + block.getType().getKey().getKey().replace("_", " ") + " at ", FormatRetention.NONE);
-        componentBuilder.append("(" + block.getX() + ", " + block.getY() + ", " + block.getZ() + ") in world " + block.getWorld().getName());
+        componentBuilder.append(" has locked a ", FormatRetention.NONE).color(net.md_5.bungee.api.ChatColor.GRAY);
+        componentBuilder.append(block.getType().getKey().getKey().replace("_", " "), FormatRetention.NONE).color(net.md_5.bungee.api.ChatColor.YELLOW);
+        componentBuilder.append(" at ", FormatRetention.NONE).color(net.md_5.bungee.api.ChatColor.GRAY);
+        componentBuilder.append("(" + block.getX() + ", " + block.getY() + ", " + block.getZ() + ")", FormatRetention.NONE).color(net.md_5.bungee.api.ChatColor.AQUA);
+
         if (admin.hasPermission(LSConstants.MINECRAFT_COMMAND_TELEPORT)) {
             componentBuilder.event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponent[] { new TextComponent("Click to teleport!") }));
             componentBuilder.event(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/minecraft:teleport " + admin.getName() + " " + block.getX() + " " + block.getY() + " " + block.getZ()));
         }
+
+        componentBuilder.append(" in world ", FormatRetention.NONE).color(net.md_5.bungee.api.ChatColor.GRAY);
+        componentBuilder.append(block.getWorld().getName(), FormatRetention.NONE).color(net.md_5.bungee.api.ChatColor.GREEN);
 
         return componentBuilder.create();
     }
