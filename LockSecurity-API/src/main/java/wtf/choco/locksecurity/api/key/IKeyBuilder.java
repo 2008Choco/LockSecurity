@@ -21,7 +21,7 @@ public interface IKeyBuilder {
      *
      * @return the built key(s)
      *
-     * @throws IllegalArgumentException if amount is <= 0
+     * @throws IllegalArgumentException if amount is {@literal <=} 0
      */
     @NotNull
     public ItemStack build(int amount);
