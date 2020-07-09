@@ -60,8 +60,12 @@ public final class KeyItemListener implements Listener {
     @EventHandler
     public void onDiscoverChestRecipe(PlayerRecipeDiscoverEvent event) {
         Player player = event.getPlayer();
-        if (event.getRecipe().equals(CHEST_RECIPE_KEY) && player.hasPermission(LSConstants.LOCKSECURITY_CRAFTING_UNSMITHED)) {
+        NamespacedKey recipeKey = event.getRecipe();
+        if (recipeKey.equals(CHEST_RECIPE_KEY) && player.hasPermission(LSConstants.LOCKSECURITY_CRAFTING_UNSMITHED)) {
             player.discoverRecipes(KeyFactory.UNSMITHED_KEY_RECIPES);
+        }
+        else if (recipeKey.equals(KeyFactory.RECIPE_KEY_MERGE) || recipeKey.equals(KeyFactory.RECIPE_KEY_RESET)) {
+            event.setCancelled(true);
         }
     }
 
