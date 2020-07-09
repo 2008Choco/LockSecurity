@@ -68,7 +68,7 @@ public final class KeyItemListener implements Listener {
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
-        if (player.hasPermission(LSConstants.LOCKSECURITY_CRAFTING_UNSMITHED)) {
+        if (player.hasPermission(LSConstants.LOCKSECURITY_CRAFTING_UNSMITHED) && player.hasDiscoveredRecipe(CHEST_RECIPE_KEY)) {
             player.discoverRecipes(KeyFactory.UNSMITHED_KEY_RECIPES);
         } else {
             player.undiscoverRecipes(KeyFactory.UNSMITHED_KEY_RECIPES);
