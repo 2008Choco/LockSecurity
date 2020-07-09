@@ -62,7 +62,7 @@ permissions:
       locksecurity.command.ignorelocks: true
       locksecurity.command.locklist: false
       locksecurity.command.locknotify: true
-      locksecurity.command.refreshkeys: true
+      locksecurity.command.refreshkeys: false
       locksecurity.command.reload: true
 
   locksecurity.command.editkey:
@@ -89,6 +89,7 @@ permissions:
 
   locksecurity.command.refreshkeys:
     description: Grant access to the /refreshkeys command
+    default: true
 
   locksecurity.command.reload:
     description: Grant access to the /locksecurity reload subcommand
