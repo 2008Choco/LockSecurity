@@ -106,7 +106,7 @@ public final class LockedBlockInteractionListener implements Listener {
         }
 
         // If the key is unsmithed and owner is clicking, create a new key
-        if (KeyFactory.UNSMITHED.isKey(keyItem) && lockedBlock.isOwner(player)) {
+        if (KeyFactory.UNSMITHED.isKey(keyItem) && (lockedBlock.isOwner(player) || playerWrapper.isIgnoringLocks())) {
             // Check for key cloning permissions
             if (!player.hasPermission(LSConstants.LOCKSECURITY_BLOCK_CLONEKEY)) {
                 player.sendMessage(LSConstants.WARNING_PREFIX + "You do not have permission to " + ChatColor.GREEN + "clone " + ChatColor.GRAY + "this key.");
@@ -155,7 +155,7 @@ public final class LockedBlockInteractionListener implements Listener {
                 return;
             }
 
-            if (!lockedBlock.isOwner(player)) {
+            if (!lockedBlock.isOwner(player) && !playerWrapper.isIgnoringLocks()) {
                 player.sendMessage(LSConstants.WARNING_PREFIX + "You do not own this " + ChatColor.YELLOW + blockType + ChatColor.GRAY + " and cannot unlock it.");
                 return;
             }

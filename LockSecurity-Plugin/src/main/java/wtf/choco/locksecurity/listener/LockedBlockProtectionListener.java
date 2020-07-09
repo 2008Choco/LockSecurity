@@ -62,7 +62,7 @@ public final class LockedBlockProtectionListener implements Listener {
 
         // Owner is allowed to break the block. It will unlock it
         Player player = event.getPlayer();
-        if (lockedBlock.isOwner(player)) {
+        if (lockedBlock.isOwner(player) || plugin.getPlayer(player).isIgnoringLocks()) {
             manager.unregisterLockedBlock(lockedBlock);
             block.getWorld().playSound(block.getLocation(), Sound.BLOCK_WOODEN_DOOR_CLOSE, 1, 1.5F);
 
@@ -115,7 +115,7 @@ public final class LockedBlockProtectionListener implements Listener {
 
                 // If it's the owner, re-register the locked block as a double locked block
                 LockedBlock existingLockedBlock = lockedBlockManager.getLockedBlock(doubleChest);
-                if (existingLockedBlock.isOwner(player)) {
+                if (existingLockedBlock.isOwner(player) || plugin.getPlayer(player).isIgnoringLocks()) {
                     lockedBlockManager.unregisterLockedBlock(existingLockedBlock);
                     LockedMultiBlock newLockedBlock = new LockedMultiBlock(doubleChest, block, existingLockedBlock.getOwner(), existingLockedBlock.getLockTime());
                     lockedBlockManager.registerLockedBlock(newLockedBlock);
@@ -149,13 +149,14 @@ public final class LockedBlockProtectionListener implements Listener {
         }
 
         LockedBlock lockedBlock = lockedBlockManager.getLockedBlock(blockAbove);
-        if (lockedBlock.isOwner(event.getPlayer())) {
+        Player player = event.getPlayer();
+        if (lockedBlock.isOwner(player) || plugin.getPlayer(player).isIgnoringLocks()) {
             lockedBlockManager.unregisterLockedBlock(lockedBlock);
             return;
         }
 
         String blockType = blockAbove.getType().getKey().getKey().toLowerCase().replace("_", " ");
-        this.warnIfNecessary(event.getPlayer(), block, LSConstants.WARNING_PREFIX + "You cannot destroy the block below this " + ChatColor.YELLOW + blockType + ChatColor.GRAY + " as you do not own it.");
+        this.warnIfNecessary(player, block, LSConstants.WARNING_PREFIX + "You cannot destroy the block below this " + ChatColor.YELLOW + blockType + ChatColor.GRAY + " as you do not own it.");
         event.setCancelled(true);
     }
 
