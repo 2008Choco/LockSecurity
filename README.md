@@ -10,7 +10,7 @@
 
 # LockSecurity
 
-For information about the plugin and how to use it, please see the plugin's resource page on [SpigotMC](https://www.spigotmc.org/resources/locksecurity.81282/)
+For information about the plugin and how to use it, please see the plugin's resource page on [SpigotMC](https://www.spigotmc.org/resources/locksecurity.81282/).
 
 # Depending on the LockSecurity API
 LockSecurity deploys an API artifact to Jitpack for developers to depend on in order to interact with LockSecurity without having to purchase the project on SpigotMC. This artifact is provided free of charge. In order to use the API in your project, you must include the following in your project's build file:
