@@ -162,7 +162,7 @@ public final class LockSecurity extends JavaPlugin {
         }
 
         // Update check
-        UpdateChecker.init(this, 12650);
+        UpdateChecker.init(this, 81282);
         if (getConfig().getBoolean(LSConstants.PERFORM_UPDATE_CHECKS, true)) {
             this.updateTask = Bukkit.getScheduler().runTaskTimerAsynchronously(this, () -> {
                 UpdateChecker.get().requestUpdateCheck().whenComplete((result, exception) -> {
