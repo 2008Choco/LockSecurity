@@ -47,10 +47,8 @@ import wtf.choco.locksecurity.api.key.KeyFlag;
 import wtf.choco.locksecurity.block.LockedBlock;
 import wtf.choco.locksecurity.block.LockedBlockManager;
 import wtf.choco.locksecurity.block.LockedMultiBlock;
-import wtf.choco.locksecurity.integration.WorldGuardIntegration;
 import wtf.choco.locksecurity.key.KeyFactory;
 import wtf.choco.locksecurity.player.LockSecurityPlayer;
-import wtf.choco.locksecurity.util.Conditional;
 import wtf.choco.locksecurity.util.ItemBuilder;
 import wtf.choco.locksecurity.util.LSConstants;
 import wtf.choco.locksecurity.util.LSEventFactory;
@@ -152,8 +150,7 @@ public final class LockedBlockInteractionListener implements Listener {
             event.setCancelled(true);
 
             // Check for WorldGuard flags
-            Conditional<WorldGuardIntegration> worldGuardIntegration = plugin.getWorldGuardIntegration();
-            if (worldGuardIntegration.isPresent() && !worldGuardIntegration.get().queryFlagBlockUnlocking(block, player)) {
+            if (plugin.getWorldGuardIntegration().testIfPresent(i -> !i.queryFlagBlockUnlocking(block, player))) {
                 player.sendMessage(LSConstants.WARNING_PREFIX + "You do not have permission to unlock a block here.");
                 return;
             }
@@ -246,8 +243,7 @@ public final class LockedBlockInteractionListener implements Listener {
         event.setCancelled(true);
 
         // Check for WorldGuard flags
-        Conditional<WorldGuardIntegration> worldGuardIntegration = plugin.getWorldGuardIntegration();
-        if (worldGuardIntegration.isPresent() && !worldGuardIntegration.get().queryFlagBlockLocking(block, player)) {
+        if (plugin.getWorldGuardIntegration().testIfPresent(i -> !i.queryFlagBlockLocking(block, player))) {
             player.sendMessage(LSConstants.WARNING_PREFIX + "You do not have permission to lock a block here.");
             return;
         }
