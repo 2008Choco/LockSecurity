@@ -55,6 +55,18 @@ public final class LockSecurityAPI {
     }
 
     /**
+     * Get LockSecurity's plugin version.
+     *
+     * @return the plugin version
+     *
+     * @since 3.0.1
+     */
+    @NotNull
+    public static String getVersion() {
+        return plugin.getVersion();
+    }
+
+    /**
      * Get a key factory instance according to its type.
      *
      * @param type the type of key factory

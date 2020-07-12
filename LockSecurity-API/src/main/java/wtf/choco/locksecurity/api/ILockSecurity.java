@@ -19,6 +19,16 @@ import wtf.choco.locksecurity.api.player.ILockSecurityPlayer;
 public interface ILockSecurity {
 
     /**
+     * Get LockSecurity's plugin version.
+     *
+     * @return the plugin version
+     *
+     * @since 3.0.1
+     */
+    @NotNull
+    public String getVersion();
+
+    /**
      * Get a key factory instance according to its type.
      *
      * @param type the type of key factory
