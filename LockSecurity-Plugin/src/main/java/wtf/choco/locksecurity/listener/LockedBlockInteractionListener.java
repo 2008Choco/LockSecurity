@@ -192,6 +192,14 @@ public final class LockedBlockInteractionListener implements Listener {
                 return;
             }
 
+            // Unname the block if it had a nickname
+            if (lockedBlock.hasNickname()) {
+                BlockState state = block.getState();
+                if (state instanceof Nameable) {
+                    ((Nameable) state).setCustomName(null);
+                }
+            }
+
             // Unlock the block and unregister it
             manager.unregisterLockedBlock(lockedBlock);
             player.getInventory().setItem(hand, KeyFactory.SMITHED.refresh(keyItem));
