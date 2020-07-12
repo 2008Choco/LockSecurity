@@ -48,6 +48,7 @@ import wtf.choco.locksecurity.command.CommandLockList;
 import wtf.choco.locksecurity.command.CommandLockNotify;
 import wtf.choco.locksecurity.command.CommandLockSecurity;
 import wtf.choco.locksecurity.command.CommandRefreshKeys;
+import wtf.choco.locksecurity.integration.WorldGuardIntegration;
 import wtf.choco.locksecurity.key.KeyFactory;
 import wtf.choco.locksecurity.listener.KeyItemListener;
 import wtf.choco.locksecurity.listener.LockedBlockInteractionListener;
@@ -55,6 +56,7 @@ import wtf.choco.locksecurity.listener.LockedBlockProtectionListener;
 import wtf.choco.locksecurity.listener.PlayerWrapperStateListener;
 import wtf.choco.locksecurity.metrics.StatHandler;
 import wtf.choco.locksecurity.player.LockSecurityPlayer;
+import wtf.choco.locksecurity.util.Conditional;
 import wtf.choco.locksecurity.util.LSConstants;
 import wtf.choco.locksecurity.util.UpdateChecker;
 import wtf.choco.locksecurity.util.UpdateChecker.UpdateReason;
@@ -72,6 +74,15 @@ public final class LockSecurity extends JavaPlugin {
     private final Map<UUID, LockSecurityPlayer> players = new HashMap<>();
 
     private final Set<Material> lockableBlocks = EnumSet.noneOf(Material.class);
+
+    // Integration
+    private Conditional<WorldGuardIntegration> worldGuardIntegration;
+
+    @Override
+    public void onLoad() {
+        // Load plugin integrations (don't use PluginManager#isPluginEnabled()... they're not enabled. They're loaded)
+        this.worldGuardIntegration = new Conditional<>(Bukkit.getPluginManager().getPlugin("WorldGuard") != null, () -> new WorldGuardIntegration(this));
+    }
 
     @Override
     public void onEnable() {
@@ -241,6 +252,10 @@ public final class LockSecurity extends JavaPlugin {
 
     public boolean isLockableBlock(Block block) {
         return block != null && isLockable(block.getType());
+    }
+
+    public Conditional<WorldGuardIntegration> getWorldGuardIntegration() {
+        return worldGuardIntegration;
     }
 
     public void reloadLockableBlocks() {
