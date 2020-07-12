@@ -80,13 +80,17 @@ public final class LockSecurity extends JavaPlugin {
 
     @Override
     public void onLoad() {
+        instance = this;
+
+        // Register the LockSecurity API
+        LockSecurityAPI.setPlugin(new LockSecurityWrapper(this));
+
         // Load plugin integrations (don't use PluginManager#isPluginEnabled()... they're not enabled. They're loaded)
         this.worldGuardIntegration = new Conditional<>(Bukkit.getPluginManager().getPlugin("WorldGuard") != null, () -> new WorldGuardIntegration(this));
     }
 
     @Override
     public void onEnable() {
-        instance = this;
         this.saveDefaultConfig();
         if (!Files.exists(getDataFolder().toPath().resolve(LSConstants.PATH_RESOURCE_PACK))) {
             this.saveResource(LSConstants.PATH_RESOURCE_PACK, false);
@@ -196,9 +200,6 @@ public final class LockSecurity extends JavaPlugin {
                 });
             }, 0L, 432000); // 6 hours
         }
-
-        // Register the LockSecurity API
-        LockSecurityAPI.setPlugin(new LockSecurityWrapper(this));
     }
 
     @Override
