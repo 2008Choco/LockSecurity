@@ -9,6 +9,7 @@ import java.util.List;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
+import net.md_5.bungee.api.chat.hover.content.Text;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -110,7 +111,7 @@ public final class CommandLockList implements TabExecutor {
     private TextComponent teleportToBlockComponent(CommandSender sender, LockedBlock block) {
         TextComponent blockHoverComponent = new TextComponent("(" + block.getX() + ", " + block.getY() + ", " + block.getZ() + ") : " + block.getWorld().getName());
         blockHoverComponent.setColor(net.md_5.bungee.api.ChatColor.RESET);
-        blockHoverComponent.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponent[] { new TextComponent("Click to teleport!") }));
+        blockHoverComponent.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("Click to teleport!")));
         blockHoverComponent.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/minecraft:teleport " + sender.getName() + " " + block.getX() + " " + block.getY() + " " + block.getZ()));
 
         TextComponent component = new TextComponent(" - " + (block.hasNickname() ? block.getNickname() + " " : ""));
