@@ -80,7 +80,7 @@ public final class CommandGiveKey implements TabExecutor {
 
             LockedBlock lockedBlock = plugin.getLockedBlockManager().getLockedBlock(world.getBlockAt(x, y, z));
             if (lockedBlock == null) {
-                sender.sendMessage(LSConstants.WARNING_PREFIX + "The block at " + ChatColor.YELLOW + "(" + x + ", " + y + ", " + z + ") in world " + ChatColor.AQUA + world.getName() + ChatColor.GRAY + " is not locked and cannot be added to a key.");
+                sender.sendMessage(LSConstants.WARNING_PREFIX + "The block at " + ChatColor.YELLOW + "(" + x + ", " + y + ", " + z + ")" + ChatColor.GRAY + " in world " + ChatColor.AQUA + world.getName() + ChatColor.GRAY + " is not locked and cannot be added to a key.");
                 return true;
             }
 
