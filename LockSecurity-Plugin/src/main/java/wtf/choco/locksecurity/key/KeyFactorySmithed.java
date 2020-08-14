@@ -261,7 +261,7 @@ public final class KeyFactorySmithed implements KeyFactoryType<KeyBuilderSmithed
             builder.name(ChatColor.WHITE + "Smithed Key");
 
             if (unlocks.isEmpty()) {
-                return KeyFactory.createUnsmithedKey();
+                return KeyFactory.createUnsmithedKey(amount);
             }
             else {
                 List<String> lore = new ArrayList<>();
