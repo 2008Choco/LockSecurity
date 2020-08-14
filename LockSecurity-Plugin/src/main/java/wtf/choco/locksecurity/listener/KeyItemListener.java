@@ -178,8 +178,7 @@ public final class KeyItemListener implements Listener {
                 }
             }
 
-            boolean preventReset = KeyFactory.SMITHED.hasFlag(keyItem, KeyFlag.PREVENT_RESETTING);
-            if (KeyFactory.SMITHED.isKey(keyItem) && player.hasPermission(LSConstants.LOCKSECURITY_CRAFTING_RESET) && !preventReset) {
+            if (KeyFactory.SMITHED.isKey(keyItem) && player.hasPermission(LSConstants.LOCKSECURITY_CRAFTING_RESET) && !KeyFactory.SMITHED.hasFlag(keyItem, KeyFlag.PREVENT_RESETTING)) {
                 PlayerResetKeyEvent resetKeyEvent = LSEventFactory.callPlayerResetKeyEvent(player, keyItem, KeyFactory.createUnsmithedKey());
                 if (!resetKeyEvent.isCancelled()) {
                     inventory.setResult(resetKeyEvent.getOutput());

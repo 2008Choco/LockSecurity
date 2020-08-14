@@ -11,6 +11,7 @@ import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.ComponentBuilder.FormatRetention;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
+import net.md_5.bungee.api.chat.hover.content.Text;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -149,6 +150,12 @@ public final class LockedBlockInteractionListener implements Listener {
         if (player.isSneaking()) {
             event.setCancelled(true);
 
+            // Check for WorldGuard flags
+            if (plugin.getWorldGuardIntegration().testIfPresent(i -> !i.queryFlagBlockUnlocking(block, player))) {
+                player.sendMessage(LSConstants.WARNING_PREFIX + "You do not have permission to unlock a block here.");
+                return;
+            }
+
             // Check for unlocking permissions
             if (!player.hasPermission(LSConstants.LOCKSECURITY_BLOCK_UNLOCK)) {
                 player.sendMessage(LSConstants.WARNING_PREFIX + "You do not have permission to unlock a " + ChatColor.YELLOW + blockType + ChatColor.GRAY + ".");
@@ -181,6 +188,15 @@ public final class LockedBlockInteractionListener implements Listener {
             // Call a BlockUnlockEvent, don't run unlocking process if cancelled
             if (!LSEventFactory.handlePlayerBlockUnlockEvent(playerWrapper, lockedBlock, keyItem, hand, false)) {
                 return;
+            }
+
+            // Unname the block if it had a nickname
+            if (lockedBlock.hasNickname()) {
+                BlockState state = block.getState();
+                if (state instanceof Nameable) {
+                    ((Nameable) state).setCustomName(null);
+                    state.update(false, false);
+                }
             }
 
             // Unlock the block and unregister it
@@ -227,6 +243,12 @@ public final class LockedBlockInteractionListener implements Listener {
         }
 
         event.setCancelled(true);
+
+        // Check for WorldGuard flags
+        if (plugin.getWorldGuardIntegration().testIfPresent(i -> !i.queryFlagBlockLocking(block, player))) {
+            player.sendMessage(LSConstants.WARNING_PREFIX + "You do not have permission to lock a block here.");
+            return;
+        }
 
         // Check for block locking permissions
         if (!player.hasPermission(LSConstants.LOCKSECURITY_BLOCK_LOCK)) {
@@ -350,14 +372,10 @@ public final class LockedBlockInteractionListener implements Listener {
         clickMessageComponent.setItalic(target.getName() == null);
 
         if (target.isOnline()) {
-            clickMessageComponent.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponent[] {
-                    new TextComponent(target.getName() + "\n" + target.getUniqueId().toString() + "\n\nClick to message!"),
-            }));
+            clickMessageComponent.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text(target.getName() + "\n" + target.getUniqueId().toString() + "\n\nClick to message!")));
             clickMessageComponent.setClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/tell " + target.getName() + " "));
         } else {
-            clickMessageComponent.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponent[] {
-                    new TextComponent(targetName + "\n" + target.getUniqueId().toString() + "\n\nPlayer is offline. Cannot message."),
-            }));
+            clickMessageComponent.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text(targetName + "\n" + target.getUniqueId().toString() + "\n\nPlayer is offline. Cannot message.")));
         }
 
         TextComponent component = new TextComponent("Owned by: ");
@@ -369,9 +387,7 @@ public final class LockedBlockInteractionListener implements Listener {
     // [owner] has locked a [type] at (x, y, z) in world [world]
     private BaseComponent[] lockNotificationComponent(Player admin, LockedBlock block, Player owner) {
         ComponentBuilder componentBuilder = new ComponentBuilder(owner.getName()).color(net.md_5.bungee.api.ChatColor.GOLD);
-        componentBuilder.event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponent[] {
-                new TextComponent(owner.getName() + "\n" + owner.getUniqueId().toString() + "\n\nClick to message!"),
-        }));
+        componentBuilder.event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text(owner.getName() + "\n" + owner.getUniqueId().toString() + "\n\nClick to message!")));
         componentBuilder.event(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/tell " + owner.getName() + " "));
 
         componentBuilder.append(" has locked a ", FormatRetention.NONE).color(net.md_5.bungee.api.ChatColor.GRAY);
@@ -380,7 +396,7 @@ public final class LockedBlockInteractionListener implements Listener {
         componentBuilder.append("(" + block.getX() + ", " + block.getY() + ", " + block.getZ() + ")", FormatRetention.NONE).color(net.md_5.bungee.api.ChatColor.AQUA);
 
         if (admin.hasPermission(LSConstants.MINECRAFT_COMMAND_TELEPORT)) {
-            componentBuilder.event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponent[] { new TextComponent("Click to teleport!") }));
+            componentBuilder.event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("Click to teleport!")));
             componentBuilder.event(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/minecraft:teleport " + admin.getName() + " " + block.getX() + " " + block.getY() + " " + block.getZ()));
         }
 

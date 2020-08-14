@@ -29,6 +29,11 @@ public final class LockSecurityWrapper implements ILockSecurity {
     }
 
     @Override
+    public String getVersion() {
+        return plugin.getDescription().getVersion();
+    }
+
+    @Override
     @SuppressWarnings("unchecked")
     public <T extends IKeyBuilder> IKeyFactory<T> getKeyFactory(Class<T> type) {
         Preconditions.checkArgument(type != null, "type cannot be null");

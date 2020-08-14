@@ -73,7 +73,7 @@ public final class LockedBlockProtectionListener implements Listener {
                 Block firstChest = lockedMultiBlock.getBlock(), secondChest = lockedMultiBlock.getSecondaryBlock();
                 Block remainingChest = (firstChest.equals(block) ? secondChest : firstChest);
 
-                LockedBlock newLockedBlock = new LockedBlock(remainingChest, lockedBlock.getOwner(), lockedBlock.getLockTime());
+                LockedBlock newLockedBlock = new LockedBlock(remainingChest, lockedBlock.getOwner(), lockedBlock.getLockTime(), lockedBlock.getNickname());
                 manager.registerLockedBlock(newLockedBlock);
             }
 

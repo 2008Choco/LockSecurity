@@ -48,6 +48,8 @@ import wtf.choco.locksecurity.command.CommandLockList;
 import wtf.choco.locksecurity.command.CommandLockNotify;
 import wtf.choco.locksecurity.command.CommandLockSecurity;
 import wtf.choco.locksecurity.command.CommandRefreshKeys;
+import wtf.choco.locksecurity.command.CommandUnlock;
+import wtf.choco.locksecurity.integration.WorldGuardIntegration;
 import wtf.choco.locksecurity.key.KeyFactory;
 import wtf.choco.locksecurity.listener.KeyItemListener;
 import wtf.choco.locksecurity.listener.LockedBlockInteractionListener;
@@ -55,6 +57,7 @@ import wtf.choco.locksecurity.listener.LockedBlockProtectionListener;
 import wtf.choco.locksecurity.listener.PlayerWrapperStateListener;
 import wtf.choco.locksecurity.metrics.StatHandler;
 import wtf.choco.locksecurity.player.LockSecurityPlayer;
+import wtf.choco.locksecurity.util.Conditional;
 import wtf.choco.locksecurity.util.LSConstants;
 import wtf.choco.locksecurity.util.UpdateChecker;
 import wtf.choco.locksecurity.util.UpdateChecker.UpdateReason;
@@ -73,9 +76,22 @@ public final class LockSecurity extends JavaPlugin {
 
     private final Set<Material> lockableBlocks = EnumSet.noneOf(Material.class);
 
+    // Integration
+    private Conditional<WorldGuardIntegration> worldGuardIntegration;
+
+    @Override
+    public void onLoad() {
+        instance = this;
+
+        // Register the LockSecurity API
+        LockSecurityAPI.setPlugin(new LockSecurityWrapper(this));
+
+        // Load plugin integrations (don't use PluginManager#isPluginEnabled()... they're not enabled. They're loaded)
+        this.worldGuardIntegration = new Conditional<>(Bukkit.getPluginManager().getPlugin("WorldGuard") != null, () -> new WorldGuardIntegration(this));
+    }
+
     @Override
     public void onEnable() {
-        instance = this;
         this.saveDefaultConfig();
         if (!Files.exists(getDataFolder().toPath().resolve(LSConstants.PATH_RESOURCE_PACK))) {
             this.saveResource(LSConstants.PATH_RESOURCE_PACK, false);
@@ -140,6 +156,7 @@ public final class LockSecurity extends JavaPlugin {
         this.registerCommandSafely("locklist", new CommandLockList(this));
         this.registerCommandSafely("locknotify", new CommandLockNotify(this));
         this.registerCommandSafely("refreshkeys", new CommandRefreshKeys());
+        this.registerCommandSafely("unlock", new CommandUnlock(this));
 
         // Register recipes
         this.registerKeyRecipe("n  ", " i ", "  w", KeyFactory.RECIPE_UNSMITHED_KEY_UP_LEFT);
@@ -185,9 +202,6 @@ public final class LockSecurity extends JavaPlugin {
                 });
             }, 0L, 432000); // 6 hours
         }
-
-        // Register the LockSecurity API
-        LockSecurityAPI.setPlugin(new LockSecurityWrapper(this));
     }
 
     @Override
@@ -241,6 +255,10 @@ public final class LockSecurity extends JavaPlugin {
 
     public boolean isLockableBlock(Block block) {
         return block != null && isLockable(block.getType());
+    }
+
+    public Conditional<WorldGuardIntegration> getWorldGuardIntegration() {
+        return worldGuardIntegration;
     }
 
     public void reloadLockableBlocks() {

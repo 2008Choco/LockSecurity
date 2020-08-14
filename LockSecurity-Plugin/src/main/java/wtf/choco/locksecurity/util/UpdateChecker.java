@@ -1,5 +1,6 @@
 package wtf.choco.locksecurity.util;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
@@ -9,10 +10,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.google.common.base.Preconditions;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-import com.google.gson.JsonSyntaxException;
 
 import org.apache.commons.lang.math.NumberUtils;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -24,10 +21,9 @@ import org.bukkit.plugin.java.JavaPlugin;
  * preferrably in its {@link JavaPlugin#onEnable()} method, though that is not a
  * requirement.
  * <p>
- * This class performs asynchronous queries to <a href="https://spiget.org">SpiGet</a>, an
- * REST server which is updated periodically. If the results of
+ * This class performs asynchronous queries to Spigot's API. If the results of
  * {@link #requestUpdateCheck()} are inconsistent with what is published on SpigotMC, it
- * may be due to SpiGet's cache. Results will be updated in due time.
+ * may be due to the REST API cache. Results will be updated in due time.
  *
  * @author Parker Hawke - Choco
  */
@@ -55,7 +51,7 @@ public final class UpdateChecker {
     };
 
     private static final String USER_AGENT = "CHOCO-update-checker";
-    private static final String UPDATE_URL = "https://api.spiget.org/v2/resources/%d/versions?size=1&sort=-releaseDate";
+    private static final String UPDATE_URL = "https://api.spigotmc.org/legacy/update.php?resource=%d";
     private static final Pattern DECIMAL_SCHEME_PATTERN = Pattern.compile("\\d+(?:\\.\\d+)*");
 
     private static UpdateChecker instance;
@@ -86,19 +82,13 @@ public final class UpdateChecker {
                 HttpURLConnection connection = (HttpURLConnection) url.openConnection();
                 connection.addRequestProperty("User-Agent", USER_AGENT);
 
-                InputStreamReader reader = new InputStreamReader(connection.getInputStream());
+                BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
                 responseCode = connection.getResponseCode();
 
-                JsonElement element = new JsonParser().parse(reader);
-                if (!element.isJsonArray()) {
-                    return new UpdateResult(UpdateReason.INVALID_JSON);
-                }
-
+                String newest = reader.readLine();
                 reader.close();
 
-                JsonObject versionObject = element.getAsJsonArray().get(0).getAsJsonObject();
-                String current = plugin.getDescription().getVersion(),
-                        newest = versionObject.get("name").getAsString();
+                String current = plugin.getDescription().getVersion();
                 String latest = versionScheme.compareVersions(current, newest);
 
                 if (latest == null) {
@@ -112,8 +102,6 @@ public final class UpdateChecker {
                 }
             } catch (IOException e) {
                 return new UpdateResult(UpdateReason.COULD_NOT_CONNECT);
-            } catch (JsonSyntaxException e) {
-                return new UpdateResult(UpdateReason.INVALID_JSON);
             }
 
             return new UpdateResult(responseCode == 401 ? UpdateReason.UNAUTHORIZED_QUERY : UpdateReason.UNKNOWN_ERROR);
@@ -232,11 +220,6 @@ public final class UpdateChecker {
          * A successful connection to the SpiGet API could not be established.
          */
         COULD_NOT_CONNECT,
-
-        /**
-         * The JSON retrieved from SpiGet was invalid or malformed.
-         */
-        INVALID_JSON,
 
         /**
          * A 401 error was returned by the SpiGet API.

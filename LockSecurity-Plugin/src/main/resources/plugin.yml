@@ -4,6 +4,7 @@ version: ${project.version}
 description: ${project.description}
 author: Choco
 website: https://github.com/2008Choco/LockSecurity
+softdepend: [ WorldGuard ]
 api-version: 1.16
 
 commands:
@@ -47,6 +48,11 @@ commands:
     usage: /<command>
     permission: locksecurity.command.refreshkeys
     aliases: [ refreshkey, keyrefresh, updatekey, updatekeys, keyupdate ]
+
+  unlock:
+    description: Unlock a block at the given position
+    usage: /<command> <x> <y> <z> [world]
+    permission: locksecurity.block.unlock
 
 permissions:
   locksecurity.notifyupdate:
@@ -121,6 +127,12 @@ permissions:
 
   locksecurity.block.unlock:
     description: Allow a player to unlock a block using a smithed key
+    children:
+      locksecurity.block.unlock.other: false
+
+  locksecurity.block.unlock.other:
+    description: Allow a player to unlock a block owned by another player
+    default: op
 
   locksecurity.block.nickname:
     description: Allow a player to nickname a locked block using a nametag
