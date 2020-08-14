@@ -71,6 +71,7 @@ public final class CommandUnlock implements TabExecutor {
             BlockState state = lockedBlock.getBlock().getState();
             if (state instanceof Nameable) {
                 ((Nameable) state).setCustomName(null);
+                state.update(false, false);
             }
         }
 

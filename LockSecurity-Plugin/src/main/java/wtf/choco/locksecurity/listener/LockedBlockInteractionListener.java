@@ -195,6 +195,7 @@ public final class LockedBlockInteractionListener implements Listener {
                 BlockState state = block.getState();
                 if (state instanceof Nameable) {
                     ((Nameable) state).setCustomName(null);
+                    state.update(false, false);
                 }
             }
 
