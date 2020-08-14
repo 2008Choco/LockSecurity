@@ -6,9 +6,11 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.ClickEvent;
+import net.md_5.bungee.api.chat.ComponentBuilder;
+import net.md_5.bungee.api.chat.ComponentBuilder.FormatRetention;
 import net.md_5.bungee.api.chat.HoverEvent;
-import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.chat.hover.content.Text;
 
 import org.bukkit.Bukkit;
@@ -76,7 +78,7 @@ public final class CommandLockList implements TabExecutor {
             sender.sendMessage(ChatColor.YELLOW + target.getName() + ChatColor.GRAY + " owns blocks at the following locations:");
             for (LockedBlock block : ownedBlocks) {
                 if (shouldShowTeleportation && block.getWorld() == ((Entity) sender).getWorld()) {
-                    sender.spigot().sendMessage(teleportToBlockComponent(sender, block));
+                    sender.spigot().sendMessage(blockEntryComponent(sender, block));
                 } else {
                     sender.sendMessage(" - (" + block.getX() + ", " + block.getY() + ", " + block.getZ() + ") : " + block.getWorld().getName());
                 }
@@ -108,15 +110,30 @@ public final class CommandLockList implements TabExecutor {
         return Collections.emptyList();
     }
 
-    private TextComponent teleportToBlockComponent(CommandSender sender, LockedBlock block) {
-        TextComponent blockHoverComponent = new TextComponent("(" + block.getX() + ", " + block.getY() + ", " + block.getZ() + ") : " + block.getWorld().getName());
-        blockHoverComponent.setColor(net.md_5.bungee.api.ChatColor.RESET);
-        blockHoverComponent.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("Click to teleport!")));
-        blockHoverComponent.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/minecraft:teleport " + sender.getName() + " " + block.getX() + " " + block.getY() + " " + block.getZ()));
+    private BaseComponent[] blockEntryComponent(CommandSender sender, LockedBlock block) {
+        ComponentBuilder component = new ComponentBuilder();
 
-        TextComponent component = new TextComponent(" - " + (block.hasNickname() ? block.getNickname() + " " : ""));
-        component.addExtra(blockHoverComponent);
-        return component;
+        if (sender.hasPermission(LSConstants.LOCKSECURITY_BLOCK_UNLOCK_OTHER)) {
+            BaseComponent[] deletionTooltip = new ComponentBuilder("Click to delete!\n\n")
+                    .append("WARNING! ").color(net.md_5.bungee.api.ChatColor.RED).bold(true)
+                    .append("This is irreversible and does not ask for confirmation!", FormatRetention.NONE).create();
+
+            component.append("[X]").color(net.md_5.bungee.api.ChatColor.RED).bold(true);
+            component.event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text(deletionTooltip)));
+            component.event(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/" + plugin.getName().toLowerCase() + ":unlock " + block.getX() + " " + block.getY() + " " + block.getZ() + " " + block.getWorld().getName()));
+        }
+
+        component.append(" - ", FormatRetention.NONE);
+
+        if (block.hasNickname()) {
+            component.append(block.getNickname() + " ");
+        }
+
+        component.append("(" + block.getX() + ", " + block.getY() + ", " + block.getZ() + ") : " + block.getWorld().getName(), FormatRetention.NONE);
+        component.event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("Click to teleport!")));
+        component.event(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/minecraft:teleport " + sender.getName() + " " + block.getX() + " " + block.getY() + " " + block.getZ()));
+
+        return component.create();
     }
 
 }
