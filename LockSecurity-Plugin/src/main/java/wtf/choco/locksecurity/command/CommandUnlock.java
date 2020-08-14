@@ -61,6 +61,12 @@ public final class CommandUnlock implements TabExecutor {
             return true;
         }
 
+        // Check for WorldGuard flags
+        if (sender instanceof Player && plugin.getWorldGuardIntegration().testIfPresent(i -> !i.queryFlagBlockUnlocking(lockedBlock.getBlock(), (Player) sender))) {
+            sender.sendMessage(LSConstants.WARNING_PREFIX + "You do not have permission to unlock a block here.");
+            return true;
+        }
+
         if (!sender.hasPermission(LSConstants.LOCKSECURITY_BLOCK_UNLOCK_OTHER) && sender instanceof Player && !lockedBlock.isOwner((Player) sender)) {
             sender.sendMessage(LSConstants.WARNING_PREFIX + "You do not have permission to unlock a " + ChatColor.YELLOW + lockedBlock.getType().getKey().getKey().toLowerCase().replace("_", " ") + ChatColor.GRAY + " you do not own.");
             return true;
