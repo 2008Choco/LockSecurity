@@ -1,3 +1,4 @@
+[![](https://jitpack.io/v/2008Choco/LockSecurity.svg)](https://jitpack.io/#2008Choco/LockSecurity)
 <a href="http://choco.wtf/javadocs/locksecurity" alt="Javadocs">
     <img src="https://img.shields.io/badge/Javadocs-Regularly_updated-brightgreen" alt="Javadocs"/>
 </a>
