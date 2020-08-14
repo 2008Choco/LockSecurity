@@ -48,6 +48,7 @@ import wtf.choco.locksecurity.command.CommandLockList;
 import wtf.choco.locksecurity.command.CommandLockNotify;
 import wtf.choco.locksecurity.command.CommandLockSecurity;
 import wtf.choco.locksecurity.command.CommandRefreshKeys;
+import wtf.choco.locksecurity.command.CommandUnlock;
 import wtf.choco.locksecurity.integration.WorldGuardIntegration;
 import wtf.choco.locksecurity.key.KeyFactory;
 import wtf.choco.locksecurity.listener.KeyItemListener;
@@ -155,6 +156,7 @@ public final class LockSecurity extends JavaPlugin {
         this.registerCommandSafely("locklist", new CommandLockList(this));
         this.registerCommandSafely("locknotify", new CommandLockNotify(this));
         this.registerCommandSafely("refreshkeys", new CommandRefreshKeys());
+        this.registerCommandSafely("unlock", new CommandUnlock(this));
 
         // Register recipes
         this.registerKeyRecipe("n  ", " i ", "  w", KeyFactory.RECIPE_UNSMITHED_KEY_UP_LEFT);

@@ -33,6 +33,7 @@ public final class LSConstants {
     public static final String LOCKSECURITY_BLOCK_LOCK_IGNORELIMIT = "locksecurity.block.lock.ignorelimit";
     public static final String LOCKSECURITY_BLOCK_NICKNAME = "locksecurity.block.nickname";
     public static final String LOCKSECURITY_BLOCK_UNLOCK = "locksecurity.block.unlock";
+    public static final String LOCKSECURITY_BLOCK_UNLOCK_OTHER = "locksecurity.block.unlock.other";
 
     public static final String LOCKSECURITY_COMMAND_LOCKLIST_OTHER = "locksecurity.command.locklist.other";
     public static final String LOCKSECURITY_COMMAND_RELOAD = "locksecurity.command.reload";
