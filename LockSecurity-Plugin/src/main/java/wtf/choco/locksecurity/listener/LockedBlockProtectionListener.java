@@ -30,6 +30,9 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.block.BlockRedstoneEvent;
 import org.bukkit.event.entity.EntityBreakDoorEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
+import org.bukkit.event.inventory.InventoryMoveItemEvent;
+import org.bukkit.inventory.BlockInventoryHolder;
+import org.bukkit.inventory.InventoryHolder;
 
 import wtf.choco.locksecurity.LockSecurity;
 import wtf.choco.locksecurity.block.LockedBlock;
@@ -130,6 +133,30 @@ public final class LockedBlockProtectionListener implements Listener {
                 this.warnIfNecessary(player, block, LSConstants.WARNING_PREFIX + "You cannot place a double chest against a " + ChatColor.YELLOW + blockType + ChatColor.GRAY + " you do not own");
                 event.setCancelled(true);
                 break;
+            }
+        }
+    }
+
+    @EventHandler
+    private void onHopperPullFromInventory(InventoryMoveItemEvent event) {
+        InventoryHolder sourceHolder = event.getSource().getHolder();
+        InventoryHolder destinationHolder = event.getDestination().getHolder();
+
+        if (sourceHolder instanceof BlockInventoryHolder) {
+            Block block = ((BlockInventoryHolder) sourceHolder).getBlock();
+            LockedBlockManager lockedBlockManager = plugin.getLockedBlockManager();
+
+            if (lockedBlockManager.isLocked(block)) {
+                event.setCancelled(true);
+            }
+        }
+
+        else if (destinationHolder instanceof BlockInventoryHolder) {
+            Block block = ((BlockInventoryHolder) destinationHolder).getBlock();
+            LockedBlockManager lockedBlockManager = plugin.getLockedBlockManager();
+
+            if (lockedBlockManager.isLocked(block)) {
+                event.setCancelled(true);
             }
         }
     }
