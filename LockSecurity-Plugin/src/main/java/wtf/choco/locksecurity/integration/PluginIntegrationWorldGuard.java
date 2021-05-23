@@ -13,14 +13,32 @@ import com.sk89q.worldguard.protection.regions.RegionContainer;
 
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
-public final class WorldGuardIntegration {
+import wtf.choco.commons.integration.PluginIntegration;
+import wtf.choco.locksecurity.LockSecurity;
 
-    private final StateFlag flagBlockLocking;
-    private final StateFlag flagBlockUnlocking;
+public final class PluginIntegrationWorldGuard implements PluginIntegration {
 
-    public WorldGuardIntegration(JavaPlugin plugin) {
+    private StateFlag flagBlockLocking;
+    private StateFlag flagBlockUnlocking;
+
+    private final WorldGuardPlugin worldGuardPlugin;
+
+    public PluginIntegrationWorldGuard(Plugin worldGuardPlugin) {
+        this.worldGuardPlugin = (WorldGuardPlugin) worldGuardPlugin;
+    }
+
+    @Override
+    public Plugin getIntegratedPlugin() {
+        return worldGuardPlugin;
+    }
+
+    @Override
+    public void load() {
+        LockSecurity plugin = LockSecurity.getInstance();
+
         this.flagBlockLocking = new StateFlag("block-locking", true);
         this.flagBlockUnlocking = new StateFlag("block-unlocking", true);
 
@@ -29,6 +47,12 @@ public final class WorldGuardIntegration {
         this.registerFlag(plugin, flagRegistry, flagBlockLocking);
         this.registerFlag(plugin, flagRegistry, flagBlockUnlocking);
     }
+
+    @Override
+    public void enable() { }
+
+    @Override
+    public void disable() { }
 
     public boolean queryFlagBlockLocking(Block block, Player player) {
         return testFlag(block, player, flagBlockLocking);

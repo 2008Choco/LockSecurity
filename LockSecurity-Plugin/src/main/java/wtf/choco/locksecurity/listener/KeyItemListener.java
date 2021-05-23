@@ -23,13 +23,13 @@ import org.bukkit.inventory.Recipe;
 import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.inventory.ShapelessRecipe;
 
+import wtf.choco.commons.util.ItemBuilder;
 import wtf.choco.locksecurity.LockSecurity;
 import wtf.choco.locksecurity.api.event.key.PlayerDuplicateKeyEvent;
 import wtf.choco.locksecurity.api.event.key.PlayerMergeKeyEvent;
 import wtf.choco.locksecurity.api.event.key.PlayerResetKeyEvent;
 import wtf.choco.locksecurity.api.key.KeyFlag;
 import wtf.choco.locksecurity.key.KeyFactory;
-import wtf.choco.locksecurity.util.ItemBuilder;
 import wtf.choco.locksecurity.util.LSConstants;
 import wtf.choco.locksecurity.util.LSEventFactory;
 

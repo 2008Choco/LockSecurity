@@ -17,8 +17,12 @@
 
   <repositories>
     <repository>
-        <id>sk89q-repo</id>
-        <url>https://maven.enginehub.org/repo/</url>
+      <id>sk89q-repo</id>
+      <url>https://maven.enginehub.org/repo/</url>
+    </repository>
+    <repository>
+      <id>jitpack</id>
+      <url>https://jitpack.io/</url>
     </repository>
   </repositories>
 
@@ -72,6 +76,13 @@
       <groupId>org.bstats</groupId>
       <artifactId>bstats-bukkit</artifactId>
       <version>2.2.1</version>
+      <scope>compile</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>com.github.2008Choco</groupId>
+      <artifactId>ChocoCommons</artifactId>
+      <version>5fab5b2561</version>
       <scope>compile</scope>
     </dependency>
 

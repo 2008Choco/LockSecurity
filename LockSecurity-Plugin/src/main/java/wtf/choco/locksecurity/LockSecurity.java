@@ -1,5 +1,12 @@
 package wtf.choco.locksecurity;
 
+import com.google.common.base.Preconditions;
+import com.google.gson.Gson;
+import com.google.gson.JsonIOException;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonSyntaxException;
+import com.google.gson.stream.JsonWriter;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -13,13 +20,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.logging.Logger;
-
-import com.google.common.base.Preconditions;
-import com.google.gson.Gson;
-import com.google.gson.JsonIOException;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonSyntaxException;
-import com.google.gson.stream.JsonWriter;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -38,6 +38,9 @@ import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitTask;
 
+import wtf.choco.commons.integration.IntegrationHandler;
+import wtf.choco.commons.util.UpdateChecker;
+import wtf.choco.commons.util.UpdateChecker.UpdateReason;
 import wtf.choco.locksecurity.api.LockSecurityAPI;
 import wtf.choco.locksecurity.api.impl.LockSecurityWrapper;
 import wtf.choco.locksecurity.block.LockedBlockManager;
@@ -49,7 +52,7 @@ import wtf.choco.locksecurity.command.CommandLockNotify;
 import wtf.choco.locksecurity.command.CommandLockSecurity;
 import wtf.choco.locksecurity.command.CommandRefreshKeys;
 import wtf.choco.locksecurity.command.CommandUnlock;
-import wtf.choco.locksecurity.integration.WorldGuardIntegration;
+import wtf.choco.locksecurity.integration.PluginIntegrationWorldGuard;
 import wtf.choco.locksecurity.key.KeyFactory;
 import wtf.choco.locksecurity.listener.KeyItemListener;
 import wtf.choco.locksecurity.listener.LockedBlockInteractionListener;
@@ -57,10 +60,7 @@ import wtf.choco.locksecurity.listener.LockedBlockProtectionListener;
 import wtf.choco.locksecurity.listener.PlayerWrapperStateListener;
 import wtf.choco.locksecurity.metrics.StatHandler;
 import wtf.choco.locksecurity.player.LockSecurityPlayer;
-import wtf.choco.locksecurity.util.Conditional;
 import wtf.choco.locksecurity.util.LSConstants;
-import wtf.choco.locksecurity.util.UpdateChecker;
-import wtf.choco.locksecurity.util.UpdateChecker.UpdateReason;
 
 public final class LockSecurity extends JavaPlugin {
 
@@ -77,7 +77,7 @@ public final class LockSecurity extends JavaPlugin {
     private final Set<Material> lockableBlocks = EnumSet.noneOf(Material.class);
 
     // Integration
-    private Conditional<WorldGuardIntegration> worldGuardIntegration;
+    private final IntegrationHandler integrationHandler = new IntegrationHandler(this);
 
     @Override
     public void onLoad() {
@@ -86,8 +86,8 @@ public final class LockSecurity extends JavaPlugin {
         // Register the LockSecurity API
         LockSecurityAPI.setPlugin(new LockSecurityWrapper(this));
 
-        // Load plugin integrations (don't use PluginManager#isPluginEnabled()... they're not enabled. They're loaded)
-        this.worldGuardIntegration = new Conditional<>(Bukkit.getPluginManager().getPlugin("WorldGuard") != null, () -> new WorldGuardIntegration(this));
+        this.integrationHandler.registerIntegrations("WorldGuard", () -> PluginIntegrationWorldGuard::new);
+        this.integrationHandler.integrate();
     }
 
     @Override
@@ -178,6 +178,9 @@ public final class LockSecurity extends JavaPlugin {
             logger.info("Successfully enabled metrics. Thanks for keeping these enabled!");
         }
 
+        // Enable integrations
+        this.integrationHandler.enableIntegrations();
+
         // Update check
         UpdateChecker.init(this, 81282);
         if (getConfig().getBoolean(LSConstants.PERFORM_UPDATE_CHECKS, true)) {
@@ -257,8 +260,8 @@ public final class LockSecurity extends JavaPlugin {
         return block != null && isLockable(block.getType());
     }
 
-    public Conditional<WorldGuardIntegration> getWorldGuardIntegration() {
-        return worldGuardIntegration;
+    public IntegrationHandler getIntegrationHandler() {
+        return integrationHandler;
     }
 
     public void reloadLockableBlocks() {

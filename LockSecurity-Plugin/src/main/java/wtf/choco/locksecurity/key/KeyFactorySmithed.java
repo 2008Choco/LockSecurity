@@ -1,5 +1,7 @@
 package wtf.choco.locksecurity.key;
 
+import com.google.common.base.Preconditions;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -8,8 +10,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import com.google.common.base.Preconditions;
-
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -17,6 +17,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
+import wtf.choco.commons.util.ItemBuilder;
 import wtf.choco.locksecurity.LockSecurity;
 import wtf.choco.locksecurity.api.impl.key.KeyBuilderSmithedWrapper;
 import wtf.choco.locksecurity.api.key.IKeyBuilderSmithed;
@@ -24,7 +25,6 @@ import wtf.choco.locksecurity.api.key.KeyFlag;
 import wtf.choco.locksecurity.block.LockedBlock;
 import wtf.choco.locksecurity.key.KeyFactorySmithed.KeyBuilderSmithed;
 import wtf.choco.locksecurity.persistence.LSPersistentDataTypes;
-import wtf.choco.locksecurity.util.ItemBuilder;
 import wtf.choco.locksecurity.util.LSConstants;
 
 public final class KeyFactorySmithed implements KeyFactoryType<KeyBuilderSmithed> {

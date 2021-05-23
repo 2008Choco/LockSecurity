@@ -3,6 +3,7 @@ package wtf.choco.locksecurity.listener;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
 import net.md_5.bungee.api.chat.BaseComponent;
@@ -41,6 +42,7 @@ import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 
+import wtf.choco.commons.util.ItemBuilder;
 import wtf.choco.locksecurity.LockSecurity;
 import wtf.choco.locksecurity.api.event.block.PlayerBlockLockEvent;
 import wtf.choco.locksecurity.api.event.block.PlayerInteractLockedBlockEvent;
@@ -48,9 +50,9 @@ import wtf.choco.locksecurity.api.key.KeyFlag;
 import wtf.choco.locksecurity.block.LockedBlock;
 import wtf.choco.locksecurity.block.LockedBlockManager;
 import wtf.choco.locksecurity.block.LockedMultiBlock;
+import wtf.choco.locksecurity.integration.PluginIntegrationWorldGuard;
 import wtf.choco.locksecurity.key.KeyFactory;
 import wtf.choco.locksecurity.player.LockSecurityPlayer;
-import wtf.choco.locksecurity.util.ItemBuilder;
 import wtf.choco.locksecurity.util.LSConstants;
 import wtf.choco.locksecurity.util.LSEventFactory;
 
@@ -151,7 +153,8 @@ public final class LockedBlockInteractionListener implements Listener {
             event.setCancelled(true);
 
             // Check for WorldGuard flags
-            if (plugin.getWorldGuardIntegration().testIfPresent(i -> !i.queryFlagBlockUnlocking(block, player))) {
+            Optional<PluginIntegrationWorldGuard> worldGuardIntegration = plugin.getIntegrationHandler().getIntegration(PluginIntegrationWorldGuard.class);
+            if (worldGuardIntegration.map(i -> !i.queryFlagBlockUnlocking(block, player)).orElse(false)) {
                 player.sendMessage(LSConstants.WARNING_PREFIX + "You do not have permission to unlock a block here.");
                 return;
             }
@@ -245,7 +248,8 @@ public final class LockedBlockInteractionListener implements Listener {
         event.setCancelled(true);
 
         // Check for WorldGuard flags
-        if (plugin.getWorldGuardIntegration().testIfPresent(i -> !i.queryFlagBlockLocking(block, player))) {
+        Optional<PluginIntegrationWorldGuard> worldGuardIntegration = plugin.getIntegrationHandler().getIntegration(PluginIntegrationWorldGuard.class);
+        if (worldGuardIntegration.map(i -> !i.queryFlagBlockLocking(block, player)).orElse(false)) {
             player.sendMessage(LSConstants.WARNING_PREFIX + "You do not have permission to lock a block here.");
             return;
         }

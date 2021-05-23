@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import org.apache.commons.lang.math.NumberUtils;
 import org.bukkit.Bukkit;
@@ -22,6 +23,7 @@ import org.bukkit.util.StringUtil;
 
 import wtf.choco.locksecurity.LockSecurity;
 import wtf.choco.locksecurity.block.LockedBlock;
+import wtf.choco.locksecurity.integration.PluginIntegrationWorldGuard;
 import wtf.choco.locksecurity.util.LSConstants;
 
 public final class CommandUnlock implements TabExecutor {
@@ -62,7 +64,8 @@ public final class CommandUnlock implements TabExecutor {
         }
 
         // Check for WorldGuard flags
-        if (sender instanceof Player && plugin.getWorldGuardIntegration().testIfPresent(i -> !i.queryFlagBlockUnlocking(lockedBlock.getBlock(), (Player) sender))) {
+        Optional<PluginIntegrationWorldGuard> worldGuardIntegration = plugin.getIntegrationHandler().getIntegration(PluginIntegrationWorldGuard.class);
+        if (sender instanceof Player && worldGuardIntegration.map(i -> !i.queryFlagBlockUnlocking(lockedBlock.getBlock(), (Player) sender)).orElse(false)) {
             sender.sendMessage(LSConstants.WARNING_PREFIX + "You do not have permission to unlock a block here.");
             return true;
         }
