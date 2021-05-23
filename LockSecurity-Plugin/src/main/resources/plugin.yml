@@ -4,7 +4,7 @@ version: ${project.version}
 description: ${project.description}
 author: Choco
 website: https://github.com/2008Choco/LockSecurity
-softdepend: [ WorldGuard ]
+softdepend: [ CraftBook, WorldGuard ]
 api-version: 1.16
 provides: [ LockSecurityAPI ]
 

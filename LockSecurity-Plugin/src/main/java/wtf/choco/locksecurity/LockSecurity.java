@@ -52,6 +52,7 @@ import wtf.choco.locksecurity.command.CommandLockNotify;
 import wtf.choco.locksecurity.command.CommandLockSecurity;
 import wtf.choco.locksecurity.command.CommandRefreshKeys;
 import wtf.choco.locksecurity.command.CommandUnlock;
+import wtf.choco.locksecurity.integration.PluginIntegrationCraftBook;
 import wtf.choco.locksecurity.integration.PluginIntegrationWorldGuard;
 import wtf.choco.locksecurity.key.KeyFactory;
 import wtf.choco.locksecurity.listener.KeyItemListener;
@@ -86,6 +87,7 @@ public final class LockSecurity extends JavaPlugin {
         // Register the LockSecurity API
         LockSecurityAPI.setPlugin(new LockSecurityWrapper(this));
 
+        this.integrationHandler.registerIntegrations("CraftBook", () -> PluginIntegrationCraftBook::new);
         this.integrationHandler.registerIntegrations("WorldGuard", () -> PluginIntegrationWorldGuard::new);
         this.integrationHandler.integrate();
     }
