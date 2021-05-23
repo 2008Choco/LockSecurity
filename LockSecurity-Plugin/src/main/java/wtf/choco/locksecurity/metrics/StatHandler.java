@@ -1,12 +1,15 @@
 package wtf.choco.locksecurity.metrics;
 
+import com.google.common.base.Preconditions;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-import com.google.common.base.Preconditions;
-
 import org.bstats.bukkit.Metrics;
+import org.bstats.charts.AdvancedPie;
+import org.bstats.charts.DrilldownPie;
+import org.bstats.charts.SimplePie;
 
 import wtf.choco.locksecurity.LockSecurity;
 
@@ -22,14 +25,14 @@ public final class StatHandler {
 
     private StatHandler(LockSecurity plugin, Metrics metrics) {
         // Locked blocks by type, "lockedByType"
-        metrics.addCustomChart(new Metrics.AdvancedPie("lockedByType", () -> {
+        metrics.addCustomChart(new AdvancedPie("lockedByType", () -> {
             Map<String, Integer> lockedByType = new HashMap<>();
             plugin.getLockedBlockManager().getLockedBlocks().forEach(block -> lockedByType.merge(block.getType().getKey().toString(), 1, Integer::sum));
             return lockedByType;
         }));
 
         // Lock count per player, "perPlayerLockCount"
-        metrics.addCustomChart(new Metrics.DrilldownPie("perPlayerLockCount", () -> {
+        metrics.addCustomChart(new DrilldownPie("perPlayerLockCount", () -> {
             Map<String, Map<String, Integer>> perPlayerAmount = new HashMap<>();
 
             Map<UUID, Integer> lockCount = new HashMap<>();
@@ -57,7 +60,7 @@ public final class StatHandler {
         }));
 
         // Free or premium, "premium"
-        metrics.addCustomChart(new Metrics.SimplePie("premium", () -> PREMIUM_STATUS));
+        metrics.addCustomChart(new SimplePie("premium", () -> PREMIUM_STATUS));
     }
 
     public static void init(LockSecurity plugin, int metricsId) {
